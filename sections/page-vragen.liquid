@@ -1,0 +1,351 @@
+{%- comment -%}
+  Pagina "Veelgestelde vragen" — bewerkbaar via de Thema-editor.
+  De header komt uit section.settings (eyebrow/heading/intro) en de inhoud uit
+  section.blocks: "category" (themakop + intro), "qa" (vraag + antwoord richtext)
+  en "image" (optionele afbeelding met onderschrift). De vragen zijn gegroepeerd
+  per thema door category-blokken gevolgd door qa-blokken.
+  Het pagina-eigen CSS uit de blauwdruk (veelgestelde-vragen.html) staat hieronder
+  in een {% style %}-blok; dit staat NIET in base.css. Uitstraling en klassenamen
+  zijn exact behouden.
+{%- endcomment -%}
+
+{% style %}
+    /* Pagina-header met intro */
+    .page-header {
+      padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+      text-align: center;
+    }
+    .page-header__title {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      margin-top: var(--sp-0_75);
+    }
+    .page-header__intro {
+      color: var(--ink-soft);
+      max-width: 52ch;
+      margin: var(--sp-1) auto 0;
+    }
+
+    /* FAQ gegroepeerd per thema */
+    .faq-groups {
+      max-width: 820px;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2.5rem, 5vw, 4rem);
+    }
+    .faq-group__head {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-1);
+      margin-bottom: var(--sp-0_5);
+    }
+    .faq-group__title {
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    }
+    .faq-group__intro {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: var(--sp-1);
+      max-width: 64ch;
+    }
+
+    /* FAQ-accordions met native <details> (zelfde stijl als de FAQ op contact.html) */
+    .faq-list {
+      border-top: var(--border);
+    }
+    .faq-item { border-bottom: var(--border); }
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-1);
+      padding-block: var(--sp-1_5);
+      cursor: pointer;
+      list-style: none;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      transition: color var(--t-fast);
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-item summary .faq-icon {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      position: relative;
+      transition: transform var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before,
+    .faq-item summary .faq-icon::after {
+      content: "";
+      position: absolute;
+      background: currentColor;
+      transition: opacity var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+    .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+    .faq-item[open] summary .faq-icon::after { opacity: 0; }
+    .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 68ch; }
+    .faq-item__answer p + p { margin-top: var(--sp-0_75); }
+    /* Accent-links binnen de antwoorden (richtext kan geen class dragen) */
+    .faq-item__answer a,
+    .faq-group__intro a {
+      color: var(--accent);
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 0% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      transition: background-size var(--t-fast);
+    }
+    .faq-item__answer a:hover,
+    .faq-group__intro a:hover { background-size: 100% 1px; }
+
+    /* Optionele afbeelding tussen de thema's */
+    .faq-figure {
+      max-width: 820px;
+      margin-inline: auto;
+    }
+    .faq-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .faq-figure figcaption {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: var(--sp-0_75);
+      text-align: center;
+    }
+
+    /* Afsluitend "vraag er niet bij"-blok */
+    .faq-cta {
+      max-width: 820px;
+      margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+      padding: clamp(1.75rem, 4vw, 2.75rem);
+      background: var(--surface);
+      border: var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-1);
+    }
+    .faq-cta h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+    .faq-cta p {
+      color: var(--ink-soft);
+      max-width: 50ch;
+    }
+{% endstyle %}
+
+<!-- BREADCRUMB + PAGINA-HEADER -->
+<section class="page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ page.title | default: 'Veelgestelde vragen' }}</span></li>
+      </ul>
+    </nav>
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="page-header__title reveal" data-delay="1">{{ section.settings.heading | default: page.title | default: 'Veelgestelde vragen' }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="page-header__intro reveal" data-delay="2">{{ section.settings.intro }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+<!-- FAQ GEGROEPEERD PER THEMA -->
+<section class="section">
+  <div class="container">
+    <div class="faq-groups">
+
+      {%- assign group_open = false -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'category' -%}
+            {%- if group_open -%}
+                </div>
+              </div>
+            {%- endif -%}
+            <div class="faq-group reveal" {{ block.shopify_attributes }}>
+              <div class="faq-group__head">
+                <h2 class="faq-group__title">{{ block.settings.heading }}</h2>
+              </div>
+              {%- if block.settings.intro != blank -%}
+                <p class="faq-group__intro">{{ block.settings.intro }}</p>
+              {%- endif -%}
+              <div class="faq-list" data-accordion>
+            {%- assign group_open = true -%}
+
+          {%- when 'qa' -%}
+            <details class="faq-item" {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.question }}<span class="faq-icon" aria-hidden="true"></span></summary>
+              <div class="faq-item__answer">
+                {{ block.settings.answer }}
+              </div>
+            </details>
+
+          {%- when 'image' -%}
+            {%- if group_open -%}
+                </div>
+              </div>
+              {%- assign group_open = false -%}
+            {%- endif -%}
+            {%- if block.settings.image != blank -%}
+              <figure class="faq-figure reveal" {{ block.shopify_attributes }}>
+                {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,800,1200,1400', sizes: '(max-width: 900px) 100vw, 760px' }}
+                {%- if block.settings.caption != blank -%}
+                  <figcaption>{{ block.settings.caption }}</figcaption>
+                {%- endif -%}
+              </figure>
+            {%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- if group_open -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    <!-- AFSLUITEND BLOK: vraag er niet bij? -->
+    {%- if section.settings.cta_heading != blank or section.settings.cta_text != blank -%}
+      <div class="faq-cta reveal">
+        {%- if section.settings.cta_eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.cta_eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.cta_heading != blank -%}
+          <h2>{{ section.settings.cta_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.cta_text != blank -%}
+          <p>{{ section.settings.cta_text }}</p>
+        {%- endif -%}
+        {%- if section.settings.cta_button_label != blank -%}
+          <a class="btn" href="{{ section.settings.cta_button_link | default: '/pages/contact' }}">{{ section.settings.cta_button_label }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Veelgestelde vragen",
+  "tag": "section",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Klantenservice"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductietekst"
+    },
+    {
+      "type": "header",
+      "content": "Afsluitend blok"
+    },
+    {
+      "type": "text",
+      "id": "cta_eyebrow",
+      "label": "CTA bovenkop",
+      "default": "Nog een vraag?"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "CTA kop",
+      "default": "Staat je vraag er niet bij?"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA tekst",
+      "default": "Geen probleem — onze klantenservice helpt je graag persoonlijk verder. We reageren meestal binnen 1 werkdag."
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "label": "CTA knoptekst",
+      "default": "Neem contact op"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_link",
+      "label": "CTA knop-link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Thema (categoriekop)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Themakop"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "intro",
+          "label": "Thema-intro",
+          "info": "Korte introductie onder de themakop. Ondersteunt links."
+        }
+      ]
+    },
+    {
+      "type": "qa",
+      "name": "Vraag &amp; antwoord",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Vraag"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Antwoord"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Onderschrift (optioneel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Veelgestelde vragen"
+    }
+  ]
+}
+{% endschema %}

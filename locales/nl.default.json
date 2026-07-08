@@ -1,0 +1,26 @@
+{
+  "general": {
+    "page": "Pagina",
+    "search": "Zoeken",
+    "menu": "Menu",
+    "close": "Sluiten"
+  },
+  "accessibility": {
+    "skip_to_content": "Direct naar inhoud"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "In winkelmand",
+      "sold_out": "Uitverkocht",
+      "unavailable": "Niet beschikbaar"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Winkelmand",
+      "empty": "Je winkelmand is nog leeg.",
+      "subtotal": "Subtotaal",
+      "checkout": "Afrekenen"
+    }
+  }
+}

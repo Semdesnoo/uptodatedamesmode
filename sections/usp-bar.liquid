@@ -1,0 +1,86 @@
+<section class="usp-bar">
+  <div class="container container--wide">
+    <div class="usp-bar__grid">
+      {%- for block in section.blocks -%}
+        <div class="usp" {{ block.shopify_attributes }}>
+          {{ block.settings.icon_svg }}
+          <div>
+            <p class="usp__title">{{ block.settings.title }}</p>
+            <p class="usp__sub">{{ block.settings.subtitle }}</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "USP-balk",
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "USP",
+      "settings": [
+        {
+          "type": "html",
+          "id": "icon_svg",
+          "label": "Icoon (SVG-code)",
+          "info": "Plak hier de volledige <svg>…</svg> code."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Gratis verzending"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtekst",
+          "default": "Vanaf €75 in NL & BE"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "USP-balk",
+      "blocks": [
+        {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M3 7h11v8H3z\"/><path d=\"M14 10h4l3 3v2h-7z\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/></svg>",
+            "title": "Gratis verzending",
+            "subtitle": "Vanaf €75 in NL & BE"
+          }
+        },
+        {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 1 3 6.7\"/><path d=\"M3 19v-4h4\"/></svg>",
+            "title": "30 dagen retour",
+            "subtitle": "Gratis en eenvoudig"
+          }
+        },
+        {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z\"/><path d=\"M9 12l2 2 4-4\"/></svg>",
+            "title": "Veilig betalen",
+            "subtitle": "iDEAL, Klarna & meer"
+          }
+        },
+        {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z\"/></svg>",
+            "title": "Persoonlijk advies",
+            "subtitle": "Stylisten staan klaar"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

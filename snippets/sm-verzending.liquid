@@ -1,0 +1,344 @@
+{% style %}
+  /* Pagina-header met intro */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: var(--sp-1) auto 0;
+  }
+
+  /* Tweekoloms-opzet: tekst links, info-kaart rechts */
+  .info-layout {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .info-layout__body { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .info-layout__body h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+  .info-layout__body p { color: var(--ink-soft); max-width: 56ch; }
+
+  /* Info-rij: nette label/waarde-regels in een kaart */
+  .info-rows {
+    background: var(--bg-alt);
+    border: var(--border);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .info-rows__title {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--sp-1);
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--sp-1);
+    padding-block: var(--sp-0_75);
+    border-bottom: var(--border);
+  }
+  .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .info-row dt { color: var(--ink-soft); }
+  .info-row dd { color: var(--ink); text-align: right; white-space: nowrap; }
+  .info-row dd.is-free { color: var(--accent-deep); }
+
+  /* Stappenplan voor retourneren */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-1_5);
+    margin-top: var(--sp-1);
+  }
+  .step {
+    background: var(--surface);
+    border: var(--border);
+    padding: var(--sp-2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .step__num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .step h3 { font-size: 1.1rem; }
+  .step p { color: var(--ink-soft); font-size: 0.92rem; max-width: none; }
+
+  /* Voorwaarden-lijst met subtiele opsomming */
+  .check-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: var(--sp-0_5); }
+  .check-list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ink-soft);
+  }
+  .check-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.7rem;
+    height: 0.4rem;
+    border-left: 1.5px solid var(--accent);
+    border-bottom: 1.5px solid var(--accent);
+    transform: rotate(-45deg);
+  }
+
+  /* FAQ-accordions met native <details> (zelfde patroon als contact.html) */
+  .faq-list {
+    max-width: 760px;
+    margin-inline: auto;
+    border-top: var(--border);
+  }
+  .faq-item { border-bottom: var(--border); }
+  .faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    padding-block: var(--sp-1_5);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    transition: color var(--t-fast);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent); }
+  .faq-item summary .faq-icon {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    position: relative;
+    transition: transform var(--t-fast);
+  }
+  .faq-item summary .faq-icon::before,
+  .faq-item summary .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    transition: opacity var(--t-fast);
+  }
+  .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+  .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+  .faq-item[open] summary .faq-icon::after { opacity: 0; }
+  .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 64ch; }
+
+  /* CTA-blokje onderaan */
+  .cta-box {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+    background: var(--surface);
+    border: var(--border);
+    padding: clamp(2rem, 5vw, 3.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .cta-box h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+  .cta-box p { color: var(--ink-soft); max-width: 48ch; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .info-layout { grid-template-columns: 1fr; gap: var(--sp-3); }
+    .steps { grid-template-columns: 1fr; }
+  }
+{% endstyle %}
+
+<!-- BREADCRUMB + PAGINA-HEADER -->
+<section class="page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad" style="justify-content:center;">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><span aria-current="page">Verzending &amp; retour</span></li>
+      </ul>
+    </nav>
+    <p class="eyebrow reveal">Klantenservice</p>
+    <h1 class="page-header__title reveal" data-delay="1">Verzending &amp; retour</h1>
+    <p class="page-header__intro reveal" data-delay="2">Bestellen bij Up to Date Damesmode moet zorgeloos zijn. Hieronder vind je rustig op een rij wat je kunt verwachten — van levering tot het terugsturen van een artikel.</p>
+  </div>
+</section>
+
+<!-- VERZENDING -->
+<section class="section">
+  <div class="container">
+    <div class="info-layout">
+      <div class="info-layout__body reveal">
+        <p class="eyebrow">Verzending</p>
+        <h2>Snel en netjes bij je thuis</h2>
+        <p>Je bestelling wordt met zorg ingepakt en bezorgd door PostNL. Bestel je op een werkdag voor 22:00 uur, dan ligt je pakket de volgende dag in huis. Zodra je bestelling onderweg is, ontvang je automatisch een track &amp; trace-code per e-mail, zodat je je pakket altijd kunt volgen.</p>
+        <p>Verzendkosten binnen Nederland zijn <strong>gratis vanaf €75</strong>. Bestel je voor een lager bedrag, dan rekenen we €4,95. Ook naar België bezorgen we graag.</p>
+      </div>
+
+      <aside class="info-rows reveal" data-delay="1">
+        <p class="info-rows__title">Verzendoverzicht</p>
+        <dl>
+          <div class="info-row">
+            <dt>Nederland — vanaf €75</dt>
+            <dd class="is-free">Gratis</dd>
+          </div>
+          <div class="info-row">
+            <dt>Nederland — onder €75</dt>
+            <dd>€4,95</dd>
+          </div>
+          <div class="info-row">
+            <dt>Levertijd Nederland</dt>
+            <dd>1–2 werkdagen</dd>
+          </div>
+          <div class="info-row">
+            <dt>België</dt>
+            <dd>€6,95</dd>
+          </div>
+          <div class="info-row">
+            <dt>Levertijd België</dt>
+            <dd>2–3 werkdagen</dd>
+          </div>
+          <div class="info-row">
+            <dt>Besteld voor 22:00</dt>
+            <dd>Morgen in huis</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- RETOURNEREN -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Retourneren</p>
+      <h2 class="section-head__title">30 dagen bedenktijd</h2>
+      <p>Past iets toch niet zoals je hoopte? Geen zorgen. Je hebt na ontvangst 30 dagen de tijd om je bestelling om te wisselen of terug te sturen.</p>
+    </div>
+
+    <div class="steps reveal" data-delay="1">
+      <div class="step">
+        <span class="step__num">1</span>
+        <h3>Meld je retour aan</h3>
+        <p>Geef je retour door via je account of stuur een e-mail naar <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a> met je bestelnummer.</p>
+      </div>
+      <div class="step">
+        <span class="step__num">2</span>
+        <h3>Stuur het pakket terug</h3>
+        <p>Verpak het artikel netjes en plak het bijgevoegde retourlabel op de doos. Lever het pakket af bij een PostNL-punt.</p>
+      </div>
+      <div class="step">
+        <span class="step__num">3</span>
+        <h3>Ontvang je terugbetaling</h3>
+        <p>Na ontvangst en controle storten we het aankoopbedrag binnen 5 werkdagen terug op je rekening.</p>
+      </div>
+    </div>
+
+    <div class="info-layout reveal" data-delay="2" style="margin-top: var(--sp-3);">
+      <div class="info-layout__body">
+        <h2>Voorwaarden voor retour</h2>
+        <ul class="check-list">
+          <li>De artikelen zijn ongedragen, ongewassen en onbeschadigd.</li>
+          <li>De originele labels zitten er nog aan.</li>
+          <li>Je stuurt terug binnen 30 dagen na ontvangst.</li>
+          <li>Sieraden en accessoires retourneer je in de originele verpakking.</li>
+        </ul>
+      </div>
+
+      <aside class="info-rows" data-delay="3">
+        <p class="info-rows__title">Retourkosten</p>
+        <dl>
+          <div class="info-row">
+            <dt>Eerste retour per bestelling</dt>
+            <dd class="is-free">Gratis</dd>
+          </div>
+          <div class="info-row">
+            <dt>Volgende retourzending</dt>
+            <dd>€3,95</dd>
+          </div>
+          <div class="info-row">
+            <dt>Terugbetaling</dt>
+            <dd>Binnen 5 werkdagen</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- RUILEN -->
+<section class="section">
+  <div class="container">
+    <div class="info-layout__body reveal" style="max-width: 720px; margin-inline: auto; text-align: center; align-items: center;">
+      <p class="eyebrow">Ruilen</p>
+      <h2>Een andere maat of kleur?</h2>
+      <p style="max-width: 56ch;">We werken niet met een aparte ruilprocedure, en dat houdt het juist eenvoudig. Wil je een ander item, een andere maat of een andere kleur? Stuur dan het artikel dat niet bevalt terug als retour en plaats meteen een nieuwe bestelling voor het gewenste artikel. Zo heb je je nieuwe favoriet het snelst in huis en verloopt je terugbetaling gewoon volgens de retourstappen hierboven.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MINI-FAQ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <p class="eyebrow">Veelgestelde vragen</p>
+      <h2 class="section-head__title">Goed om te weten</h2>
+      <p>De vragen die we het vaakst krijgen over verzending en retour.</p>
+    </div>
+
+    <div class="faq-list reveal" data-delay="1" data-accordion>
+      <details class="faq-item">
+        <summary>Wanneer krijg ik mijn geld terug?<span class="faq-icon" aria-hidden="true"></span></summary>
+        <div class="faq-item__answer">
+          <p>Zodra we je retour hebben ontvangen en gecontroleerd, storten we het aankoopbedrag binnen 5 werkdagen terug via dezelfde betaalmethode als waarmee je hebt betaald. Je ontvangt hiervan een bevestiging per e-mail.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Kan ik mijn bestelling nog wijzigen?<span class="faq-icon" aria-hidden="true"></span></summary>
+        <div class="faq-item__answer">
+          <p>Omdat we bestellingen snel verwerken, kunnen we ze meestal niet meer aanpassen nadat je hebt afgerekend. Neem zo snel mogelijk contact met ons op via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a> — is je pakket nog niet verzonden, dan kijken we graag wat mogelijk is.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Hoe weet ik dat mijn pakket onderweg is?<span class="faq-icon" aria-hidden="true"></span></summary>
+        <div class="faq-item__answer">
+          <p>Zodra je bestelling is verzonden, ontvang je automatisch een e-mail met een track &amp; trace-code van PostNL. Daarmee volg je je pakket en zie je wanneer het bezorgd wordt.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Verzenden jullie ook naar België?<span class="faq-icon" aria-hidden="true"></span></summary>
+        <div class="faq-item__answer">
+          <p>Ja. Naar België rekenen we €6,95 verzendkosten en is je bestelling doorgaans binnen 2 tot 3 werkdagen bij je thuis.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA: nog vragen? -->
+<section class="section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <p class="eyebrow">We helpen je graag</p>
+      <h2>Nog vragen?</h2>
+      <p>Kom je er niet helemaal uit of wil je iets persoonlijk overleggen? Onze klantenservice denkt graag met je mee — meestal binnen 1 werkdag antwoord.</p>
+      <a class="btn" href="/pages/contact">Neem contact op</a>
+    </div>
+  </div>
+</section>
+
+<!-- === GEDEELDE NIEUWSBRIEF-SECTIE: kopieer exact naar elke pagina (begin) === -->
+<!-- === GEDEELDE NIEUWSBRIEF-SECTIE (einde) === -->

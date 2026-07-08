@@ -1,0 +1,367 @@
+{%- comment -%}
+  Pagina "Betaalmethoden" — bewerkbaar via de Thema-editor.
+  De header komt uit section.settings (eyebrow/heading/intro) en de inhoud
+  uit section.blocks (heading / method / list / text / image).
+  Het pagina-eigen CSS uit de blauwdruk (betaalmethoden.html) staat hieronder in
+  een {% style %}-blok; dit staat NIET in base.css. Uitstraling en klassenamen
+  zijn exact behouden. Er wordt GEEN page.content meer gebruikt.
+{%- endcomment -%}
+
+{% style %}
+  /* Pagina-header met intro */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 50ch;
+    margin: var(--sp-1) auto 0;
+  }
+
+  /* Grid met betaalmethode-kaartjes */
+  .pay-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-1_5);
+  }
+  .pay-method {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0_75);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: var(--surface);
+    border: var(--border);
+    transition: border-color var(--t-fast);
+  }
+  .pay-method:hover { border-color: var(--accent); }
+  .pay-method__name {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5em 1em;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+  .pay-method h2 {
+    font-size: 1.25rem;
+    margin-top: 0.2rem;
+  }
+  .pay-method p { color: var(--ink-soft); font-size: 0.92rem; }
+  .pay-method__note {
+    margin-top: auto;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+
+  /* Tweekoloms informatieblokken (veilig betalen / facturen & btw) */
+  .pay-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .pay-info__block { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .pay-info__block h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+  .pay-info__list,
+  .pay-info__block ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0_75);
+  }
+  .pay-info__list li,
+  .pay-info__block ul li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ink-soft);
+  }
+  .pay-info__list li::before,
+  .pay-info__block ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Afsluitende CTA */
+  .pay-cta {
+    text-align: center;
+    max-width: 52ch;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .pay-cta h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+  .pay-cta p { color: var(--ink-soft); }
+
+  /* Bewerkbare afbeelding */
+  .pay-image { margin-top: var(--sp-1_5); }
+  .pay-image img { width: 100%; height: auto; display: block; border: var(--border); }
+  .pay-image figcaption {
+    margin-top: var(--sp-0_75);
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .pay-grid { grid-template-columns: repeat(2, 1fr); }
+    .pay-info { grid-template-columns: 1fr; gap: var(--sp-3); }
+  }
+  @media (max-width: 640px) {
+    .pay-grid { grid-template-columns: 1fr; }
+  }
+{% endstyle %}
+
+<!-- BREADCRUMB -->
+<nav class="container container--wide breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    <li><span aria-current="page">{{ page.title | default: 'Betaalmethoden' }}</span></li>
+  </ul>
+</nav>
+
+<!-- PAGINA-HEADER: titel + introzin -->
+<section class="page-header">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="page-header__title reveal" data-delay="1">{{ section.settings.heading | default: page.title | default: 'Betaalmethoden' }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <p class="page-header__intro reveal" data-delay="2">{{ section.settings.intro }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%}
+  We groeperen opeenvolgende "method"-blokken in één .pay-grid.
+  Andere bloktypen sluiten een lopende grid af voordat ze worden gerenderd.
+{%- endcomment -%}
+<section class="section section--tight">
+  <div class="container">
+    {%- assign grid_open = false -%}
+    {%- for block in section.blocks -%}
+
+      {%- if block.type != 'method' and grid_open -%}
+        </div>{%- assign grid_open = false -%}
+      {%- endif -%}
+
+      {%- case block.type -%}
+
+        {%- when 'heading' -%}
+          <div class="section-head section-head--center reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow }}</p>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2 class="section-head__title">{{ block.settings.heading }}</h2>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+          </div>
+
+        {%- when 'method' -%}
+          {%- unless grid_open -%}<div class="pay-grid">{%- assign grid_open = true -%}{%- endunless -%}
+          <article class="pay-method reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.label != blank -%}<span class="pay-method__name">{{ block.settings.label }}</span>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2>{{ block.settings.heading }}</h2>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+            {%- if block.settings.note != blank -%}<p class="pay-method__note">{{ block.settings.note }}</p>{%- endif -%}
+          </article>
+
+        {%- when 'list' -%}
+          <div class="pay-info" {{ block.shopify_attributes }}>
+            <div class="pay-info__block reveal">
+              {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow }}</p>{%- endif -%}
+              {%- if block.settings.heading != blank -%}<h2>{{ block.settings.heading }}</h2>{%- endif -%}
+              {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+              {%- if block.settings.items != blank -%}
+                {{ block.settings.items }}
+              {%- endif -%}
+            </div>
+          </div>
+
+        {%- when 'text' -%}
+          <div class="pay-cta reveal" {{ block.shopify_attributes }}>
+            {{ block.settings.content }}
+            {%- if block.settings.button_label != blank and block.settings.button_url != blank -%}
+              <a class="btn" href="{{ block.settings.button_url }}">{{ block.settings.button_label }}</a>
+            {%- endif -%}
+          </div>
+
+        {%- when 'image' -%}
+          {%- if block.settings.image != blank -%}
+            <figure class="pay-image reveal" {{ block.shopify_attributes }}>
+              {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,800,1200,1400', sizes: '(max-width: 900px) 100vw, 760px' }}
+              {%- if block.settings.caption != blank -%}<figcaption>{{ block.settings.caption }}</figcaption>{%- endif -%}
+            </figure>
+          {%- endif -%}
+
+      {%- endcase -%}
+
+    {%- endfor -%}
+    {%- if grid_open -%}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pagina — Betaalmethoden",
+  "tag": "section",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Klantenservice"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel",
+      "default": "Betaalmethoden"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductietekst"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Kop (gecentreerd)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Bovenkop (eyebrow)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst onder de kop"
+        }
+      ]
+    },
+    {
+      "type": "method",
+      "name": "Betaalmethode-kaart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (badge)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titel"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Accent-notitie (onderaan kaart)"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "name": "Informatieblok met lijst",
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Bovenkop (eyebrow)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Inleidende tekst"
+        },
+        {
+          "type": "richtext",
+          "id": "items",
+          "label": "Lijstitems",
+          "info": "Gebruik een lijst (<ul><li>...</li></ul>). Alleen de <li>-regels worden getoond."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Tekstblok / CTA",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Inhoud"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Knoptekst"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Knoplink"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Onderschrift (optioneel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pagina — Betaalmethoden"
+    }
+  ]
+}
+{% endschema %}

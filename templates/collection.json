@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "eyebrow": "Lente/Zomer 2026",
+        "products_per_page": 12,
+        "columns_desktop": "4",
+        "show_sorting": true
+      }
+    }
+  },
+  "order": ["main"]
+}

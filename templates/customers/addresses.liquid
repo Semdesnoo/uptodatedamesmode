@@ -1,0 +1,206 @@
+{%- comment -%} Klant — adressen beheren {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .account-welcome { display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); text-align: center; margin-bottom: var(--sp-2); }
+  .account-welcome h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .account-section { border-top: var(--border); padding-top: var(--sp-2); margin-top: var(--sp-2); }
+  .account-section h2 { font-size: 1.4rem; margin-bottom: var(--sp-1_5); }
+  .auth-card { background: var(--surface); border: var(--border); padding: clamp(1.5rem, 3vw, 2.5rem); margin-bottom: var(--sp-1_5); }
+  .auth-form { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .auth-form .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1); }
+  .auth-form .btn { margin-top: var(--sp-0_75); }
+  .auth-form .checkbox { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--ink-soft); }
+  .address-card { background: var(--surface); border: var(--border); padding: var(--sp-1_5); margin-bottom: var(--sp-1); }
+  .address-card__body { color: var(--ink-soft); line-height: 1.6; margin-bottom: var(--sp-1); }
+  .address-card__actions { display: flex; gap: 0.6rem; }
+  .address-card__default { display: inline-block; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+  .account-empty { color: var(--muted); }
+  [data-address-form] { display: none; }
+  [data-address-form].is-open { display: block; }
+  @media (max-width: 600px) { .auth-form .field-row { grid-template-columns: 1fr; } }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><a href="{{ routes.account_url }}">Mijn account</a></li>
+        <li><span aria-current="page">Adressen</span></li>
+      </ul>
+    </nav>
+
+    <div class="account">
+      <div class="account-welcome reveal">
+        <p class="eyebrow">Mijn account</p>
+        <h1>Mijn adressen</h1>
+        <a class="btn btn--outline btn--sm" href="{{ routes.account_url }}">Terug naar account</a>
+      </div>
+
+      {%- comment -%} Nieuw adres toevoegen {%- endcomment -%}
+      <div class="account-section reveal">
+        <h2>Nieuw adres</h2>
+        <button class="btn btn--sm" type="button" data-address-toggle="new">Adres toevoegen</button>
+
+        <div class="auth-card" data-address-form="new" style="margin-top:var(--sp-1_5);">
+          {%- form 'customer_address', customer.new_address -%}
+            <div class="auth-form">
+              <div class="field-row">
+                <div class="field">
+                  <label for="address-first-new">Voornaam</label>
+                  <input type="text" id="address-first-new" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+                </div>
+                <div class="field">
+                  <label for="address-last-new">Achternaam</label>
+                  <input type="text" id="address-last-new" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+                </div>
+              </div>
+              <div class="field">
+                <label for="address-company-new">Bedrijf (optioneel)</label>
+                <input type="text" id="address-company-new" name="address[company]" value="{{ form.company }}" autocomplete="organization">
+              </div>
+              <div class="field">
+                <label for="address-street-new">Straat en huisnummer</label>
+                <input type="text" id="address-street-new" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+              </div>
+              <div class="field">
+                <label for="address-street2-new">Toevoeging (optioneel)</label>
+                <input type="text" id="address-street2-new" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="address-zip-new">Postcode</label>
+                  <input type="text" id="address-zip-new" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code">
+                </div>
+                <div class="field">
+                  <label for="address-city-new">Plaats</label>
+                  <input type="text" id="address-city-new" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label for="address-country-new">Land</label>
+                  <select id="address-country-new" name="address[country]" data-default="{{ form.country }}">
+                    {{ all_country_option_tags }}
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="address-phone-new">Telefoon (optioneel)</label>
+                  <input type="tel" id="address-phone-new" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+                </div>
+              </div>
+              <label class="checkbox">
+                {{ form.set_as_default_checkbox }}
+                Als standaardadres instellen
+              </label>
+              <div style="display:flex; gap:0.6rem;">
+                <button class="btn btn--sm" type="submit">Adres opslaan</button>
+                <button class="btn btn--outline btn--sm" type="button" data-address-toggle="new">Annuleren</button>
+              </div>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+
+      {%- comment -%} Bestaande adressen {%- endcomment -%}
+      <div class="account-section reveal">
+        <h2>Opgeslagen adressen</h2>
+        {%- if customer.addresses.size > 0 -%}
+          {%- for address in customer.addresses -%}
+            <div class="address-card">
+              {%- if address == customer.default_address -%}
+                <span class="address-card__default">Standaardadres</span>
+              {%- endif -%}
+              <p class="address-card__body">{{ address | format_address }}</p>
+              <div class="address-card__actions">
+                <button class="btn btn--outline btn--sm" type="button" data-address-toggle="{{ address.id }}">Bewerken</button>
+                <form method="post" action="{{ address.url }}" style="display:inline;" onsubmit="return confirm('Weet je zeker dat je dit adres wilt verwijderen?');">
+                  <input type="hidden" name="_method" value="delete">
+                  <button class="btn btn--outline btn--sm" type="submit">Verwijderen</button>
+                </form>
+              </div>
+
+              <div class="auth-card" data-address-form="{{ address.id }}" style="margin-top:var(--sp-1);">
+                {%- form 'customer_address', address -%}
+                  <div class="auth-form">
+                    <div class="field-row">
+                      <div class="field">
+                        <label for="address-first-{{ address.id }}">Voornaam</label>
+                        <input type="text" id="address-first-{{ address.id }}" name="address[first_name]" value="{{ address.first_name }}" autocomplete="given-name">
+                      </div>
+                      <div class="field">
+                        <label for="address-last-{{ address.id }}">Achternaam</label>
+                        <input type="text" id="address-last-{{ address.id }}" name="address[last_name]" value="{{ address.last_name }}" autocomplete="family-name">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label for="address-company-{{ address.id }}">Bedrijf (optioneel)</label>
+                      <input type="text" id="address-company-{{ address.id }}" name="address[company]" value="{{ address.company }}" autocomplete="organization">
+                    </div>
+                    <div class="field">
+                      <label for="address-street-{{ address.id }}">Straat en huisnummer</label>
+                      <input type="text" id="address-street-{{ address.id }}" name="address[address1]" value="{{ address.address1 }}" autocomplete="address-line1">
+                    </div>
+                    <div class="field">
+                      <label for="address-street2-{{ address.id }}">Toevoeging (optioneel)</label>
+                      <input type="text" id="address-street2-{{ address.id }}" name="address[address2]" value="{{ address.address2 }}" autocomplete="address-line2">
+                    </div>
+                    <div class="field-row">
+                      <div class="field">
+                        <label for="address-zip-{{ address.id }}">Postcode</label>
+                        <input type="text" id="address-zip-{{ address.id }}" name="address[zip]" value="{{ address.zip }}" autocomplete="postal-code">
+                      </div>
+                      <div class="field">
+                        <label for="address-city-{{ address.id }}">Plaats</label>
+                        <input type="text" id="address-city-{{ address.id }}" name="address[city]" value="{{ address.city }}" autocomplete="address-level2">
+                      </div>
+                    </div>
+                    <div class="field-row">
+                      <div class="field">
+                        <label for="address-country-{{ address.id }}">Land</label>
+                        <select id="address-country-{{ address.id }}" name="address[country]" data-default="{{ address.country }}">
+                          {{ all_country_option_tags }}
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label for="address-phone-{{ address.id }}">Telefoon (optioneel)</label>
+                        <input type="tel" id="address-phone-{{ address.id }}" name="address[phone]" value="{{ address.phone }}" autocomplete="tel">
+                      </div>
+                    </div>
+                    <label class="checkbox">
+                      {{ form.set_as_default_checkbox }}
+                      Als standaardadres instellen
+                    </label>
+                    <div style="display:flex; gap:0.6rem;">
+                      <button class="btn btn--sm" type="submit">Wijzigingen opslaan</button>
+                      <button class="btn btn--outline btn--sm" type="button" data-address-toggle="{{ address.id }}">Annuleren</button>
+                    </div>
+                  </div>
+                {%- endform -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <p class="account-empty">Je hebt nog geen adressen opgeslagen.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Adresformulieren open/dicht + land-selectors met de juiste standaardwaarde.
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-address-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-address-toggle');
+        var form = document.querySelector('[data-address-form="' + id + '"]');
+        if (form) { form.classList.toggle('is-open'); }
+      });
+    });
+    document.querySelectorAll('select[data-default]').forEach(function (sel) {
+      var def = sel.getAttribute('data-default');
+      if (def) { sel.value = def; }
+    });
+  });
+</script>

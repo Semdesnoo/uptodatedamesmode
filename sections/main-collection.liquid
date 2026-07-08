@@ -1,0 +1,910 @@
+{%- comment -%}
+  Collectiepagina: header + filter-zijbalk + sorteerbalk + product-grid + paginering.
+  Reproduceert collectie.html exact; pagina-eigen stijl staat hieronder in <style>
+  (deze stond in de blauwdruk inline, niet in base.css).
+{%- endcomment -%}
+
+<style>
+  .collection-hero {
+    padding-top: var(--sp-1);
+    padding-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+  .collection-hero__intro {
+    max-width: 56ch;
+    color: var(--ink-soft);
+    margin-top: var(--sp-1);
+  }
+  .collection-hero .media {
+    margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  /* Subcategorie-tabs (bijv. Sale) */
+  .collection-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.75rem;
+    align-items: center;
+    margin-top: clamp(1.25rem, 3vw, 2rem);
+    padding-bottom: 0.75rem;
+    border-bottom: var(--border);
+  }
+  .collection-subnav__tab {
+    position: relative;
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: color var(--t-fast);
+  }
+  .collection-subnav__tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.78rem;
+    height: 2px;
+    width: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-fast);
+  }
+  .collection-subnav__tab:hover { color: var(--ink); }
+  .collection-subnav__tab.is-active { color: var(--ink); font-weight: 500; }
+  .collection-subnav__tab.is-active::after { transform: scaleX(1); }
+
+  @media (max-width: 749px) {
+    .collection-subnav {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1.25rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-padding-inline: var(--container-pad);
+    }
+    .collection-subnav::-webkit-scrollbar { display: none; }
+    .collection-subnav__tab { flex: 0 0 auto; font-size: 0.82rem; }
+  }
+
+  .shop-layout {
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .filters {
+    position: sticky;
+    top: 96px;
+  }
+  .filters__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filters__close {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0 0.2em;
+  }
+  .filters__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: var(--sp-1);
+  }
+  .filters__actions .btn { width: 100%; text-align: center; justify-content: center; }
+  /* Op desktop is de "Toon resultaten"-knop minder nodig (filters dienen direct in) */
+  .filters__apply { display: none; }
+
+  .filters__title {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: var(--sp-1);
+    border-bottom: var(--border);
+    margin-bottom: var(--sp-0_5);
+  }
+  .filter-group {
+    border-bottom: var(--border);
+  }
+  .filter-group > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    padding: var(--sp-1) 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .filter-group > summary::-webkit-details-marker { display: none; }
+  .filter-group > summary::after {
+    content: "+";
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--muted);
+    transition: transform var(--t-fast), color var(--t-fast);
+  }
+  .filter-group[open] > summary::after {
+    content: "–";
+    color: var(--accent);
+  }
+  .filter-group__body {
+    padding-bottom: var(--sp-1_5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: color var(--t-fast);
+  }
+  .filter-option:hover { color: var(--accent); }
+  .filter-option input { accent-color: var(--accent-deep); width: 15px; height: 15px; }
+  .filter-option__count { margin-left: auto; font-size: 0.76rem; color: var(--muted); }
+
+  .size-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .size-chip {
+    min-width: 42px;
+    padding: 0.45em 0.6em;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+  }
+  .size-chip:hover { border-color: var(--ink); }
+  .size-chip.is-selected {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .swatch-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .swatch-wrap { display: inline-flex; cursor: pointer; }
+  .swatch {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    padding: 0;
+    position: relative;
+    transition: transform var(--t-fast);
+  }
+  .swatch:hover { transform: scale(1.08); }
+  .swatch.is-selected {
+    box-shadow: 0 0 0 1px var(--bg), 0 0 0 2px var(--ink);
+  }
+
+  .price-range { display: flex; flex-direction: column; gap: 0.6rem; }
+  .price-range input[type="range"] { width: 100%; accent-color: var(--accent-deep); }
+  .price-range__inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .price-range__inputs label { flex: 1; display: block; }
+  .price-range__inputs input[type="number"] {
+    width: 100%;
+    padding: 0.5em 0.6em;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+    color: var(--ink);
+  }
+  .price-range__inputs input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .price-range__sep { color: var(--muted); }
+  .price-range__labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .shop-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    flex-wrap: wrap;
+    padding-bottom: var(--sp-1_5);
+    margin-bottom: var(--sp-2);
+    border-bottom: var(--border);
+  }
+  .shop-bar__count {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .shop-bar__right {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .sort-select {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .sort-select label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sort-select select {
+    padding: 0.6em 2.2em 0.6em 0.9em;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234A453E' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9em center;
+    transition: border-color var(--t-fast);
+  }
+  .sort-select select:focus { outline: none; border-color: var(--accent); }
+
+  .filter-toggle { display: none; }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+  .pagination a,
+  .pagination span {
+    min-width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75em;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+  }
+  .pagination a:hover { border-color: var(--line); color: var(--accent); }
+  .pagination .is-current {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: var(--radius);
+  }
+  .pagination .pagination__dots { color: var(--muted); min-width: auto; }
+  .pagination .pagination__next { letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; font-size: 0.74rem; }
+
+  @media (max-width: 900px) {
+    .shop-layout { grid-template-columns: 1fr; gap: var(--sp-1_5); }
+
+    /* Filterpaneel wordt een schuifpaneel dat over de pagina opent.
+       Volledig dekkende achtergrond, volle hoogte; eigen kop + scroll + voet. */
+    .filters {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 60;
+      width: min(88vw, 380px);
+      height: 100%;
+      height: 100dvh;
+      background: var(--bg);
+      padding: 0;
+      box-shadow: 0 0 40px rgba(0,0,0,0.22);
+      transform: translateX(-100%);
+      transition: transform var(--t-med, 0.3s) ease;
+      visibility: hidden;
+      /* Paneel zelf scrollt niet; de body-zone (.filters__body) doet dat */
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .filters.is-open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    /* Vaste koprij bovenaan */
+    .filters__head {
+      flex: none;
+      padding: var(--sp-1_5) var(--sp-1_5) var(--sp-1);
+      border-bottom: var(--border);
+      background: var(--bg);
+    }
+    .filters__title { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .filters__close { display: inline-flex; }
+
+    /* Het formulier wordt de flex-kolom: scrollbaar midden + vaste voet */
+    #CollectionFilterForm {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .filters__body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 var(--sp-1_5);
+    }
+    .filters__body .filter-group:first-child { border-top: none; }
+
+    /* Vaste onderbalk (sticky) met acties */
+    .filters__actions {
+      flex: none;
+      margin-top: 0;
+      padding: var(--sp-1) var(--sp-1_5) calc(var(--sp-1_5) + env(safe-area-inset-bottom));
+      border-top: var(--border);
+      background: var(--bg);
+    }
+    .filters__apply { display: inline-flex; }
+
+    /* Donkere overlay achter het paneel */
+    .filters-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 55;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--t-med, 0.3s) ease;
+    }
+    .filters-overlay.is-open { opacity: 1; visibility: visible; }
+    body.filters-locked { overflow: hidden; }
+
+    .filter-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .shop-bar { margin-bottom: var(--sp-1_5); }
+  }
+
+  /* Telefoon: compactere filter-/sorteerbalk */
+  @media (max-width: 640px) {
+    .shop-bar { gap: 0.6rem; padding-bottom: var(--sp-1); margin-bottom: var(--sp-1); }
+    .shop-bar__count { font-size: 0.66rem; }
+    .shop-bar__right { gap: 0.5rem; }
+    .filter-toggle { padding: 0.4em 0.75em; font-size: 0.72rem; gap: 0.35rem; }
+    .filter-toggle svg { width: 14px; height: 14px; }
+    .sort-select { gap: 0.35rem; }
+    .sort-select label { font-size: 0.6rem; letter-spacing: 0.05em; white-space: nowrap; }
+    .sort-select select { padding: 0.4em 1.7em 0.4em 0.65em; font-size: 0.76rem; background-position: right 0.6em center; }
+  }
+</style>
+
+<section class="section section--tight collection-hero">
+  <div class="container container--wide">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ collection.title }}</span></li>
+      </ul>
+    </nav>
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="display-2 reveal" data-delay="1">{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <div class="collection-hero__intro lead reveal" data-delay="2">{{ collection.description }}</div>
+    {%- endif -%}
+
+    {%- comment -%} ---- Subcategorie-tabs (bijv. voor de Sale-pagina) ---- {%- endcomment -%}
+    {%- assign subnav = linklists[section.settings.subnav_menu] -%}
+    {%- if subnav.links.size > 0 -%}
+      <nav class="collection-subnav reveal" data-delay="2" aria-label="Subcategorieën">
+        {%- for link in subnav.links -%}
+          {%- if link.current or link.child_current -%}
+            <a class="collection-subnav__tab is-active" href="{{ link.url }}" aria-current="page">{{ link.title }}</a>
+          {%- else -%}
+            <a class="collection-subnav__tab" href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section section--tight" style="padding-top:0;">
+  <div class="container container--wide">
+    {%- paginate collection.products by section.settings.products_per_page -%}
+    <div class="shop-layout">
+
+      {%- comment -%} ---- FILTER-ZIJBALK (Shopify faceted filters) ----
+         Alleen renderen als er daadwerkelijk storefront-filters zijn ingesteld
+         (via app "Zoeken en navigatie"). Zo geen lege/kapotte drawer. {%- endcomment -%}
+      {%- if collection.filters.size > 0 -%}
+      <aside class="filters" aria-label="Filters" id="FiltersAside">
+        <div class="filters__head">
+          <p class="filters__title">Filteren</p>
+          <button type="button" class="filters__close" data-filters-close aria-label="Filters sluiten">&times;</button>
+        </div>
+
+        <form id="CollectionFilterForm" method="get">
+          {%- comment -%} Bewaar de huidige sortering bij het indienen van filters {%- endcomment -%}
+          <input type="hidden" name="sort_by" value="{{ collection.sort_by | default: collection.default_sort_by }}">
+
+          <div class="filters__body">
+          {%- for filter in collection.filters -%}
+            <details class="filter-group" open>
+              <summary>{{ filter.label }}</summary>
+              <div class="filter-group__body">
+                {%- case filter.type -%}
+
+                  {%- when 'list' -%}
+                    {%- comment -%} Kleur-filter als swatches, maat als chips, overige als checkboxes.
+                       Echte checkbox-inputs sturen het formulier in (GET) -> server-side filtering. {%- endcomment -%}
+                    {%- assign label_down = filter.label | downcase -%}
+                    {%- if label_down contains 'kleur' or label_down contains 'color' -%}
+                      <div class="swatch-grid">
+                        {%- for value in filter.values -%}
+                          {%- comment -%}
+                            Contract B-volgorde voor de echte kleur:
+                            1) value.swatch.color (Shopify-eigen)
+                            2) value.swatch.image (foto-swatch)
+                            3) snippet sm-color-hex (kleurnaam -> hex)
+                            4) terugval var(--bg-alt)
+                          {%- endcomment -%}
+                          {%- assign swatch_style = '' -%}
+                          {%- if value.swatch.color != blank -%}
+                            {%- assign swatch_style = 'background:' | append: value.swatch.color | append: ';' -%}
+                          {%- elsif value.swatch.image != blank -%}
+                            {%- assign swatch_img = value.swatch.image | image_url: width: 52 -%}
+                            {%- assign swatch_style = 'background-image:url(' | append: swatch_img | append: ');background-size:cover;background-position:center;' -%}
+                          {%- else -%}
+                            {%- capture fhex -%}{%- render 'sm-color-hex', name: value.label -%}{%- endcapture -%}
+                            {%- assign fhex = fhex | strip -%}
+                            {%- if fhex != blank -%}
+                              {%- assign swatch_style = 'background:' | append: fhex | append: ';' -%}
+                            {%- else -%}
+                              {%- assign swatch_style = 'background:var(--bg-alt);' -%}
+                            {%- endif -%}
+                          {%- endif -%}
+                          <label class="swatch-wrap" title="{{ value.label }} ({{ value.count }})">
+                            <input
+                              type="checkbox"
+                              class="visually-hidden filter-input"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                            >
+                            <span
+                              class="swatch filter-color{% if value.active %} is-selected{% endif %}"
+                              style="{{ swatch_style }}"
+                              aria-hidden="true"
+                            ></span>
+                            <span class="visually-hidden">Kleur {{ value.label }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    {%- elsif label_down contains 'maat' or label_down contains 'size' -%}
+                      <div class="size-grid">
+                        {%- for value in filter.values -%}
+                          <label class="size-chip filter-size{% if value.active %} is-selected{% endif %}" title="{{ value.count }} artikelen">
+                            <input
+                              type="checkbox"
+                              class="visually-hidden filter-input"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                            >
+                            {{ value.label }}
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    {%- else -%}
+                      {%- for value in filter.values -%}
+                        <label class="filter-option">
+                          <input
+                            type="checkbox"
+                            class="filter-input"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            {% if value.active %}checked{% endif %}
+                          >
+                          {{ value.label }}
+                          <span class="filter-option__count">{{ value.count }}</span>
+                        </label>
+                      {%- endfor -%}
+                    {%- endif -%}
+
+                  {%- when 'price_range' -%}
+                    {%- comment -%}
+                      Prijs-bereik. Shopify verwacht de grenswaarden in centen (integer).
+                      De number-inputs (in hele euro's) sturen de Shopify-parameter mee via JS
+                      dat de cent-waarde in verborgen velden zet bij het indienen van het formulier.
+                      De range-slider stuurt het max-veld bij voor een prettige bediening.
+                    {%- endcomment -%}
+                    {%- assign price_max_eur = filter.range_max | divided_by: 100.0 | ceil -%}
+                    {%- if filter.min_value.value -%}
+                      {%- assign price_min_cur = filter.min_value.value | divided_by: 100 -%}
+                    {%- else -%}
+                      {%- assign price_min_cur = 0 -%}
+                    {%- endif -%}
+                    {%- if filter.max_value.value -%}
+                      {%- assign price_max_cur = filter.max_value.value | divided_by: 100.0 | ceil -%}
+                    {%- else -%}
+                      {%- assign price_max_cur = price_max_eur -%}
+                    {%- endif -%}
+                    <div class="price-range" data-price-range data-currency="{{ cart.currency.symbol | default: '€' }}">
+                      {%- comment -%} Verborgen velden in centen: dit wordt daadwerkelijk ingediend bij Shopify {%- endcomment -%}
+                      <input type="hidden" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value }}{% endif %}" data-price-min-cents>
+                      <input type="hidden" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value }}{% endif %}" data-price-max-cents>
+
+                      <div class="price-range__inputs">
+                        <label>
+                          <span class="visually-hidden">Minimale prijs (€)</span>
+                          <input type="number" inputmode="numeric" min="0" max="{{ price_max_eur }}" step="1"
+                                 value="{% if filter.min_value.value %}{{ price_min_cur }}{% endif %}"
+                                 placeholder="0" data-price-min-eur aria-label="Minimale prijs in euro">
+                        </label>
+                        <span class="price-range__sep">–</span>
+                        <label>
+                          <span class="visually-hidden">Maximale prijs (€)</span>
+                          <input type="number" inputmode="numeric" min="0" max="{{ price_max_eur }}" step="1"
+                                 value="{% if filter.max_value.value %}{{ price_max_cur }}{% endif %}"
+                                 placeholder="{{ price_max_eur }}" data-price-max-eur aria-label="Maximale prijs in euro">
+                        </label>
+                      </div>
+
+                      <label class="visually-hidden" for="Filter-{{ filter.label | handle }}-max">Maximale prijs</label>
+                      <input
+                        id="Filter-{{ filter.label | handle }}-max"
+                        type="range"
+                        min="0"
+                        max="{{ price_max_eur }}"
+                        value="{{ price_max_cur }}"
+                        step="5"
+                        data-price-slider
+                      >
+                      <div class="price-range__labels">
+                        <span>{{ filter.range_min | money }}</span>
+                        <span>{{ filter.range_max | money }}</span>
+                      </div>
+                    </div>
+
+                  {%- when 'boolean' -%}
+                    {%- comment -%} Bv. "Op voorraad": waarden true/false als checkboxes {%- endcomment -%}
+                    {%- for value in filter.values -%}
+                      <label class="filter-option">
+                        <input
+                          type="checkbox"
+                          class="filter-input"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}checked{% endif %}
+                        >
+                        {{ value.label }}
+                        <span class="filter-option__count">{{ value.count }}</span>
+                      </label>
+                    {%- endfor -%}
+
+                {%- endcase -%}
+              </div>
+            </details>
+          {%- endfor -%}
+          </div>{%- comment -%} /.filters__body {%- endcomment -%}
+
+          <div class="filters__actions">
+            <button type="submit" class="btn btn--sm filters__apply" data-filters-close>Toon resultaten</button>
+            <a href="{{ collection.url }}" class="btn btn--outline btn--sm filter-clear">Wis filters</a>
+          </div>
+        </form>
+      </aside>
+      {%- endif -%}
+
+      {%- comment -%} ---- PRODUCT-GEBIED ---- {%- endcomment -%}
+      <div>
+        <div class="shop-bar">
+          <span class="shop-bar__count" data-result-count>{{ collection.products_count }} artikelen</span>
+          <div class="shop-bar__right">
+            {%- comment -%} Filter-knop alleen tonen als er storefront-filters zijn {%- endcomment -%}
+            {%- if collection.filters.size > 0 -%}
+            <button type="button" class="btn btn--outline btn--sm filter-toggle" aria-label="Filters tonen" aria-expanded="false" aria-controls="FiltersAside" data-filters-toggle>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="9" cy="7" r="2" fill="var(--bg)"/><circle cx="15" cy="12" r="2" fill="var(--bg)"/><circle cx="8" cy="17" r="2" fill="var(--bg)"/></svg>
+              Filter
+            </button>
+            {%- endif -%}
+            {%- if section.settings.show_sorting -%}
+              {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+              <div class="sort-select">
+                <label for="SortBy">Sorteer op</label>
+                {%- comment -%} Sortering behoudt actieve filters: JS zet alleen sort_by in de huidige URL {%- endcomment -%}
+                <select id="SortBy" name="sort_by" data-sort-select>
+                  {%- for option in collection.sort_options -%}
+                    <option
+                      value="{{ option.value }}"
+                      {% if option.value == sort_by %}selected{% endif %}
+                    >{{ option.name }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- if collection.products.size > 0 -%}
+          <div class="grid grid--{{ section.settings.columns_desktop }}">
+            {%- for product in collection.products -%}
+              {% render 'product-card', product: product %}
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagination" aria-label="Paginering">
+              {%- comment -%} Vorige/Volgende zijn eigen objecten (niet in paginate.parts) {%- endcomment -%}
+              {%- if paginate.previous -%}
+                <a class="pagination__prev" href="{{ paginate.previous.url }}" aria-label="Vorige pagina">&laquo;</a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}">{{ part.title }}</a>
+                {%- else -%}
+                  {%- if part.title == '&hellip;' or part.title == '…' -%}
+                    <span class="pagination__dots" aria-hidden="true">…</span>
+                  {%- else -%}
+                    <span class="is-current" aria-current="page">{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a class="pagination__next" href="{{ paginate.next.url }}" aria-label="Volgende pagina">Volgende</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- else -%}
+          <p data-no-results>Geen producten gevonden. Pas je filters aan.</p>
+        {%- endif -%}
+      </div>
+
+    </div>
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{%- comment -%} Donkere overlay voor het mobiele filterpaneel {%- endcomment -%}
+<div class="filters-overlay" data-filters-overlay hidden></div>
+
+<script>
+  (function () {
+    var form = document.getElementById('CollectionFilterForm');
+    var aside = document.getElementById('FiltersAside');
+    var overlay = document.querySelector('[data-filters-overlay]');
+    var toggleBtn = document.querySelector('[data-filters-toggle]');
+    var closeBtns = document.querySelectorAll('[data-filters-close]');
+    var sortSelect = document.querySelector('[data-sort-select]');
+
+    var MOBILE = function () { return window.matchMedia('(max-width: 900px)').matches; };
+
+    /* ---------- Prijs-bereik: euro-invoer -> centen in verborgen velden ---------- */
+    var priceBlocks = document.querySelectorAll('[data-price-range]');
+    priceBlocks.forEach(function (block) {
+      var minEur = block.querySelector('[data-price-min-eur]');
+      var maxEur = block.querySelector('[data-price-max-eur]');
+      var minCents = block.querySelector('[data-price-min-cents]');
+      var maxCents = block.querySelector('[data-price-max-cents]');
+      var slider = block.querySelector('[data-price-slider]');
+
+      function eurToCents(input, target) {
+        if (!input || !target) return;
+        var v = input.value.trim();
+        target.value = v === '' ? '' : Math.round(parseFloat(v) * 100);
+      }
+
+      if (minEur) minEur.addEventListener('input', function () { eurToCents(minEur, minCents); });
+      if (maxEur) maxEur.addEventListener('input', function () {
+        eurToCents(maxEur, maxCents);
+        if (slider && maxEur.value !== '') slider.value = maxEur.value;
+      });
+      if (slider) {
+        slider.addEventListener('input', function () {
+          if (maxEur) maxEur.value = slider.value;
+          if (maxCents) maxCents.value = Math.round(parseFloat(slider.value) * 100);
+        });
+        /* Bij loslaten van de slider: meteen filteren (op desktop) */
+        slider.addEventListener('change', function () {
+          if (!MOBILE()) submitForm();
+        });
+      }
+    });
+
+    /* ---------- Formulier indienen (server-side filtering via GET) ---------- */
+    function submitForm() {
+      if (form) {
+        if (typeof form.requestSubmit === 'function') form.requestSubmit();
+        else form.submit();
+      }
+    }
+
+    if (form) {
+      /* Op desktop: direct filteren bij wijziging van een checkbox/swatch/maat.
+         Op mobiel: niet direct indienen; gebruiker drukt op "Toon resultaten". */
+      form.addEventListener('change', function (e) {
+        var t = e.target;
+        if (t && t.classList && t.classList.contains('filter-input')) {
+          if (!MOBILE()) submitForm();
+        }
+      });
+      /* Prijs-number-velden: bij Enter indienen */
+      form.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && e.target && e.target.type === 'number') {
+          e.preventDefault();
+          submitForm();
+        }
+      });
+    }
+
+    /* ---------- Visuele selectie van swatches/maat-chips bijwerken ---------- */
+    function syncVisualState(input) {
+      if (!input) return;
+      var wrap = input.closest('.swatch-wrap');
+      if (wrap) {
+        var sw = wrap.querySelector('.swatch');
+        if (sw) sw.classList.toggle('is-selected', input.checked);
+        return;
+      }
+      var chip = input.closest('.size-chip');
+      if (chip) chip.classList.toggle('is-selected', input.checked);
+    }
+    if (form) {
+      form.addEventListener('change', function (e) {
+        if (e.target && e.target.classList && e.target.classList.contains('filter-input')) {
+          syncVisualState(e.target);
+        }
+      });
+    }
+
+    /* ---------- Sorteren met behoud van actieve filters ---------- */
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function () {
+        var url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sortSelect.value);
+        window.location.href = url.toString();
+      });
+    }
+
+    /* ---------- Mobiel: filterpaneel openen/sluiten ---------- */
+    function openFilters() {
+      if (aside) aside.classList.add('is-open');
+      if (overlay) { overlay.hidden = false; requestAnimationFrame(function(){ overlay.classList.add('is-open'); }); }
+      document.body.classList.add('filters-locked');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeFilters() {
+      if (aside) aside.classList.remove('is-open');
+      if (overlay) {
+        overlay.classList.remove('is-open');
+        setTimeout(function () { overlay.hidden = true; }, 300);
+      }
+      document.body.classList.remove('filters-locked');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', function () {
+      if (aside && aside.classList.contains('is-open')) closeFilters();
+      else openFilters();
+    });
+    closeBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        /* "Toon resultaten" (type=submit) dient het formulier in -> herlaadt de
+           pagina; het sluiten is dan verder onschadelijk. Het kruisje (type=button)
+           sluit alleen het paneel. */
+        closeFilters();
+      });
+    });
+    if (overlay) overlay.addEventListener('click', closeFilters);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && aside && aside.classList.contains('is-open')) closeFilters();
+    });
+
+    /* Reset paneelstaat als men van mobiel naar desktop schakelt */
+    window.addEventListener('resize', function () {
+      if (!MOBILE()) closeFilters();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collectiepagina",
+  "tag": "section",
+  "class": "shopify-section-collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Pagina-header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Lente/Zomer 2026"
+    },
+    {
+      "type": "link_list",
+      "id": "subnav_menu",
+      "label": "Subcategorie-tabs (menu)",
+      "info": "Kies een menu (Shopify → Content → Menu's) met links naar subcollecties, bijv. 'Alle sale', 'Jurken & rokjes sale', 'Tops & blouses sale'. Deze verschijnen als tabs boven de producten. Leeg = geen tabs."
+    },
+    {
+      "type": "header",
+      "content": "Product-grid"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Producten per pagina",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Kolommen op desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "header",
+      "content": "Sorteren"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sorting",
+      "label": "Sorteermenu tonen",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

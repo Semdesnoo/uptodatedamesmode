@@ -1,0 +1,49 @@
+{%- comment -%} Klant — account activeren {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .account-intro { text-align: center; max-width: 54ch; margin: 0 auto var(--sp-3); }
+  .account-intro h1 { font-size: clamp(2rem, 4.5vw, 3rem); margin: var(--sp-0_75) 0; }
+  .account-intro p { color: var(--ink-soft); }
+  .auth-card { background: var(--surface); border: var(--border); padding: clamp(1.5rem, 3vw, 2.5rem); max-width: 480px; margin-inline: auto; }
+  .auth-card h2 { font-size: 1.5rem; margin-bottom: var(--sp-1_5); }
+  .auth-form { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .auth-form .btn { margin-top: var(--sp-0_75); }
+  .auth-errors { list-style: none; padding: var(--sp-0_75); margin-bottom: var(--sp-1); background: rgba(180,60,40,0.08); border: 1px solid rgba(180,60,40,0.25); color: var(--sale); font-size: 0.85rem; }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <div class="account">
+      <div class="account-intro reveal">
+        <p class="eyebrow">Mijn account</p>
+        <h1>Account activeren</h1>
+        <p>Stel een wachtwoord in om je account te activeren.</p>
+      </div>
+
+      <div class="auth-card reveal">
+        <h2>Kies een wachtwoord</h2>
+        {%- form 'activate_customer_password' -%}
+          {%- if form.errors -%}
+            <ul class="auth-errors">
+              {%- for field in form.errors -%}
+                <li>{{ form.errors.messages[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <div class="auth-form">
+            <div class="field">
+              <label for="activate-pass">Wachtwoord</label>
+              <input type="password" name="customer[password]" id="activate-pass" autocomplete="new-password" placeholder="Kies een wachtwoord" required>
+            </div>
+            <div class="field">
+              <label for="activate-pass-confirm">Bevestig wachtwoord</label>
+              <input type="password" name="customer[password_confirmation]" id="activate-pass-confirm" autocomplete="new-password" placeholder="Herhaal wachtwoord" required>
+            </div>
+            <button class="btn btn--block" type="submit">Account activeren</button>
+            <button class="btn btn--outline btn--block" name="decline" type="submit">Uitnodiging weigeren</button>
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>

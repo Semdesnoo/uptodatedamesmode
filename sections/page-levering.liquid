@@ -1,0 +1,456 @@
+{%- comment -%}
+  Pagina "Verzending & retour" — bewerkbaar via de Thema-editor.
+  De header komt uit section.settings (eyebrow/heading/intro) en de inhoud uit
+  section.blocks met {% case block.type %}. Beschikbare blok-typen: heading,
+  text (richtext), row (label + waarde voor de overzichts-kaarten),
+  step (nummer + titel + tekst), list (richtext-opsomming), faq (vraag + antwoord)
+  en image. Het pagina-eigen CSS uit de blauwdruk (verzending-retour.html) staat
+  hieronder in een {% style %}-blok; dit staat NIET in base.css. Uitstraling en
+  klassenamen zijn exact behouden. Er is GEEN page.content meer.
+{%- endcomment -%}
+
+{% style %}
+    /* Pagina-header met intro */
+    .page-header {
+      padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+      text-align: center;
+    }
+    .page-header__title {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      margin-top: var(--sp-0_75);
+    }
+    .page-header__intro {
+      color: var(--ink-soft);
+      max-width: 52ch;
+      margin: var(--sp-1) auto 0;
+    }
+
+    /* Tweekoloms-opzet: tekst links, info-kaart rechts */
+    .info-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.85fr;
+      gap: clamp(2rem, 5vw, 4.5rem);
+      align-items: start;
+    }
+    .info-layout__body { display: flex; flex-direction: column; gap: var(--sp-1); }
+    .info-layout__body h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+    .info-layout__body p { color: var(--ink-soft); max-width: 56ch; }
+
+    /* Info-rij: nette label/waarde-regels in een kaart */
+    .info-rows {
+      background: var(--bg-alt);
+      border: var(--border);
+      padding: clamp(1.5rem, 3vw, 2.25rem);
+    }
+    .info-rows__title {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--sp-1);
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--sp-1);
+      padding-block: var(--sp-0_75);
+      border-bottom: var(--border);
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-row dt { color: var(--ink-soft); }
+    .info-row dd { color: var(--ink); text-align: right; white-space: nowrap; }
+    .info-row dd.is-free { color: var(--accent-deep); }
+
+    /* Stappenplan voor retourneren */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-1_5);
+      margin-top: var(--sp-1);
+    }
+    .step {
+      background: var(--surface);
+      border: var(--border);
+      padding: var(--sp-2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .step__num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .step h3 { font-size: 1.1rem; }
+    .step p { color: var(--ink-soft); font-size: 0.92rem; max-width: none; }
+
+    /* Voorwaarden-lijst met subtiele opsomming */
+    .check-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: var(--sp-0_5); }
+    .check-list li {
+      position: relative;
+      padding-left: 1.6rem;
+      color: var(--ink-soft);
+    }
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.7rem;
+      height: 0.4rem;
+      border-left: 1.5px solid var(--accent);
+      border-bottom: 1.5px solid var(--accent);
+      transform: rotate(-45deg);
+    }
+
+    /* FAQ-accordions met native <details> (zelfde patroon als contact.html) */
+    .faq-list {
+      max-width: 760px;
+      margin-inline: auto;
+      border-top: var(--border);
+    }
+    .faq-item { border-bottom: var(--border); }
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-1);
+      padding-block: var(--sp-1_5);
+      cursor: pointer;
+      list-style: none;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      transition: color var(--t-fast);
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-item summary .faq-icon {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      position: relative;
+      transition: transform var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before,
+    .faq-item summary .faq-icon::after {
+      content: "";
+      position: absolute;
+      background: currentColor;
+      transition: opacity var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+    .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+    .faq-item[open] summary .faq-icon::after { opacity: 0; }
+    .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 64ch; }
+
+    /* CTA-blokje onderaan */
+    .cta-box {
+      max-width: 760px;
+      margin-inline: auto;
+      text-align: center;
+      background: var(--surface);
+      border: var(--border);
+      padding: clamp(2rem, 5vw, 3.5rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-1);
+    }
+    .cta-box h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); }
+    .cta-box p { color: var(--ink-soft); max-width: 48ch; }
+
+    /* Afbeeldingsblok */
+    .page-image { margin-top: var(--sp-1_5); }
+    .page-image img { width: 100%; height: auto; display: block; border: var(--border); }
+    .page-image figcaption {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: var(--sp-0_75);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .info-layout { grid-template-columns: 1fr; gap: var(--sp-3); }
+      .steps { grid-template-columns: 1fr; }
+    }
+{% endstyle %}
+
+<!-- BREADCRUMB + PAGINA-HEADER -->
+<section class="page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad" style="justify-content:center;">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ page.title | default: 'Verzending & retour' }}</span></li>
+      </ul>
+    </nav>
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="page-header__title reveal" data-delay="1">{{ section.settings.heading | default: page.title | default: 'Verzending & retour' }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="page-header__intro reveal" data-delay="2">{{ section.settings.intro }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+<!-- INHOUD -->
+<section class="section">
+  <div class="container">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+
+        {%- when 'heading' -%}
+          <div class="section-head reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow }}</p>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2 class="section-head__title">{{ block.settings.heading }}</h2>{%- endif -%}
+            {%- if block.settings.text != blank -%}{{ block.settings.text }}{%- endif -%}
+          </div>
+
+        {%- when 'text' -%}
+          <div class="info-layout__body reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.eyebrow != blank -%}<p class="eyebrow">{{ block.settings.eyebrow }}</p>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2>{{ block.settings.heading }}</h2>{%- endif -%}
+            {{ block.settings.text }}
+          </div>
+
+        {%- when 'rows' -%}
+          <aside class="info-rows reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.title != blank -%}<p class="info-rows__title">{{ block.settings.title }}</p>{%- endif -%}
+            <dl>
+              {%- for i in (1..6) -%}
+                {%- liquid
+                  assign label_key = 'label_' | append: i
+                  assign value_key = 'value_' | append: i
+                  assign free_key = 'free_' | append: i
+                  assign label = block.settings[label_key]
+                  assign value = block.settings[value_key]
+                  assign is_free = block.settings[free_key]
+                -%}
+                {%- if label != blank or value != blank -%}
+                  <div class="info-row">
+                    <dt>{{ label }}</dt>
+                    <dd class="{% if is_free %}is-free{% endif %}">{{ value }}</dd>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </dl>
+          </aside>
+
+        {%- when 'step' -%}
+          <div class="step" {{ block.shopify_attributes }}>
+            {%- if block.settings.number != blank -%}<span class="step__num">{{ block.settings.number }}</span>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h3>{{ block.settings.heading }}</h3>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text }}</p>{%- endif -%}
+          </div>
+
+        {%- when 'list' -%}
+          <div class="info-layout__body reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<h2>{{ block.settings.heading }}</h2>{%- endif -%}
+            <div class="check-list">{{ block.settings.content }}</div>
+          </div>
+
+        {%- when 'faq' -%}
+          <details class="faq-item" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.question }}<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">{{ block.settings.answer }}</div>
+          </details>
+
+        {%- when 'image' -%}
+          <figure class="page-image reveal" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,800,1200,1400', sizes: '(max-width: 900px) 100vw, 760px' }}
+            {%- endif -%}
+            {%- if block.settings.caption != blank -%}<figcaption>{{ block.settings.caption }}</figcaption>{%- endif -%}
+          </figure>
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Verzending & retour",
+  "tag": "section",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Klantenservice"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductietekst",
+      "info": "Inleidende paragraaf onder de titel."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Kop / sectiekop",
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Bovenkop (eyebrow)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst onder de kop"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Tekstblok",
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Bovenkop (eyebrow)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Tekst"
+        }
+      ]
+    },
+    {
+      "type": "rows",
+      "name": "Kaart (label + waarde)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel van de kaart",
+          "info": "Bijv. Verzendoverzicht of Retourkosten."
+        },
+        { "type": "header", "content": "Rij 1" },
+        { "type": "text", "id": "label_1", "label": "Label (links)" },
+        { "type": "text", "id": "value_1", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_1", "label": "Waarde accentueren (bijv. Gratis)", "default": false },
+        { "type": "header", "content": "Rij 2" },
+        { "type": "text", "id": "label_2", "label": "Label (links)" },
+        { "type": "text", "id": "value_2", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_2", "label": "Waarde accentueren", "default": false },
+        { "type": "header", "content": "Rij 3" },
+        { "type": "text", "id": "label_3", "label": "Label (links)" },
+        { "type": "text", "id": "value_3", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_3", "label": "Waarde accentueren", "default": false },
+        { "type": "header", "content": "Rij 4" },
+        { "type": "text", "id": "label_4", "label": "Label (links)" },
+        { "type": "text", "id": "value_4", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_4", "label": "Waarde accentueren", "default": false },
+        { "type": "header", "content": "Rij 5" },
+        { "type": "text", "id": "label_5", "label": "Label (links)" },
+        { "type": "text", "id": "value_5", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_5", "label": "Waarde accentueren", "default": false },
+        { "type": "header", "content": "Rij 6" },
+        { "type": "text", "id": "label_6", "label": "Label (links)" },
+        { "type": "text", "id": "value_6", "label": "Waarde (rechts)" },
+        { "type": "checkbox", "id": "free_6", "label": "Waarde accentueren", "default": false }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Stap",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Titel"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Tekst"
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "name": "Opsomming (voorwaarden)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Opsomming",
+          "info": "Gebruik een opsommingslijst (ul/li) voor de voorwaarden."
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "Veelgestelde vraag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Vraag"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Antwoord"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Onderschrift (optioneel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Verzending & retour"
+    }
+  ]
+}
+{% endschema %}

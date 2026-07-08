@@ -1,0 +1,227 @@
+{% style %}
+  /* Pagina-header met intro */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 50ch;
+    margin: var(--sp-1) auto 0;
+  }
+
+  /* Grid met betaalmethode-kaartjes */
+  .pay-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-1_5);
+  }
+  .pay-method {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0_75);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: var(--surface);
+    border: var(--border);
+    transition: border-color var(--t-fast);
+  }
+  .pay-method:hover { border-color: var(--accent); }
+  .pay-method__name {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5em 1em;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+  .pay-method h2 {
+    font-size: 1.25rem;
+    margin-top: 0.2rem;
+  }
+  .pay-method p { color: var(--ink-soft); font-size: 0.92rem; }
+  .pay-method__note {
+    margin-top: auto;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+
+  /* Tweekoloms informatieblokken (veilig betalen / facturen & btw) */
+  .pay-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .pay-info__block { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .pay-info__block h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+  .pay-info__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-0_75);
+  }
+  .pay-info__list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ink-soft);
+  }
+  .pay-info__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Afsluitende CTA */
+  .pay-cta {
+    text-align: center;
+    max-width: 52ch;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-1);
+  }
+  .pay-cta h2 { font-size: clamp(1.75rem, 3.5vw, 2.5rem); }
+  .pay-cta p { color: var(--ink-soft); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .pay-grid { grid-template-columns: repeat(2, 1fr); }
+    .pay-info { grid-template-columns: 1fr; gap: var(--sp-3); }
+  }
+  @media (max-width: 640px) {
+    .pay-grid { grid-template-columns: 1fr; }
+  }
+{% endstyle %}
+
+<!-- BREADCRUMB -->
+<nav class="container container--wide breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><span aria-current="page">Betaalmethoden</span></li>
+  </ul>
+</nav>
+
+<!-- PAGINA-HEADER: titel + introzin -->
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow reveal">Klantenservice</p>
+    <h1 class="page-header__title reveal" data-delay="1">Betaalmethoden</h1>
+    <p class="page-header__intro reveal" data-delay="2">Veilig en gemakkelijk betalen. Kies bij het afrekenen de betaalmethode die het beste bij je past — vertrouwd, snel en zonder gedoe.</p>
+  </div>
+</section>
+
+<!-- BETAALMETHODEN-GRID -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <p class="eyebrow">Onze betaalmethoden</p>
+      <h2 class="section-head__title">Betaal zoals jij dat wilt</h2>
+      <p>Bij Up to Date Damesmode reken je af met de meest gebruikte en betrouwbare betaalmethoden van Nederland en België.</p>
+    </div>
+
+    <div class="pay-grid">
+      <article class="pay-method reveal">
+        <span class="pay-method__name">iDEAL</span>
+        <h2>iDEAL</h2>
+        <p>Betaal direct via je eigen bank. Je rekent in een paar tikken af in je vertrouwde bankomgeving — de snelste en populairste manier in Nederland.</p>
+        <p class="pay-method__note">Direct &amp; vertrouwd</p>
+      </article>
+
+      <article class="pay-method reveal" data-delay="1">
+        <span class="pay-method__name">Creditcard</span>
+        <h2>Creditcard</h2>
+        <p>Betaal eenvoudig met je creditcard. We accepteren Visa en Mastercard, met een veilige verificatie van je betaling.</p>
+        <p class="pay-method__note">Visa &amp; Mastercard</p>
+      </article>
+
+      <article class="pay-method reveal" data-delay="2">
+        <span class="pay-method__name">PayPal</span>
+        <h2>PayPal</h2>
+        <p>Reken snel en beschermd af met je PayPal-account, zonder je kaart- of bankgegevens met ons te delen.</p>
+        <p class="pay-method__note">Met kopersbescherming</p>
+      </article>
+
+      <article class="pay-method reveal">
+        <span class="pay-method__name">Klarna</span>
+        <h2>Klarna — achteraf betalen</h2>
+        <p>Bestel nu, betaal later. Met Klarna betaal je je bestelling achteraf binnen 14 dagen na ontvangst. Eerst passen, dan pas betalen.</p>
+        <p class="pay-method__note">Binnen 14 dagen, voorwaarden van toepassing</p>
+      </article>
+
+      <article class="pay-method reveal" data-delay="1">
+        <span class="pay-method__name">Apple Pay</span>
+        <h2>Apple Pay</h2>
+        <p>Betaal in één beweging met je iPhone, iPad of Mac. Veilig bevestigd met Face ID of Touch ID — geen gegevens invullen.</p>
+        <p class="pay-method__note">Snel op je Apple-apparaat</p>
+      </article>
+
+      <article class="pay-method reveal" data-delay="2">
+        <span class="pay-method__name">Bancontact</span>
+        <h2>Bancontact</h2>
+        <p>Voor onze klanten in België: reken direct af via Bancontact, de vertrouwde Belgische betaalmethode.</p>
+        <p class="pay-method__note">Voor België</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- VEILIG BETALEN + FACTUREN &amp; BTW -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="pay-info">
+      <div class="pay-info__block reveal">
+        <p class="eyebrow">Veilig betalen</p>
+        <h2>Je betaling is in goede handen</h2>
+        <p>De veiligheid van je gegevens staat bij ons voorop. Elke betaling verloopt via een beveiligde, vertrouwde omgeving.</p>
+        <ul class="pay-info__list">
+          <li>Alle gegevens worden verzonden via een SSL-versleutelde verbinding.</li>
+          <li>Betalingen lopen via een gecertificeerde betaalprovider (PCI-DSS).</li>
+          <li>Wij slaan zelf nooit je kaart- of bankgegevens op.</li>
+        </ul>
+      </div>
+
+      <div class="pay-info__block reveal" data-delay="1">
+        <p class="eyebrow">Facturen &amp; btw</p>
+        <h2>Altijd een nette factuur</h2>
+        <p>Na je bestelling ontvang je automatisch een factuur, zodat je administratie altijd op orde is.</p>
+        <ul class="pay-info__list">
+          <li>Je ontvangt je factuur per e-mail, samen met de orderbevestiging.</li>
+          <li>Alle prijzen in onze webshop zijn inclusief 21% btw.</li>
+          <li>Vragen over je factuur? Mail gerust naar <a class="link-accent" href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AFSLUITENDE CTA -->
+<section class="section">
+  <div class="container">
+    <div class="pay-cta reveal">
+      <p class="eyebrow">Klaar om te shoppen?</p>
+      <h2>Vind jouw nieuwe favoriet</h2>
+      <p>Ontdek tijdloze stukken voor elke gelegenheid en reken veilig af met de betaalmethode die jij het fijnst vindt.</p>
+      <a class="btn" href="/collections/all">Shop de collectie</a>
+    </div>
+  </div>
+</section>
+
+<!-- === GEDEELDE NIEUWSBRIEF-SECTIE: kopieer exact naar elke pagina (begin) === -->
+<!-- === GEDEELDE NIEUWSBRIEF-SECTIE (einde) === -->

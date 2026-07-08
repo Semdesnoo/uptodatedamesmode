@@ -1,0 +1,88 @@
+{%- comment -%} Klant — dashboard {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .account-welcome { display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); text-align: center; margin-bottom: var(--sp-2); }
+  .account-welcome h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .account-section { border-top: var(--border); padding-top: var(--sp-2); margin-top: var(--sp-2); }
+  .account-section h2 { font-size: 1.4rem; margin-bottom: var(--sp-1_5); }
+  .account-section > p { color: var(--ink-soft); }
+  .orders-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .orders-table th, .orders-table td { text-align: left; padding: var(--sp-0_75); border-bottom: var(--border); }
+  .orders-table th { font-family: var(--font-display); font-weight: 500; color: var(--ink); }
+  .orders-table a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .account-empty { color: var(--muted); }
+  @media (max-width: 600px) {
+    .orders-table thead { display: none; }
+    .orders-table tr { display: grid; gap: 0.3rem; padding: var(--sp-0_75) 0; border-bottom: var(--border); }
+    .orders-table td { border: none; padding: 0; }
+    .orders-table td::before { content: attr(data-label) ": "; color: var(--muted); }
+  }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">Mijn account</span></li>
+      </ul>
+    </nav>
+
+    <div class="account">
+      <div class="account-welcome reveal">
+        <p class="eyebrow">Mijn account</p>
+        <h1>Welkom, {{ customer.first_name | default: customer.name }}</h1>
+        <a class="btn btn--outline btn--sm" href="{{ routes.account_logout_url }}">Uitloggen</a>
+      </div>
+
+      <div class="account-section reveal">
+        <h2>Mijn bestellingen</h2>
+        {%- paginate customer.orders by 20 -%}
+          {%- if customer.orders.size > 0 -%}
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>Bestelling</th>
+                  <th>Datum</th>
+                  <th>Betaalstatus</th>
+                  <th>Verzendstatus</th>
+                  <th>Totaal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td data-label="Bestelling"><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                    <td data-label="Datum">{{ order.created_at | date: '%d-%m-%Y' }}</td>
+                    <td data-label="Betaalstatus">{{ order.financial_status_label }}</td>
+                    <td data-label="Verzendstatus">{{ order.fulfillment_status_label }}</td>
+                    <td data-label="Totaal">{{ order.total_price | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="pagination" aria-label="Paginering" style="margin-top:var(--sp-2); display:flex; gap:0.75rem;">
+                {%- if paginate.previous -%}
+                  <a class="btn btn--outline btn--sm" href="{{ paginate.previous.url }}">Vorige</a>
+                {%- endif -%}
+                {%- if paginate.next -%}
+                  <a class="btn btn--outline btn--sm" href="{{ paginate.next.url }}">Volgende</a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- else -%}
+            <p class="account-empty">Je hebt nog geen bestellingen geplaatst.</p>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+
+      <div class="account-section reveal">
+        <h2>Mijn gegevens</h2>
+        <p style="margin-bottom:var(--sp-1);">Beheer je verzend- en factuuradressen.</p>
+        <a class="btn btn--outline btn--sm" href="{{ routes.account_addresses_url }}">Adressen beheren</a>
+      </div>
+    </div>
+  </div>
+</section>

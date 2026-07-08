@@ -1,0 +1,39 @@
+<section class="section--tight">
+  <div class="container">
+    <div class="error-404 reveal" style="text-align:center; max-width:48ch; margin:0 auto; padding-block:clamp(1rem, 4vw, 3rem);">
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1 style="font-size:clamp(2.4rem, 6vw, 4rem); margin:var(--sp-0_75) 0;">{{ section.settings.heading }}</h1>
+      <p style="color:var(--ink-soft); margin-bottom:var(--sp-2);">{{ section.settings.text }}</p>
+      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+        <a class="btn" href="{{ routes.root_url }}">Naar de homepagina</a>
+        <a class="btn btn--outline" href="{{ routes.all_products_collection_url }}">Bekijk de collectie</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pagina niet gevonden",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Boventitel",
+      "default": "Fout 404"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel",
+      "default": "Pagina niet gevonden"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Tekst",
+      "default": "De pagina die je zoekt bestaat niet (meer) of is verplaatst. Geen zorgen — je vindt je weg snel terug."
+    }
+  ]
+}
+{% endschema %}

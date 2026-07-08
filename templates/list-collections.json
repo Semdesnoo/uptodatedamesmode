@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "eyebrow": "Ontdek",
+        "title": "Collecties",
+        "intro": "<p>Blader door alle collecties van Up to Date Damesmode.</p>",
+        "collections_per_page": 12,
+        "columns_desktop": "3"
+      }
+    }
+  },
+  "order": ["main"]
+}

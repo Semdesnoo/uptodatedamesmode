@@ -1,0 +1,1238 @@
+{%- comment -%}
+  Productdetailpagina (Online Store 2.0).
+  Reproduceert exact de blauwdruk product.html: tweekoloms galerij + sticky info,
+  varianten, accordions, maat-adviseur en "Combineer met".
+
+  De pagina-eigen CSS staat — net als in de blauwdruk — in een {% style %}-blok
+  (base.css mag niet gewijzigd worden). De maat-adviseur-JS staat onderaan inline,
+  precies zoals in de blauwdruk; de generieke hooks komen uit global.js.
+{%- endcomment -%}
+
+{%- style -%}
+  .product {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+    padding-block: var(--sp-2) var(--section-y);
+  }
+  .product-gallery__main { aspect-ratio: 3 / 4; }
+  .product-gallery__main.media { aspect-ratio: 3 / 4; }
+  .product-gallery__main img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 3 / 4; }
+  .product-gallery__thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-0_75);
+    margin-top: var(--sp-0_75);
+  }
+  .product-gallery__thumb {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid transparent;
+    transition: border-color var(--t-fast);
+    cursor: pointer;
+  }
+  .product-gallery__thumb .media { aspect-ratio: 3 / 4; }
+  .product-gallery__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 3 / 4; }
+  .product-gallery__thumb.is-active { border-color: var(--ink); }
+  .product-gallery__thumb:hover { border-color: var(--accent); }
+
+  .product-info { position: sticky; top: calc(76px + var(--sp-1_5)); }
+  .product-info__eyebrow { margin-bottom: var(--sp-0_75); }
+  .product-info__title {
+    font-size: clamp(1.9rem, 3.5vw, 2.85rem);
+    margin-bottom: var(--sp-0_75);
+  }
+  .product-info__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 1.25rem;
+    margin-bottom: var(--sp-1);
+  }
+  .product-info__desc {
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin-bottom: var(--sp-1_5);
+  }
+  .product-info hr {
+    border: none;
+    border-top: var(--border);
+    margin-block: var(--sp-1_5);
+  }
+  .option-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-0_75);
+  }
+  .option-label .option-value {
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink);
+  }
+  .option-block { margin-bottom: var(--sp-1_5); }
+  .sizefinder-link { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .sizefinder-icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    transform-origin: center;
+    animation: sizefinder-pulse 2.4s ease-in-out infinite;
+  }
+  .sizefinder-link:hover .sizefinder-icon { animation: none; transform: rotate(-10deg) scale(1.12); }
+  @keyframes sizefinder-pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.18) rotate(-6deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sizefinder-icon { animation: none; }
+  }
+  .swatches { display: flex; gap: var(--sp-0_75); }
+  .swatch {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    position: relative;
+    transition: box-shadow var(--t-fast);
+  }
+  .swatch span {
+    position: absolute;
+    inset: 3px;
+    border-radius: 999px;
+    border: 1px solid rgba(28, 26, 23, 0.08);
+  }
+  .swatch.is-selected {
+    box-shadow: 0 0 0 1px var(--bg), 0 0 0 2px var(--ink);
+  }
+  /* Witte swatches krijgen een dunne rand zodat ze zichtbaar blijven */
+  .swatch.swatch--light { border-color: var(--ink); }
+  .swatch.swatch--light span { border-color: rgba(28, 26, 23, 0.25); }
+  .swatch[disabled],
+  .size-btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  .swatch[disabled] { text-decoration: none; }
+  .size-grid { display: flex; flex-wrap: wrap; gap: var(--sp-0_5); }
+  .size-btn {
+    min-width: 48px;
+    padding: 0.6em 0.9em;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    border-radius: var(--radius);
+    transition: border-color var(--t-fast), background var(--t-fast), color var(--t-fast);
+  }
+  .size-btn:hover { border-color: var(--ink); }
+  .size-btn.is-selected {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .qty button {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--ink);
+    transition: color var(--t-fast);
+  }
+  .qty button:hover { color: var(--accent); }
+  .qty input {
+    width: 44px;
+    height: 44px;
+    text-align: center;
+    border: none;
+    border-inline: 1px solid var(--line);
+    background: transparent;
+    font-size: 0.95rem;
+    -moz-appearance: textfield;
+  }
+  .qty input::-webkit-outer-spin-button,
+  .qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .product-form__select-wrap { margin-bottom: var(--sp-1); }
+  .product-form__select {
+    width: 100%;
+    padding: 0.7em 0.9em;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .product-actions {
+    display: flex;
+    gap: var(--sp-0_75);
+    align-items: stretch;
+    margin-block: var(--sp-1_5) var(--sp-0_75);
+  }
+  .product-actions .btn[type="submit"] { flex: 1; }
+  /* "Nu kopen": volle breedte onder de actie-rij */
+  .product-form .btn--block {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--sp-1_5);
+  }
+  /* VERLANGLIJST = klein, rond hart-icoon-knopje naast "In winkelmand" */
+  .wishlist-heart {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    align-self: stretch;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+  }
+  .wishlist-heart svg { display: block; transition: fill var(--t-fast); }
+  .wishlist-heart:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: scale(1.06);
+  }
+  .wishlist-heart.is-active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .wishlist-heart.is-active svg { fill: currentColor; }
+  .product-usps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: var(--sp-2);
+    font-size: 0.84rem;
+    color: var(--ink-soft);
+  }
+  .product-usps li { display: flex; align-items: center; gap: 0.65rem; }
+  .product-usps svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+  .product-accordions { margin-top: var(--sp-1_5); }
+  .accordion { border-top: var(--border); }
+  .accordion:last-of-type { border-bottom: var(--border); }
+  .accordion > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    padding-block: var(--sp-1);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .accordion > summary::-webkit-details-marker { display: none; }
+  .accordion > summary::after {
+    content: "+";
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--accent);
+    transition: transform var(--t-fast);
+  }
+  .accordion[open] > summary::after { content: "–"; }
+  .accordion__body {
+    padding-bottom: var(--sp-1);
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .accordion__body p + p { margin-top: var(--sp-0_75); }
+  .accordion__body ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .accordion__body li { padding-left: 1.1rem; position: relative; }
+  .accordion__body li::before {
+    content: "·";
+    position: absolute;
+    left: 0.25rem;
+    color: var(--accent);
+  }
+  /* Productdetails als open secties (geen dropdown) */
+  .product-details { margin-top: var(--sp-1); }
+  .product-detail {
+    border-top: var(--border);
+    padding-top: var(--sp-1_5);
+    margin-top: var(--sp-1_5);
+  }
+  .product-detail:first-child { margin-top: var(--sp-1); }
+  .product-detail__title {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: var(--sp-0_75);
+  }
+  @media (max-width: 900px) {
+    .product { grid-template-columns: 1fr; gap: var(--sp-2); }
+    .product-info { position: static; top: auto; }
+  }
+  @media (max-width: 640px) {
+    .product-actions { flex-wrap: wrap; }
+    .product-actions .qty { align-self: stretch; }
+    .product-actions .btn[type="submit"] { flex: 1 1 auto; }
+  }
+  .sizefinder[hidden] { display: none; }
+  .sizefinder {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+  }
+  .sizefinder__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 26, 23, 0.45);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+  }
+  .sizefinder__dialog {
+    position: relative;
+    width: min(460px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: var(--border);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    box-shadow: 0 30px 60px -30px rgba(28, 26, 23, 0.4);
+    animation: sf-pop 0.3s ease;
+    z-index: 1;
+  }
+  @keyframes sf-pop {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sizefinder__dialog { animation: none; } }
+  .sizefinder__close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.85rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: none;
+    border: none;
+    font-size: 1.7rem;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .sizefinder__close:hover { color: var(--ink); }
+  .sizefinder__title { font-family: var(--font-display); font-size: 1.65rem; margin: 0.2rem 0 0.5rem; }
+  .sizefinder__intro { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; }
+  .sizefinder__form { display: flex; flex-direction: column; gap: 1rem; }
+  .sizefinder__submit { margin-top: 0.25rem; }
+  .sizefinder__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 400px) { .sizefinder__row { grid-template-columns: 1fr; } }
+  .sizefinder .field input,
+  .sizefinder .field select { font-size: 1rem; }
+  .sizefinder__result:focus { outline: none; }
+  .sizefinder__edit {
+    display: inline-block;
+    margin-top: 0.9rem;
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .sizefinder__edit:hover { color: var(--accent-deep); }
+  .sizefinder__error { color: var(--sale); font-size: 0.82rem; }
+  .sizefinder__result {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: var(--border);
+    text-align: center;
+  }
+  .sizefinder__result-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sizefinder__size {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    line-height: 1;
+    color: var(--ink);
+    margin: 0.3rem 0 0.55rem;
+  }
+  .sizefinder__explain { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 1rem; }
+  .sizefinder__disclaimer { font-size: 0.75rem; color: var(--muted); margin-top: 0.85rem; }
+  .sizefinder__table { margin-top: 1.5rem; }
+  .sizefinder__table summary { cursor: pointer; font-size: 0.85rem; color: var(--accent); }
+  .sizefinder__table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+  .sizefinder__table th,
+  .sizefinder__table td {
+    padding: 0.5rem 0.4rem;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .sizefinder__table th {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Dunnere, zachtere omlijning om de beoordelingen-kaarten (minder zwaar) */
+  .product-reviews .review,
+  .product-reviews .review-summary { border-color: color-mix(in srgb, var(--line) 45%, transparent); }
+
+  /* Verdeling van de beoordelingen voor dit product (demo-data) */
+  .review-summary__bars .review-bar:nth-child(1) .review-bar__fill { width: 83%; }
+  .review-summary__bars .review-bar:nth-child(2) .review-bar__fill { width: 14%; }
+  .review-summary__bars .review-bar:nth-child(3) .review-bar__fill { width: 3%; }
+  .review-summary__bars .review-bar:nth-child(4) .review-bar__fill { width: 0; }
+  .review-summary__bars .review-bar:nth-child(5) .review-bar__fill { width: 0; }
+  /* Sticky 'In winkelmand'-balk (verschijnt bij scrollen voorbij de knop) */
+  .sticky-atc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 24px rgba(28, 26, 23, 0.08);
+    padding: 0.7rem 0;
+    transform: translateY(105%);
+    visibility: hidden;
+    transition: transform var(--t-fast), visibility var(--t-fast);
+  }
+  .sticky-atc.is-visible {
+    transform: translateY(0);
+    visibility: visible;
+  }
+  .sticky-atc__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+  }
+  .sticky-atc__info {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+  .sticky-atc__thumb {
+    width: 44px;
+    height: 56px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .sticky-atc__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .sticky-atc__name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sticky-atc__price {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+  .sticky-atc__btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .sticky-atc__thumb { display: none; }
+    .sticky-atc__name { font-size: 0.92rem; max-width: 48vw; }
+    .sticky-atc__price { font-size: 0.82rem; }
+    .sticky-atc__btn { padding-left: 1.2em; padding-right: 1.2em; }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign eyebrow_text = ''
+  if section.settings.show_vendor and product.vendor != blank
+    assign eyebrow_text = shop.name | append: ' · ' | append: product.vendor
+  elsif product.type != blank
+    assign eyebrow_text = shop.name | append: ' · ' | append: product.type
+  else
+    assign eyebrow_text = shop.name
+  endif
+-%}
+
+<!-- BREADCRUMB -->
+<nav class="container container--wide breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    {%- if collection.url != blank -%}
+      <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+    {%- else -%}
+      <li><a href="{{ routes.all_products_collection_url }}">Collectie</a></li>
+    {%- endif -%}
+    <li><span aria-current="page">{{ product.title }}</span></li>
+  </ul>
+</nav>
+
+<!-- PRODUCTDETAIL: tweekoloms (galerij + info) -->
+<section class="container container--wide product">
+
+  <!-- LINKS: productgalerij. Loopt product.media; valt terug op .media-placeholder als er geen media is. -->
+  <div class="product-gallery reveal">
+    <figure>
+      {%- if product.featured_media != blank -%}
+        <div class="product-gallery__main" data-gallery-main>
+          {{ product.featured_media | image_url: width: 1000 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1200', sizes: '(max-width: 900px) 100vw, 50vw', alt: product.featured_media.alt | default: product.title, class: 'product-gallery__main-img' }}
+        </div>
+      {%- else -%}
+        <div class="media product-gallery__main" data-gallery-main data-label="{{ product.title | escape }}"
+             role="img" aria-label="{{ product.title | escape }}"></div>
+      {%- endif -%}
+      <figcaption class="visually-hidden">{{ product.title }}</figcaption>
+    </figure>
+
+    {%- if product.media.size > 1 -%}
+      <div class="product-gallery__thumbs">
+        {%- for media in product.media -%}
+          <button class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}" data-gallery-thumb
+                  data-media-id="{{ media.id }}"
+                  data-full="{{ media | image_url: width: 1200 }}"
+                  aria-label="Toon afbeelding {{ forloop.index }}">
+            {{ media | image_url: width: 300 | image_tag: loading: 'lazy', alt: media.alt | default: product.title, widths: '150, 200, 300', sizes: '(max-width: 900px) 22vw, 11vw' }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- elsif product.media.size == 0 -%}
+      {%- comment -%} Fallback-thumbs in de stijl van de blauwdruk wanneer er nog geen foto's zijn {%- endcomment -%}
+      <div class="product-gallery__thumbs">
+        <button class="product-gallery__thumb is-active" data-gallery-thumb
+                data-label="{{ product.title | escape }} · vooraanzicht" aria-label="Toon vooraanzicht">
+          <div class="media" data-label="Voor"></div>
+        </button>
+        <button class="product-gallery__thumb" data-gallery-thumb
+                data-label="{{ product.title | escape }} · achteraanzicht" aria-label="Toon achteraanzicht">
+          <div class="media" data-label="Achter"></div>
+        </button>
+        <button class="product-gallery__thumb" data-gallery-thumb
+                data-label="{{ product.title | escape }} · detail" aria-label="Toon detail">
+          <div class="media" data-label="Detail"></div>
+        </button>
+        <button class="product-gallery__thumb" data-gallery-thumb
+                data-label="{{ product.title | escape }} · gedragen" aria-label="Toon gedragen">
+          <div class="media" data-label="Gedragen"></div>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <!-- RECHTS: productinfo (sticky op desktop) -->
+  <div class="product-info reveal" data-delay="1">
+    <p class="eyebrow product-info__eyebrow">{{ eyebrow_text }}</p>
+    <h1 class="product-info__title">{{ product.title }}</h1>
+    <p class="product-info__price">
+      <span data-product-price>{{ current_variant.price | money }}</span>
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        <span class="price-sale"><s>{{ current_variant.compare_at_price | money }}</s></span>
+      {%- endif -%}
+    </p>
+    {%- if product.description != blank -%}
+      <div class="product-info__desc rte">{{ product.description | strip_html | truncatewords: 55 }}</div>
+    {%- endif -%}
+
+    <hr />
+
+    {%- comment -%}
+      Visuele varianten in de stijl van de blauwdruk (swatches/maat-knoppen).
+      Elke knop draagt data-opt-position (1/2) en data-opt-value, zodat de inline
+      JS de juiste variant kan bepalen en het verborgen veld name="id" kan zetten.
+      Kleur-swatches gebruiken de echte Shopify-kleur (swatch.color/.image) met
+      terugval op een NL naam->kleur-map.
+    {%- endcomment -%}
+    {%- for option in product.options_with_values -%}
+      {%- assign opt_name_down = option.name | downcase -%}
+      {%- if opt_name_down contains 'kleur' or opt_name_down contains 'color' -%}
+        <div class="option-block" data-option-block data-opt-position="{{ forloop.index }}">
+          <div class="option-label">
+            <span>{{ option.name }}</span>
+            <span class="option-value" data-color-value>{{ option.selected_value }}</span>
+          </div>
+          <div class="swatches">
+            {%- for value in option.values -%}
+              {%- comment -%} Naam betrouwbaar ophalen (werkt voor strings én option-value-objecten) {%- endcomment -%}
+              {%- capture v_name -%}{{ value }}{%- endcapture -%}{%- assign v_name = v_name | strip -%}
+              {%- comment -%} Selectie betrouwbaar bepalen via string-vergelijking of value.selected {%- endcomment -%}
+              {%- capture sel_name -%}{{ option.selected_value }}{%- endcapture -%}{%- assign sel_name = sel_name | strip -%}
+              {%- assign is_sel = false -%}
+              {%- if value.selected -%}{%- assign is_sel = true -%}{%- elsif v_name == sel_name -%}{%- assign is_sel = true -%}{%- endif -%}
+              {%- comment -%} Kleur/afbeelding bepalen volgens contract-volgorde {%- endcomment -%}
+              {%- assign swatch_color = '' -%}
+              {%- assign swatch_image = '' -%}
+              {%- if value.swatch.color -%}
+                {%- assign swatch_color = value.swatch.color -%}
+              {%- elsif value.swatch.image -%}
+                {%- assign swatch_image = value.swatch.image | image_url: width: 80 -%}
+              {%- else -%}
+                {%- capture v_hex -%}{%- render 'sm-color-hex', name: v_name -%}{%- endcapture -%}{%- assign v_hex = v_hex | strip -%}
+                {%- if v_hex != blank -%}{%- assign swatch_color = v_hex -%}{%- endif -%}
+              {%- endif -%}
+              {%- comment -%} (Bijna-)witte kleuren krijgen swatch--light voor zichtbaarheid {%- endcomment -%}
+              {%- assign is_light = false -%}
+              {%- if swatch_color != blank -%}
+                {%- assign sc_down = swatch_color | downcase -%}
+                {%- if sc_down == '#ffffff' or sc_down == '#fff' or sc_down == '#f3efe7' -%}{%- assign is_light = true -%}{%- endif -%}
+              {%- endif -%}
+              <button class="swatch{% if is_sel %} is-selected{% endif %}{% if is_light %} swatch--light{% endif %}" type="button"
+                      data-opt-button data-opt-position="{{ forloop.parentloop.index }}" data-opt-value="{{ v_name | escape }}"
+                      aria-pressed="{% if is_sel %}true{% else %}false{% endif %}"
+                      aria-label="{{ option.name }} {{ v_name }}"
+                      {%- if swatch_image != blank %} style="background-image:url({{ swatch_image }});background-size:cover;"{% elsif swatch_color != blank %} style="background:{{ swatch_color }};"{% else %} style="background:var(--bg-alt);"{% endif %}><span></span></button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <div class="option-block" data-option-block data-opt-position="{{ forloop.index }}">
+          <div class="option-label">
+            <span>{{ option.name }}</span>
+            {%- if opt_name_down contains 'maat' or opt_name_down contains 'size' -%}
+              <a class="link-accent sizefinder-link" href="#maatadvies" data-sizefinder-open>
+                <svg class="sizefinder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="2" y="8" width="20" height="8" rx="1" />
+                  <path d="M6 8v3.5M10 8v4.5M14 8v3.5M18 8v4.5" />
+                </svg>
+                Maat-adviseur
+              </a>
+            {%- else -%}
+              <span class="option-value">{{ option.selected_value }}</span>
+            {%- endif -%}
+          </div>
+          <div class="size-grid"{% if opt_name_down contains 'maat' or opt_name_down contains 'size' %} data-size-grid{% endif %}>
+            {%- for value in option.values -%}
+              <button class="size-btn{% if value == option.selected_value %} is-selected{% endif %}" type="button"
+                      data-opt-button data-opt-position="{{ forloop.parentloop.index }}" data-opt-value="{{ value | escape }}"
+                      aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}">{{ value }}</button>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <!-- WERKEND PRODUCTFORMULIER: variant-select + aantal + in winkelmand -->
+    {%- form 'product', product, id: 'product-form', class: 'product-form' -%}
+      {%- comment -%} De variant wordt via de kleur-/maat-knoppen bepaald; geen zichtbare dropdown meer. {%- endcomment -%}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variant-id>
+      <script type="application/json" data-variant-json>{{ product.variants | json }}</script>
+
+      <div class="product-actions">
+        <div class="qty" data-qty>
+          <button type="button" data-qty-minus aria-label="Aantal verlagen">−</button>
+          <label class="visually-hidden" for="qty-input">Aantal</label>
+          <input id="qty-input" name="quantity" type="number" inputmode="numeric" value="1" min="1" />
+          <button type="button" data-qty-plus aria-label="Aantal verhogen">+</button>
+        </div>
+        <button class="btn" type="submit" name="add" {% unless current_variant.available %}disabled{% endunless %}>
+          {%- if current_variant.available -%}In winkelmand{%- else -%}Uitverkocht{%- endif -%}
+        </button>
+        <!-- VERLANGLIJST = alleen een hart-icoon (UI-only, geen add-to-cart) -->
+        <button class="wishlist-heart" type="button" data-wishlist data-name="{{ product.title | escape }}" data-image="{{ product.featured_image | image_url: width: 200 }}" data-url="{{ product.url }}" aria-label="Voeg toe aan verlanglijst">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M12 20s-7-4.3-9.2-8.4C1.3 8.7 2.7 5.5 5.8 5.1 7.6 4.9 9.2 5.9 12 8c2.8-2.1 4.4-3.1 6.2-2.9 3.1.4 4.5 3.6 3 6.5C19 15.7 12 20 12 20z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- NU KOPEN: direct naar de kassa (global.js handelt af) -->
+      <button class="btn btn--outline btn--block" type="button" data-buy-now {% unless current_variant.available %}disabled{% endunless %}>Nu kopen</button>
+    {%- endform -%}
+
+    <!-- USP-regeltjes -->
+    <ul class="product-usps">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        Gratis verzending vanaf €75
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 19v-4h4"/></svg>
+        30 dagen retour, gratis en eenvoudig
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Voor 22:00 besteld, morgen in huis
+      </li>
+    </ul>
+
+    <!-- PRODUCTDETAILS als dropdowns (accordion) -->
+    <div class="product-details">
+      <details class="accordion" open>
+        <summary>Omschrijving</summary>
+        <div class="accordion__body rte">
+          {%- if product.description != blank -%}
+            {{ product.description }}
+          {%- else -%}
+            <p>Een tijdloos stuk uit de Up to Date Damesmode-collectie, met zorg geselecteerd en gemaakt om lang mee te gaan.</p>
+          {%- endif -%}
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Materiaal &amp; onderhoud</summary>
+        <div class="accordion__body rte">
+          {%- if product.metafields.custom.materiaal != blank -%}
+            {{ product.metafields.custom.materiaal }}
+          {%- else -%}
+            <ul>
+              <li>Hoogwaardige, ademende materialen</li>
+              <li>Zorgvuldig afgewerkte naden</li>
+              <li>Gemaakt om lang mee te gaan</li>
+            </ul>
+            <p>Was op een fijn programma op 30°C met een mild wasmiddel. Niet in de droger; hang op een
+            vormvaste hanger en strijk indien gewenst op lage temperatuur.</p>
+          {%- endif -%}
+        </div>
+      </details>
+
+      <details class="accordion">
+        <summary>Verzending &amp; retour</summary>
+        <div class="accordion__body rte">
+          {%- if product.metafields.custom.verzending != blank -%}
+            {{ product.metafields.custom.verzending }}
+          {%- else -%}
+            <p>Gratis verzending binnen Nederland en België vanaf €75. Voor 22:00 besteld op
+            werkdagen betekent morgen in huis. Onder €75 rekenen we €4,95 verzendkosten.</p>
+            <p>Niet helemaal naar wens? Je hebt 30 dagen bedenktijd. Retourneren is gratis en
+            eenvoudig met het meegeleverde retourlabel — we storten je aankoopbedrag binnen vijf
+            werkdagen terug.</p>
+          {%- endif -%}
+        </div>
+      </details>
+
+      <details class="accordion" id="maatadvies">
+        <summary>Maatadvies</summary>
+        <div class="accordion__body rte">
+          {%- if product.metafields.custom.maatadvies != blank -%}
+            {{ product.metafields.custom.maatadvies }}
+          {%- else -%}
+            <p>Twijfel je tussen twee maten? Kies dan de kleinste voor een nettere pasvorm, of de
+            grootste als je het kledingstuk graag losser draagt.</p>
+            <p>Persoonlijk maatadvies nodig?
+            <a class="link-accent" href="{{ pages.contact.url | default: '/pages/contact' }}">Onze stylisten helpen je graag.</a></p>
+          {%- endif -%}
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- COMBINEER MET / ANDEREN BEKEKEN OOK -->
+{%- if section.settings.show_recommendations -%}
+  <section class="section section--alt product-recos">
+    <div class="container container--wide">
+      <div class="section-head section-head--between reveal">
+        <div>
+          <p class="eyebrow">Maak het compleet</p>
+          <h2 class="section-head__title">Combineer met</h2>
+        </div>
+        <a class="btn--ghost" href="{{ routes.all_products_collection_url }}">Bekijk alles</a>
+      </div>
+      <div class="grid grid--4 is-mobile-slider" data-autoslide="2000">
+        {%- if section.settings.related_products != blank and section.settings.related_products.count > 0 -%}
+          {%- for rec in section.settings.related_products limit: 6 -%}
+            {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
+          {%- endfor -%}
+        {%- elsif section.settings.related_collection != blank -%}
+          {%- for rec in section.settings.related_collection.products limit: 6 -%}
+            {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
+          {%- endfor -%}
+        {%- elsif recommendations.performed and recommendations.products_count > 0 -%}
+          {%- for rec in recommendations.products limit: 6 -%}
+            {%- render 'product-card', product: rec -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign reco_col = product.collections.first -%}
+          {%- if reco_col != blank and reco_col.products.size > 0 -%}
+            {%- for rec in reco_col.products limit: 6 -%}
+              {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- comment -%} Laatste terugval: NOOIT leeg — toon willekeurige winkelproducten {%- endcomment -%}
+            {%- for rec in collections.all.products limit: 6 -%}
+              {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<!-- KLANTBEOORDELINGEN voor dit product (exact dezelfde als op de homepage) -->
+{%- if section.settings.show_reviews -%}
+  {% render 'sm-reviews-trust', heading: 'Beoordelingen' %}
+{%- endif -%}
+
+<!-- MAAT-ADVISEUR: pop-up die op basis van lengte, gewicht en pasvoorkeur een maat adviseert -->
+<div class="sizefinder" data-sizefinder hidden>
+  <div class="sizefinder__overlay" data-sizefinder-close></div>
+  <div class="sizefinder__dialog" role="dialog" aria-modal="true" aria-labelledby="sizefinder-title">
+    <button class="sizefinder__close" type="button" aria-label="Sluiten" data-sizefinder-close>&times;</button>
+    <p class="eyebrow">Maat-adviseur</p>
+    <h2 id="sizefinder-title" class="sizefinder__title">Vind jouw perfecte maat</h2>
+    <p class="sizefinder__intro">Vul je lengte, gewicht en gewenste pasvorm in. Wij adviseren de maat die het beste bij je past.</p>
+
+    <form class="sizefinder__form" data-sizefinder-form novalidate>
+      <div class="sizefinder__row">
+        <div class="field">
+          <label for="sf-length">Lengte (cm)</label>
+          <input id="sf-length" name="lengte" type="number" inputmode="numeric" enterkeyhint="next" autocomplete="off" min="140" max="210" step="1" placeholder="bijv. 170" required />
+        </div>
+        <div class="field">
+          <label for="sf-weight">Gewicht (kg)</label>
+          <input id="sf-weight" name="gewicht" type="number" inputmode="numeric" enterkeyhint="go" autocomplete="off" min="40" max="150" step="1" placeholder="bijv. 65" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="sf-fit">Gewenste pasvorm</label>
+        <select id="sf-fit" name="pasvorm">
+          <option value="fitted">Aansluitend / getailleerd</option>
+          <option value="regular" selected>Normaal — zoals bedoeld</option>
+          <option value="relaxed">Ruim / relaxed</option>
+        </select>
+      </div>
+      <p class="sizefinder__error" data-sizefinder-error hidden>Vul een geldige lengte (140–210 cm) en gewicht (40–150 kg) in.</p>
+      <button class="btn sizefinder__submit" type="submit">Bereken mijn maat</button>
+    </form>
+
+    <div class="sizefinder__result" data-sizefinder-result tabindex="-1" hidden>
+      <p class="sizefinder__result-label">Onze aanbeveling</p>
+      <p class="sizefinder__size" data-sizefinder-size>Maat M</p>
+      <p class="sizefinder__explain" data-sizefinder-explain></p>
+      <button class="btn" type="button" data-sizefinder-apply>Kies deze maat</button>
+      <p class="sizefinder__disclaimer">Dit is een indicatie. Twijfel je tussen twee maten? Kies dan de grotere voor extra comfort.</p>
+      <button class="sizefinder__edit" type="button" data-sizefinder-edit>Pas je gegevens aan</button>
+    </div>
+
+    <details class="sizefinder__table">
+      <summary>Of bekijk de volledige maattabel</summary>
+      <table>
+        <thead>
+          <tr><th>Maat</th><th>NL</th><th>Borst (cm)</th><th>Taille (cm)</th><th>Heup (cm)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>XS</td><td>34</td><td>80–84</td><td>62–66</td><td>88–92</td></tr>
+          <tr><td>S</td><td>36</td><td>84–88</td><td>66–70</td><td>92–96</td></tr>
+          <tr><td>M</td><td>38</td><td>88–92</td><td>70–74</td><td>96–100</td></tr>
+          <tr><td>L</td><td>40</td><td>92–96</td><td>74–78</td><td>100–104</td></tr>
+          <tr><td>XL</td><td>42</td><td>96–102</td><td>78–84</td><td>104–110</td></tr>
+          <tr><td>XXL</td><td>44</td><td>102–108</td><td>84–90</td><td>110–116</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </div>
+</div>
+
+{%- comment -%}
+  Sectie-eigen script:
+  1) Variantkeuze via kleur-/maat-knoppen -> zet verborgen veld name="id", prijs, beschikbaarheid.
+  2) Maat-adviseur: adviseert een LETTER-maat (S/M/L/XL/XXL) die past bij de maat-opties
+     van dit product en selecteert de bijbehorende maat-knop.
+{%- endcomment -%}
+<script>
+  (function () {
+    /* ---------- VARIANTKEUZE VIA KNOPPEN ---------- */
+    var jsonEl = document.querySelector("[data-variant-json]");
+    var idField = document.querySelector("[data-variant-id]");
+    var optionBlocks = Array.prototype.slice.call(document.querySelectorAll("[data-option-block]"));
+    var priceEls = document.querySelectorAll("[data-product-price]");
+    var addButtons = document.querySelectorAll('button[name="add"]');
+    var buyNowButtons = document.querySelectorAll("[data-buy-now]");
+    var colorValueEl = document.querySelector("[data-color-value]");
+
+    var variants = [];
+    try { variants = JSON.parse(jsonEl.textContent || "[]"); } catch (err) { variants = []; }
+
+    function moneyFormat(cents) {
+      var amount = (cents / 100);
+      // Toon met NL-notatie en euroteken; valt netjes terug als Intl niet beschikbaar is.
+      try {
+        return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR" }).format(amount);
+      } catch (e) {
+        return "€ " + amount.toFixed(2).replace(".", ",");
+      }
+    }
+
+    // Huidige selectie per optiepositie (1-based) op basis van de gemarkeerde knoppen.
+    function readSelection() {
+      var sel = {};
+      optionBlocks.forEach(function (block) {
+        var pos = parseInt(block.getAttribute("data-opt-position"), 10);
+        var active = block.querySelector('[data-opt-button][aria-pressed="true"]');
+        if (active) sel[pos] = active.getAttribute("data-opt-value");
+      });
+      return sel;
+    }
+
+    function findVariant(sel) {
+      var positions = Object.keys(sel).map(Number);
+      for (var i = 0; i < variants.length; i++) {
+        var v = variants[i];
+        var match = true;
+        for (var j = 0; j < positions.length; j++) {
+          var p = positions[j];
+          if (v.options[p - 1] !== sel[p]) { match = false; break; }
+        }
+        if (match) return v;
+      }
+      return null;
+    }
+
+    // Markeer onbeschikbare combinaties: per knop kijken of er, met de overige
+    // huidige keuzes, een beschikbare variant bestaat.
+    function refreshAvailability() {
+      var sel = readSelection();
+      optionBlocks.forEach(function (block) {
+        var pos = parseInt(block.getAttribute("data-opt-position"), 10);
+        var buttons = block.querySelectorAll("[data-opt-button]");
+        Array.prototype.forEach.call(buttons, function (btn) {
+          var test = {};
+          Object.keys(sel).forEach(function (k) { test[k] = sel[k]; });
+          test[pos] = btn.getAttribute("data-opt-value");
+          var hasAvailable = variants.some(function (v) {
+            var ok = true;
+            Object.keys(test).forEach(function (k) {
+              if (v.options[Number(k) - 1] !== test[k]) ok = false;
+            });
+            return ok && v.available;
+          });
+          var existsAtAll = variants.some(function (v) {
+            return v.options[pos - 1] === btn.getAttribute("data-opt-value");
+          });
+          if (existsAtAll && !hasAvailable) {
+            btn.setAttribute("disabled", "disabled");
+          } else {
+            btn.removeAttribute("disabled");
+          }
+        });
+      });
+    }
+
+    function updateForVariant(v) {
+      if (v) {
+        if (idField) idField.value = v.id;
+        priceEls.forEach(function (el) { el.textContent = moneyFormat(v.price); });
+        Array.prototype.forEach.call(addButtons, function (btn) {
+          btn.disabled = !v.available;
+          btn.textContent = v.available ? "In winkelmand" : "Uitverkocht";
+        });
+        Array.prototype.forEach.call(buyNowButtons, function (btn) {
+          btn.disabled = !v.available;
+        });
+      } else {
+        Array.prototype.forEach.call(addButtons, function (btn) {
+          btn.disabled = true;
+          btn.textContent = "Niet beschikbaar";
+        });
+        Array.prototype.forEach.call(buyNowButtons, function (btn) {
+          btn.disabled = true;
+        });
+      }
+    }
+
+    function selectButton(btn) {
+      var block = btn.closest("[data-option-block]");
+      if (!block) return;
+      block.querySelectorAll("[data-opt-button]").forEach(function (b) {
+        var on = b === btn;
+        b.classList.toggle("is-selected", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      // Toon de gekozen kleurwaarde naast het label, indien aanwezig.
+      if (colorValueEl && block.contains(colorValueEl)) {
+        colorValueEl.textContent = btn.getAttribute("data-opt-value");
+      }
+      var sel = readSelection();
+      updateForVariant(findVariant(sel));
+      refreshAvailability();
+    }
+
+    document.querySelectorAll("[data-opt-button]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.hasAttribute("disabled")) return;
+        selectButton(btn);
+      });
+    });
+
+    // Initialiseer prijs/beschikbaarheid op basis van de huidige selectie.
+    updateForVariant(findVariant(readSelection()));
+    refreshAvailability();
+
+    /* ---------- MAAT-ADVISEUR (letter-maten) ---------- */
+    var root = document.querySelector("[data-sizefinder]");
+    if (!root) return;
+
+    var openers = document.querySelectorAll("[data-sizefinder-open]");
+    var closers = root.querySelectorAll("[data-sizefinder-close]");
+    var form = root.querySelector("[data-sizefinder-form]");
+    var errorEl = root.querySelector("[data-sizefinder-error]");
+    var result = root.querySelector("[data-sizefinder-result]");
+    var sizeEl = root.querySelector("[data-sizefinder-size]");
+    var explainEl = root.querySelector("[data-sizefinder-explain]");
+    var applyBtn = root.querySelector("[data-sizefinder-apply]");
+    var editBtn = root.querySelector("[data-sizefinder-edit]");
+    var lastFocus = null;
+    var recommendedValue = null; // de exacte maat-knopwaarde die we adviseren
+
+    function open(e) {
+      if (e) e.preventDefault();
+      lastFocus = document.activeElement;
+      root.hidden = false;
+      document.body.classList.add("is-locked");
+      var first = document.getElementById("sf-length");
+      if (first) first.focus();
+    }
+    function close() {
+      root.hidden = true;
+      document.body.classList.remove("is-locked");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    openers.forEach(function (o) { o.addEventListener("click", open); });
+    closers.forEach(function (c) { c.addEventListener("click", close); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !root.hidden) close();
+    });
+
+    // Letterladder + bijbehorende NL-maat (uit de maattabel).
+    var LETTERS = ["XS", "S", "M", "L", "XL", "XXL"];
+    var LETTER_TO_NL = { XS: "34", S: "36", M: "38", L: "40", XL: "42", XXL: "44" };
+
+    // Welke maat-knoppen heeft dit product? (de maat-optiegroep)
+    var sizeGrid = document.querySelector("[data-size-grid]");
+    function sizeButtons() {
+      return sizeGrid ? Array.prototype.slice.call(sizeGrid.querySelectorAll("[data-opt-button]")) : [];
+    }
+
+    // Map een geadviseerde letter naar een werkelijke maat-knopwaarde van dit product.
+    // Ondersteunt letter-maten (S/M/L), NL-nummers (36/38) en losse waarden.
+    function matchButtonForLetter(letter) {
+      var btns = sizeButtons();
+      if (!btns.length) return null;
+      var nl = LETTER_TO_NL[letter];
+      var letterIdx = LETTERS.indexOf(letter);
+
+      // 1) directe letter-match
+      for (var i = 0; i < btns.length; i++) {
+        var val = (btns[i].getAttribute("data-opt-value") || "").trim().toUpperCase();
+        if (val === letter) return btns[i];
+      }
+      // 2) NL-nummer-match (38, "Maat 38", "38 (M)")
+      for (var k = 0; k < btns.length; k++) {
+        var raw = (btns[k].getAttribute("data-opt-value") || "");
+        if (raw.replace(/[^0-9]/g, "") === nl) return btns[k];
+      }
+      // 3) val terug op positie in de lijst, geschaald naar de letterladder
+      var ratio = letterIdx / (LETTERS.length - 1);
+      var pick = Math.round(ratio * (btns.length - 1));
+      if (pick < 0) pick = 0;
+      if (pick > btns.length - 1) pick = btns.length - 1;
+      return btns[pick];
+    }
+
+    function recommendLetter(length, weight, fit) {
+      var base;
+      if (weight < 55) base = 0;        // XS
+      else if (weight < 61) base = 1;   // S
+      else if (weight < 68) base = 2;   // M
+      else if (weight < 76) base = 3;   // L
+      else if (weight < 85) base = 4;   // XL
+      else base = 5;                    // XXL
+
+      var idx = base;
+      if (length >= 179) idx -= 1;
+      else if (length <= 161) idx += 1;
+
+      if (fit === "fitted") idx -= 1;
+      else if (fit === "relaxed") idx += 1;
+
+      if (idx < 0) idx = 0;
+      if (idx > LETTERS.length - 1) idx = LETTERS.length - 1;
+      return LETTERS[idx];
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var length = parseInt(document.getElementById("sf-length").value, 10);
+      var weight = parseInt(document.getElementById("sf-weight").value, 10);
+      var fit = document.getElementById("sf-fit").value;
+
+      if (isNaN(length) || length < 140 || length > 210 ||
+          isNaN(weight) || weight < 40 || weight > 150) {
+        if (errorEl) errorEl.hidden = false;
+        result.hidden = true;
+        return;
+      }
+      if (errorEl) errorEl.hidden = true;
+
+      var letter = recommendLetter(length, weight, fit);
+      var nl = LETTER_TO_NL[letter];
+
+      // Bepaal de werkelijke knopwaarde die we straks selecteren.
+      var target = matchButtonForLetter(letter);
+      recommendedValue = target ? target.getAttribute("data-opt-value") : null;
+
+      var fitText = fit === "fitted" ? "aansluitende" : (fit === "relaxed" ? "ruime" : "normale");
+      sizeEl.textContent = "Maat " + letter + (nl ? " (NL " + nl + ")" : "");
+      explainEl.textContent = "Op basis van " + length + " cm, " + weight + " kg en een " +
+        fitText + " pasvorm raden we maat " + letter + " aan.";
+      result.hidden = false;
+      result.focus({ preventScroll: true });
+      result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+
+    applyBtn.addEventListener("click", function () {
+      var target = null;
+      if (recommendedValue !== null) {
+        var btns = sizeButtons();
+        for (var i = 0; i < btns.length; i++) {
+          if (btns[i].getAttribute("data-opt-value") === recommendedValue) { target = btns[i]; break; }
+        }
+      }
+      close();
+      if (target) {
+        target.click();
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+
+    if (editBtn) {
+      editBtn.addEventListener("click", function () {
+        var first = document.getElementById("sf-length");
+        if (first) {
+          first.scrollIntoView({ behavior: "smooth", block: "center" });
+          first.focus({ preventScroll: true });
+        }
+      });
+    }
+  })();
+</script>
+
+<!-- STICKY 'IN WINKELMAND'-BALK -->
+<div class="sticky-atc" data-sticky-atc aria-hidden="true">
+  <div class="sticky-atc__inner container container--wide">
+    <div class="sticky-atc__info">
+      {%- if product.featured_image != blank -%}
+        <img class="sticky-atc__thumb" src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="44" height="56" loading="lazy">
+      {%- endif -%}
+      <div class="sticky-atc__text">
+        <span class="sticky-atc__name">{{ product.title }}</span>
+        <span class="sticky-atc__price" data-product-price>{{ current_variant.price | money }}</span>
+      </div>
+    </div>
+    <button class="btn sticky-atc__btn" type="submit" name="add" form="product-form"{% unless current_variant.available %} disabled{% endunless %}>
+      {%- if current_variant.available -%}In winkelmand{%- else -%}Uitverkocht{%- endif -%}
+    </button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Productpagina",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Productinfo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Toon merk (vendor) in plaats van producttype boven de titel",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Combineer met"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recommendations",
+      "label": "Toon de sectie \"Combineer met\"",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "related_products",
+      "label": "Producten om te combineren",
+      "limit": 6,
+      "info": "Kies hier zelf welke producten je in \"Combineer met\" wilt tonen."
+    },
+    {
+      "type": "collection",
+      "id": "related_collection",
+      "label": "Terugval-collectie",
+      "info": "Wordt gebruikt als je hierboven geen losse producten kiest. Anders tonen we automatisch producten uit dezelfde collectie."
+    },
+    {
+      "type": "header",
+      "content": "Beoordelingen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Toon de sectie \"Beoordelingen\"",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Productpagina"
+    }
+  ]
+}
+{% endschema %}

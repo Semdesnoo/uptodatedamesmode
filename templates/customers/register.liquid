@@ -1,0 +1,68 @@
+{%- comment -%} Klant — account aanmaken {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .account-intro { text-align: center; max-width: 54ch; margin: 0 auto var(--sp-3); }
+  .account-intro h1 { font-size: clamp(2rem, 4.5vw, 3rem); margin: var(--sp-0_75) 0; }
+  .account-intro p { color: var(--ink-soft); }
+  .auth-card { background: var(--surface); border: var(--border); padding: clamp(1.5rem, 3vw, 2.5rem); max-width: 480px; margin-inline: auto; }
+  .auth-card h2 { font-size: 1.5rem; margin-bottom: var(--sp-1_5); }
+  .auth-form { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .auth-form .btn { margin-top: var(--sp-0_75); }
+  .auth-note { font-size: 0.8rem; color: var(--muted); }
+  .auth-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .auth-errors { list-style: none; padding: var(--sp-0_75); margin-bottom: var(--sp-1); background: rgba(180,60,40,0.08); border: 1px solid rgba(180,60,40,0.25); color: var(--sale); font-size: 0.85rem; }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><a href="{{ routes.account_login_url }}">Account</a></li>
+        <li><span aria-current="page">Aanmaken</span></li>
+      </ul>
+    </nav>
+
+    <div class="account">
+      <div class="account-intro reveal">
+        <p class="eyebrow">Mijn account</p>
+        <h1>Account aanmaken</h1>
+        <p>Maak in een minuut een gratis account aan om je bestellingen en gegevens te beheren.</p>
+      </div>
+
+      <div class="auth-card reveal">
+        <h2>Jouw gegevens</h2>
+        {%- form 'create_customer' -%}
+          {%- if form.errors -%}
+            <ul class="auth-errors">
+              {%- for field in form.errors -%}
+                <li>{{ form.errors.messages[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <div class="auth-form">
+            <div class="field">
+              <label for="reg-first">Voornaam</label>
+              <input type="text" name="customer[first_name]" id="reg-first" autocomplete="given-name" placeholder="Voornaam" value="{{ form.first_name }}" required>
+            </div>
+            <div class="field">
+              <label for="reg-last">Achternaam</label>
+              <input type="text" name="customer[last_name]" id="reg-last" autocomplete="family-name" placeholder="Achternaam" value="{{ form.last_name }}" required>
+            </div>
+            <div class="field">
+              <label for="reg-email">E-mailadres</label>
+              <input type="email" name="customer[email]" id="reg-email" autocomplete="email" placeholder="je@email.nl" value="{{ form.email }}" required>
+            </div>
+            <div class="field">
+              <label for="reg-pass">Wachtwoord</label>
+              <input type="password" name="customer[password]" id="reg-pass" autocomplete="new-password" placeholder="Kies een wachtwoord" required>
+            </div>
+            <button class="btn btn--block" type="submit">Account aanmaken</button>
+            <p class="auth-note">Heb je al een account? <a href="{{ routes.account_login_url }}">Inloggen</a>.</p>
+            <p class="auth-note">Door een account aan te maken ga je akkoord met onze voorwaarden en ons privacybeleid.</p>
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,412 @@
+{%- comment -%}
+  Contactpagina: links een Shopify {% form 'contact' %}, rechts contactgegevens
+  uit de sectie-instellingen + openingstijden (blocks) + Google Maps-embed.
+  Daaronder FAQ met native <details> en een rij snelle links.
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  #shopify-section-{{ section.id }} .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: var(--sp-1) auto 0;
+  }
+
+  #shopify-section-{{ section.id }} .contact-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+  #shopify-section-{{ section.id }} .contact-form { display: flex; flex-direction: column; gap: var(--sp-1_5); }
+  #shopify-section-{{ section.id }} .field-optional { color: var(--muted); font-weight: 400; font-size: 0.82em; text-transform: none; letter-spacing: 0; }
+  #shopify-section-{{ section.id }} .contact-form .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-1_5);
+  }
+  #shopify-section-{{ section.id }} .contact-form__thanks {
+    border: var(--border);
+    background: var(--surface);
+    padding: var(--sp-2);
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .contact-form__thanks p:first-child {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--accent-deep);
+    margin-bottom: var(--sp-0_5);
+  }
+  #shopify-section-{{ section.id }} .contact-form__thanks p:last-child { color: var(--muted); font-size: 0.9rem; }
+
+  #shopify-section-{{ section.id }} .contact-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-1);
+    align-content: start;
+  }
+  #shopify-section-{{ section.id }} .contact-info__block {
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-alt);
+    padding: clamp(1.25rem, 2.5vw, 1.6rem);
+  }
+  /* Oneven aantal: laatste kaart over de volle breedte -> boxen blijven evenredig */
+  #shopify-section-{{ section.id }} .contact-info__block:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  #shopify-section-{{ section.id }} .contact-info__label {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  #shopify-section-{{ section.id }} .contact-info__block p { color: var(--ink-soft); }
+  #shopify-section-{{ section.id }} .contact-info__hours { display: flex; justify-content: space-between; gap: var(--sp-1); }
+  #shopify-section-{{ section.id }} .contact-info__hours span:last-child { color: var(--ink); }
+
+  #shopify-section-{{ section.id }} .faq-list {
+    max-width: 760px;
+    margin-inline: auto;
+    border-top: var(--border);
+  }
+  #shopify-section-{{ section.id }} .faq-item { border-bottom: var(--border); }
+  #shopify-section-{{ section.id }} .faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    padding-block: var(--sp-1_5);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    transition: color var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .faq-item summary::-webkit-details-marker { display: none; }
+  #shopify-section-{{ section.id }} .faq-item summary:hover { color: var(--accent); }
+  #shopify-section-{{ section.id }} .faq-item summary .faq-icon {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    position: relative;
+    transition: transform var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .faq-item summary .faq-icon::before,
+  #shopify-section-{{ section.id }} .faq-item summary .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    transition: opacity var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+  #shopify-section-{{ section.id }} .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+  #shopify-section-{{ section.id }} .faq-item[open] summary .faq-icon::after { opacity: 0; }
+  #shopify-section-{{ section.id }} .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 64ch; }
+
+  #shopify-section-{{ section.id }} .quick-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-1_5);
+  }
+  #shopify-section-{{ section.id }} .quick-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: var(--sp-2);
+    background: var(--surface);
+    border: var(--border);
+    transition: border-color var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .quick-link:hover { border-color: var(--accent); }
+  #shopify-section-{{ section.id }} .quick-link h3 { font-size: 1.1rem; }
+  #shopify-section-{{ section.id }} .quick-link p { color: var(--muted); font-size: 0.9rem; }
+  #shopify-section-{{ section.id }} .quick-link span {
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  #shopify-section-{{ section.id }} .contact-map {
+    display: block;
+    width: 100%;
+    height: clamp(300px, 42vw, 460px);
+    border: 1px solid var(--line);
+  }
+  #shopify-section-{{ section.id }} .contact-map__link {
+    text-align: center;
+    margin-top: var(--sp-1);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    #shopify-section-{{ section.id }} .contact-layout { grid-template-columns: 1fr; gap: var(--sp-3); }
+    #shopify-section-{{ section.id }} .quick-links { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    #shopify-section-{{ section.id }} .contact-form .field-row { grid-template-columns: 1fr; }
+    #shopify-section-{{ section.id }} .contact-info { grid-template-columns: 1fr; }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign info_email = section.settings.company_email | default: shop.email
+  assign info_phone = section.settings.company_phone
+  assign info_address = section.settings.company_address
+  assign map_address = section.settings.map_address | default: info_address
+-%}
+
+<section class="page-header">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: section.settings.heading }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <p class="page-header__intro reveal" data-delay="2">{{ section.settings.intro }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-layout">
+
+      {%- comment -%} LINKS: Shopify-contactformulier {%- endcomment -%}
+      <div class="reveal">
+        {%- if form.posted_successfully? -%}
+          <div class="contact-form__thanks" role="status" tabindex="-1">
+            <p>Bedankt voor je bericht!</p>
+            <p>We hebben je e-mail goed ontvangen en reageren meestal binnen 1 werkdag.</p>
+          </div>
+        {%- else -%}
+          {%- form 'contact', class: 'contact-form' -%}
+            {%- if form.errors -%}
+              <div class="contact-form__thanks" role="alert" tabindex="-1">
+                <p>Er ging iets mis</p>
+                <p>{{ form.errors | default_errors }}</p>
+              </div>
+            {%- endif -%}
+
+            <div class="field-row">
+              <div class="field">
+                <label for="contact-naam">Naam</label>
+                <input id="contact-naam" name="contact[name]" type="text" placeholder="Je naam" autocomplete="name" value="{{ form.name }}" required />
+              </div>
+              <div class="field">
+                <label for="contact-email">E-mailadres</label>
+                <input id="contact-email" name="contact[email]" type="email" placeholder="Je e-mailadres" autocomplete="email" value="{{ form.email }}" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="contact-onderwerp">Onderwerp</label>
+              <select id="contact-onderwerp" name="contact[Onderwerp]" required>
+                <option value="" disabled selected>Kies een onderwerp</option>
+                <option value="Retour aanvragen">Retour aanvragen</option>
+                <option value="Ruilen">Ruilen</option>
+                <option value="Vraag over mijn bestelling">Vraag over mijn bestelling</option>
+                <option value="Maat- &amp; styladvies">Maat- &amp; styladvies</option>
+                <option value="Overig">Overig</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="contact-bestelnummer">Bestelnummer <span class="field-optional">(bij een bestelling of retour)</span></label>
+              <input id="contact-bestelnummer" name="contact[Bestelnummer]" type="text" placeholder="bijv. #1234" value="{{ form.Bestelnummer }}" />
+            </div>
+
+            <div class="field">
+              <label for="contact-bericht">Bericht</label>
+              <textarea id="contact-bericht" name="contact[body]" placeholder="Waarmee kunnen we je helpen? Vermeld bij een retour het artikel en de reden." required>{{ form.body }}</textarea>
+            </div>
+
+            <button class="btn" type="submit">Versturen</button>
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} RECHTS: contactgegevens {%- endcomment -%}
+      <aside class="contact-info reveal" data-delay="1">
+        {%- if info_email != blank -%}
+          <div class="contact-info__block">
+            <p class="contact-info__label">E-mail</p>
+            <p><a class="link-accent" href="mailto:{{ info_email }}">{{ info_email }}</a></p>
+          </div>
+        {%- endif -%}
+
+        {%- if info_phone != blank -%}
+          <div class="contact-info__block">
+            <p class="contact-info__label">Telefoon</p>
+            <p><a class="link-accent" href="tel:{{ info_phone | remove: ' ' }}">{{ info_phone }}</a></p>
+            <p class="text-muted" style="font-size:0.85rem;">Bereikbaar tijdens openingstijden</p>
+          </div>
+        {%- endif -%}
+
+        {%- assign hour_blocks = section.blocks | where: 'type', 'opening_hours' -%}
+        {%- if hour_blocks.size > 0 -%}
+          <div class="contact-info__block">
+            <p class="contact-info__label">{{ section.settings.hours_label }}</p>
+            {%- for block in hour_blocks -%}
+              <p class="contact-info__hours" {{ block.shopify_attributes }}>
+                <span>{{ block.settings.day }}</span><span>{{ block.settings.hours }}</span>
+              </p>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if info_address != blank -%}
+          <div class="contact-info__block">
+            <p class="contact-info__label">Bezoek- &amp; postadres</p>
+            <p>{{ info_address | newline_to_br }}</p>
+            {%- if section.settings.address_note != blank -%}
+              <p class="text-muted" style="font-size:0.85rem; margin-top:0.5rem;">{{ section.settings.address_note }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.business_details != blank -%}
+          <div class="contact-info__block">
+            <p class="contact-info__label">Bedrijfsgegevens</p>
+            <p>{{ section.settings.business_details | newline_to_br }}</p>
+          </div>
+        {%- endif -%}
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+{%- if map_address != blank or section.settings.map_embed_url != blank -%}
+  <section class="section section--tight">
+    <div class="container container--wide">
+      {%- comment -%} Accepteert de volledige Google-insluitcode (<iframe ...>) of alleen de URL; pakt automatisch de juiste src. Een gewone Google-link valt terug op de OSM-kaart. {%- endcomment -%}
+      {%- assign custom_map = section.settings.map_embed_url | strip -%}
+      {%- if custom_map contains 'src="' -%}
+        {%- assign custom_map = custom_map | split: 'src="' | last | split: '"' | first -%}
+      {%- endif -%}
+      {%- if custom_map contains '/maps/embed' or custom_map contains 'output=embed' or custom_map contains 'openstreetmap.org/export' -%}
+        {%- assign map_src = custom_map -%}
+      {%- else -%}
+        {%- assign map_src = 'https://www.google.com/maps?q=Van%20Beethovensingel%2058%2C%203055%20JK%20Rotterdam&output=embed' -%}
+      {%- endif -%}
+      <iframe class="contact-map reveal" src="{{ map_src }}" title="Locatie {{ shop.name }}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+{%- endif -%}
+
+{%- comment -%} FAQ-dropdowns verwijderd op verzoek — contact = formulier + gegevens + kaart {%- endcomment -%}
+
+{%- assign link_blocks = section.blocks | where: 'type', 'quick_link' -%}
+{%- if link_blocks.size > 0 -%}
+  <section class="section">
+    <div class="container container--wide">
+      <div class="quick-links">
+        {%- for block in link_blocks -%}
+          <a class="quick-link reveal" {% if forloop.index0 > 0 %}data-delay="{{ forloop.index0 }}"{% endif %} href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+            {%- if block.settings.link_label != blank -%}
+              <span>{{ block.settings.link_label }}</span>
+            {%- endif -%}
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+<script>
+  /* Na verzenden: scroll de bevestiging (of foutmelding) in beeld zodat de
+     bezoeker meteen ziet dat het bericht is verstuurd. */
+  (function () {
+    var box = document.querySelector(".contact-form__thanks");
+    if (!box) return;
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+    if (box.focus) box.focus();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "Pagina-header" },
+    { "type": "text", "id": "eyebrow", "label": "Bovenkopje (eyebrow)", "default": "Klantcontact" },
+    { "type": "text", "id": "heading", "label": "Titel (fallback als pagina geen titel heeft)", "default": "Contact" },
+    { "type": "text", "id": "intro", "label": "Introzin", "default": "We helpen je graag — meestal binnen 1 werkdag antwoord." },
+
+    { "type": "header", "content": "Contactgegevens" },
+    { "type": "text", "id": "company_email", "label": "E-mailadres", "info": "Leeg laten gebruikt het winkel-e-mailadres.", "default": "info@uptodatedamesmode.nl" },
+    { "type": "text", "id": "company_phone", "label": "Telefoonnummer", "default": "" },
+    { "type": "textarea", "id": "company_address", "label": "Bezoek- & postadres", "default": "Up to Date Damesmode\nVan Beethovensingel 58\n3055 JK Rotterdam\nNederland" },
+    { "type": "text", "id": "address_note", "label": "Notitie onder adres", "default": "Kom gerust langs als we geopend zijn." },
+    { "type": "textarea", "id": "business_details", "label": "Bedrijfsgegevens", "default": "Up to Date Damesmode\nDetailhandel in kleding en aanverwante artikelen alsmede styliste\nEenmanszaak · Hoofdvestiging\nKVK-nummer 51041715\nVestigingsnummer 000021135061" },
+    { "type": "text", "id": "hours_label", "label": "Label openingstijden", "default": "Openingstijden klantenservice" },
+
+    { "type": "header", "content": "Google Maps" },
+    { "type": "text", "id": "map_address", "label": "Kaart-adres", "info": "Leeg laten gebruikt het bezoekadres hierboven.", "default": "Van Beethovensingel 58, 3055 JK Rotterdam" },
+    { "type": "text", "id": "map_embed_url", "label": "Eigen Google-kaart (optioneel)", "info": "Leeg laten = standaardkaart op het juiste adres. Wil je een Google-kaart? In Google Maps: Delen → Een kaart insluiten → 'HTML KOPIEREN' → plak hier de hele code. Een gewone Google-link werkt NIET." },
+
+    { "type": "header", "content": "FAQ-koppen" },
+    { "type": "text", "id": "faq_eyebrow", "label": "FAQ bovenkopje", "default": "Veelgestelde vragen" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ titel", "default": "Snel een antwoord" },
+    { "type": "text", "id": "faq_subheading", "label": "FAQ subtitel", "default": "Misschien staat het antwoord op je vraag er al tussen." }
+  ],
+  "blocks": [
+    {
+      "type": "opening_hours",
+      "name": "Openingstijd",
+      "settings": [
+        { "type": "text", "id": "day", "label": "Dag(en)", "default": "Maandag t/m vrijdag" },
+        { "type": "text", "id": "hours", "label": "Tijden", "default": "09:00 – 17:30" }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "Veelgestelde vraag",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Vraag", "default": "Verzending" },
+        { "type": "richtext", "id": "answer", "label": "Antwoord", "default": "<p>We verzenden naar Nederland en België. Bestellingen boven €75 zijn gratis.</p>" }
+      ]
+    },
+    {
+      "type": "quick_link",
+      "name": "Snelle link",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titel", "default": "Maattabel & pasvorm" },
+        { "type": "text", "id": "text", "label": "Tekst", "default": "Bekijk afmetingen en pasvorm bij elk artikel in de collectie." },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "text", "id": "link_label", "label": "Link-label", "default": "Naar de collectie" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact",
+      "blocks": [
+        { "type": "opening_hours", "settings": { "day": "Maandag t/m vrijdag", "hours": "09:00 – 17:30" } },
+        { "type": "opening_hours", "settings": { "day": "Zaterdag", "hours": "10:00 – 16:00" } },
+        { "type": "opening_hours", "settings": { "day": "Zondag", "hours": "Gesloten" } },
+        { "type": "faq", "settings": { "question": "Verzending", "answer": "<p>We verzenden naar Nederland en België. Bestellingen boven €75 zijn gratis; daaronder rekenen we €4,95 verzendkosten. Bestel je voor 22:00 uur op een werkdag, dan ligt je pakket de volgende dag in huis.</p>" } },
+        { "type": "faq", "settings": { "question": "Retourneren", "answer": "<p>Je hebt 30 dagen bedenktijd. Past iets niet of bevalt het toch niet? Meld je retour aan via je account of per e-mail, stuur het ongedragen artikel met label terug en wij storten het bedrag binnen 5 werkdagen terug. Retourneren is gratis binnen Nederland.</p>" } },
+        { "type": "faq", "settings": { "question": "Betaalmethoden", "answer": "<p>Je kunt veilig afrekenen met iDEAL, creditcard (Visa & Mastercard), PayPal en Klarna. Met Klarna betaal je desgewenst achteraf, binnen 14 dagen na ontvangst van je bestelling.</p>" } },
+        { "type": "faq", "settings": { "question": "Maatadvies", "answer": "<p>Twijfel je over je maat? Op elke productpagina vind je een maattabel met afmetingen in centimeters. Kom je er niet uit, mail dan gerust je vragen en lengte/maat naar onze stylisten — we adviseren je graag persoonlijk.</p>" } },
+        { "type": "faq", "settings": { "question": "Levertijd", "answer": "<p>Voorraadartikelen worden dezelfde of de volgende werkdag verzonden. Binnen Nederland ontvang je je bestelling doorgaans binnen 1 tot 2 werkdagen, in België binnen 2 tot 3 werkdagen. Je ontvangt altijd een track & trace-code per e-mail.</p>" } },
+        { "type": "quick_link", "settings": { "title": "Maattabel & pasvorm", "text": "Bekijk afmetingen en pasvorm bij elk artikel in de collectie.", "link_label": "Naar de collectie" } },
+        { "type": "quick_link", "settings": { "title": "Verzending & retour", "text": "Alles over levertijden, kosten en het terugsturen van een bestelling.", "link_label": "Lees meer" } },
+        { "type": "quick_link", "settings": { "title": "Ons verhaal", "text": "Ontdek waar Up to Date Damesmode voor staat en hoe onze collecties ontstaan.", "link_label": "Over Up to Date Damesmode" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,243 @@
+<style>
+    /* Hero-split: kop/intro naast een .media-placeholder */
+    .about-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding-block: clamp(3rem, 7vw, 6rem);
+    }
+    .about-hero__body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp-1);
+    }
+    .about-hero__body h1 {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+    }
+    .about-hero__media .media { aspect-ratio: 4 / 3; }
+    .about-hero__media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    /* Merkverhaal: gecentreerde, rustige tekstkolom */
+    .story-prose {
+      max-width: 62ch;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1_5);
+    }
+    .story-prose p {
+      font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+    .story-prose .signature {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--ink);
+    }
+
+    /* Waarden-sectie */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-2);
+    }
+    .value {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-0_75);
+    }
+    .value__icon {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: var(--border);
+      color: var(--accent);
+    }
+    .value__icon svg { width: 22px; height: 22px; }
+    .value h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+    .value p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Manifest / citaat-blok */
+    .manifest__quote {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.6rem, 4vw, 2.85rem);
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      max-width: 22ch;
+      margin-inline: auto;
+      text-align: center;
+    }
+    .manifest__quote em,
+    .manifest__quote .text-accent {
+      color: var(--accent);
+      font-style: italic;
+    }
+    .manifest__cite {
+      display: block;
+      margin-top: var(--sp-2);
+      font-family: var(--font-body);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--bg) 70%, transparent);
+    }
+
+
+    /* Team-sectie (de twee makers) */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-2);
+      max-width: 620px;
+      margin-inline: auto;
+    }
+    .team-grid img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-note {
+      margin-top: var(--sp-2);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .team-note strong { color: var(--ink-soft); letter-spacing: 0.04em; }
+    .team-member__name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      margin-top: var(--sp-1);
+    }
+    .team-member__role {
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Editorial-media met geuploade foto */
+    .editorial__media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* CTA-sectie naar de collectie */
+    .about-cta {
+      text-align: center;
+      max-width: 56ch;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-1_5);
+    }
+    .about-cta h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); }
+    .about-cta p { color: var(--ink-soft); }
+    /* Onderste blok: witte achtergrond met zwarte tekst */
+    .about-cta-section { background-color: var(--bg); }
+    .about-cta-section .about-cta h2 { color: var(--ink); }
+    .about-cta-section .about-cta p { color: var(--ink-soft); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .about-hero { grid-template-columns: 1fr; gap: var(--sp-2); }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-1); }
+    }
+</style>
+
+<!-- ============================================================
+     HERO-SPLIT: kop "Ons verhaal" + introzin naast de hero-afbeelding.
+     ============================================================ -->
+<section class="section--tight">
+  <div class="container container--wide">
+    <!-- Broodkruimel voor context -->
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">Ons verhaal</span></li>
+      </ul>
+    </nav>
+
+    <div class="about-hero">
+      <div class="about-hero__body reveal">
+        <p class="eyebrow">Wie zijn wij</p>
+        <h1>{{ settings.aboutpage_heading | default: 'Ons verhaal' }}</h1>
+        <div class="lead">{%- if settings.aboutpage_intro != blank -%}{{ settings.aboutpage_intro }}{%- else -%}<p>Ik ben Mirjam Verbeek en verkoop al jaren met veel plezier fashion en damesmode. Welkom bij Up to Date Damesmode — jouw vertrouwde adres in Hillegersberg.</p>{%- endif -%}</div>
+        <a class="btn btn--outline" href="/collections/all">Ontdek de collectie</a>
+      </div>
+      <div class="about-hero__media reveal" data-delay="1">
+        {%- if settings.aboutpage_image != blank -%}
+          <figure class="media media--landscape">{{ settings.aboutpage_image | image_url: width: 1200 | image_tag: loading: 'lazy', alt: settings.aboutpage_heading, widths: '400,600,800,1200', sizes: '(max-width:900px) 100vw, 50vw' }}</figure>
+        {%- else -%}
+          <div class="media media--landscape" data-label="Onze winkel in Hillegersberg · Up to Date Damesmode" role="img" aria-label="Het atelier van Up to Date Damesmode, met stoffen in natuurlijke tinten"></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MERKVERHAAL: warme, persoonlijke tekst in alinea's
+     ============================================================ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <p class="eyebrow">Onze winkel</p>
+      <h2 class="section-head__title">{{ settings.aboutpage_story_heading | default: 'Een vertrouwd adres in Hillegersberg' }}</h2>
+    </div>
+    <div class="story-prose reveal" data-delay="1">
+      {%- if settings.aboutpage_story != blank -%}{{ settings.aboutpage_story }}{%- else -%}<p>Ik ben Mirjam Verbeek en verkoop al jaren met hart en ziel fashion en damesmode. In al die jaren heb ik ontelbaar veel vrouwen mogen helpen aan een outfit waarin ze zich écht mooi en zelfverzekerd voelen.</p><p>Al een lange tijd zijn wij een vertrouwd gezicht in Hillegersberg. Sinds kort zijn we verhuisd naar een nieuwe locatie in Hillegersberg: een gloednieuwe winkel met meer ruimte, dezelfde persoonlijke aandacht en natuurlijk onze nieuwste collectie.</p><p>Kom gerust gezellig langs om alles op je gemak te bekijken en te passen. Liever vanuit huis shoppen? Bestel dan het product uit onze winkel; wij versturen het direct met de post naar je toe.</p>{%- endif -%}
+      <p class="signature">Tot snel, Mirjam Verbeek</p>
+    </div>
+  </div>
+</section>
+
+<!-- (Waarden-sectie, quote-blok, team-sectie en KVK-blok verwijderd op verzoek) -->
+
+<!-- ============================================================
+     CTA-SECTIE: naar de collectie
+     ============================================================ -->
+<section class="section about-cta-section">
+  <div class="container">
+    <div class="about-cta reveal">
+      <p class="eyebrow">Klaar om te ontdekken?</p>
+      <h2>Ontdek de collectie</h2>
+      <p>Blader door onze collectie en vind iets waar je je goed in voelt. Kom je liever langs? Je bent van harte welkom in onze nieuwe winkel in Hillegersberg.</p>
+      <a class="btn" href="/collections/all">Naar de collectie</a>
+    </div>
+  </div>
+</section>

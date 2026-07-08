@@ -1,0 +1,58 @@
+{%- comment -%}
+  Reviews (Trustpilot) — homepage-sectie. De opmaak zit in het gedeelde
+  snippet 'sm-reviews-trust', zodat de productpagina exact dezelfde reviews toont.
+{%- endcomment -%}
+{% render 'sm-reviews-trust',
+  eyebrow: section.settings.eyebrow,
+  heading: section.settings.heading,
+  score_label: section.settings.score_label,
+  score: section.settings.score,
+  review_count: section.settings.review_count,
+  button_label: section.settings.button_label,
+  button_link: section.settings.button_link,
+  blocks: section.blocks
+%}
+
+{% schema %}
+{
+  "name": "Reviews (Trustpilot)",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Bovenkop", "default": "Beoordeeld door onze klanten" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Wat onze klanten zeggen" },
+    { "type": "text", "id": "score_label", "label": "Beoordelingslabel", "default": "Uitstekend" },
+    { "type": "text", "id": "score", "label": "TrustScore (cijfer)", "default": "4,8" },
+    { "type": "text", "id": "review_count", "label": "Aantal reviews", "default": "12" },
+    { "type": "header", "content": "Knop (optioneel)" },
+    { "type": "text", "id": "button_label", "label": "Knoplabel (leeg = geen knop)", "default": "" },
+    { "type": "url", "id": "button_link", "label": "Knoplink" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "label": "Aantal sterren", "default": 5 },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Aanrader!" },
+        { "type": "textarea", "id": "text", "label": "Review", "default": "Snelle levering en mooie kwaliteit. Zeker voor herhaling vatbaar." },
+        { "type": "text", "id": "name", "label": "Naam", "default": "Tevreden klant" },
+        { "type": "text", "id": "date", "label": "Datum", "default": "onlangs" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews (Trustpilot)",
+      "blocks": [
+        { "type": "review", "settings": { "title": "Snelle levering en top kwaliteit!", "text": "Binnen een dag geleverd en de kwaliteit is echt heerlijk. Zeker voor herhaling vatbaar.", "name": "Sandra V.", "date": "2 dagen geleden" } },
+        { "type": "review", "settings": { "title": "Persoonlijk advies via de chat", "text": "Ik twijfelde over mijn maat en werd super vriendelijk geholpen. De jurk zit perfect.", "name": "Miranda K.", "date": "1 week geleden" } },
+        { "type": "review", "settings": { "title": "Mooie collectie en fijne pasvorm", "text": "Elke week wat nieuws en het staat allemaal even mooi. Mijn favoriete webshop geworden.", "name": "Els D.", "date": "3 weken geleden" } },
+        { "type": "review", "settings": { "title": "Altijd iets moois te vinden", "text": "Wekelijks nieuwe items en de kwaliteit blijft top. Ik bestel hier met een gerust hart.", "name": "Chantal B.", "date": "4 dagen geleden" } },
+        { "type": "review", "settings": { "title": "Snel en netjes verpakt", "text": "Bestelling kwam supersnel en prachtig verpakt binnen. Echt een aanrader!", "name": "Priscilla M.", "date": "6 dagen geleden" } },
+        { "type": "review", "settings": { "title": "Top klantenservice", "text": "Vraag gesteld en binnen no-time antwoord. Zo fijn dat je echt geholpen wordt.", "name": "Bianca T.", "date": "2 weken geleden" } },
+        { "type": "review", "settings": { "title": "Kwaliteit voor een eerlijke prijs", "text": "De stoffen voelen luxe en de pasvorm is heerlijk. Ik krijg steeds complimenten.", "name": "Nadia H.", "date": "1 maand geleden" } },
+        { "type": "review", "settings": { "rating": 4, "title": "Mijn nieuwe favoriete winkel", "text": "Alles klopt: collectie service en levering. Ik kom zeker terug.", "name": "Wendy R.", "date": "5 dagen geleden" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

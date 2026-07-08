@@ -1,0 +1,120 @@
+{%- comment -%}
+  Overzicht van alle collecties: grid met .media-tegel + titel, link naar collection.url.
+  Hergebruikt de .category-tile-stijl uit base.css.
+{%- endcomment -%}
+
+<section class="section section--tight collection-hero">
+  <div class="container container--wide">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ section.settings.title | default: 'Collecties' }}</span></li>
+      </ul>
+    </nav>
+
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="display-2 reveal" data-delay="1">{{ section.settings.title | default: 'Collecties' }}</h1>
+    {%- if section.settings.intro != blank -%}
+      <div class="collection-hero__intro lead reveal" data-delay="2">{{ section.settings.intro }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+<section class="section section--tight" style="padding-top:0;">
+  <div class="container container--wide">
+    {%- paginate collections by section.settings.collections_per_page -%}
+      {%- if collections.size > 0 -%}
+        <div class="grid grid--{{ section.settings.columns_desktop }}">
+          {%- for collection in collections -%}
+            <a class="category-tile reveal" href="{{ collection.url }}">
+              {%- if collection.featured_image -%}
+                <div class="media media--portrait">
+                  {{ collection.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: collection.title, widths: '300, 400, 600, 800', sizes: '(max-width: 749px) 90vw, 33vw' }}
+                </div>
+              {%- else -%}
+                <div class="media media--portrait" data-label="{{ collection.title | escape }}"></div>
+              {%- endif -%}
+              <div class="category-tile__label">
+                <h3>{{ collection.title }}</h3>
+                <span>{{ collection.products_count }} artikelen</span>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="Paginering">
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                {%- if part.title == '&raquo;' -%}
+                  <a class="pagination__next" href="{{ part.url }}" aria-label="Volgende pagina">Volgende</a>
+                {%- elsif part.title == '&laquo;' -%}
+                  <a href="{{ part.url }}" aria-label="Vorige pagina">&laquo;</a>
+                {%- else -%}
+                  <a href="{{ part.url }}">{{ part.title }}</a>
+                {%- endif -%}
+              {%- else -%}
+                {%- if part.title == '&hellip;' -%}
+                  <span class="pagination__dots" aria-hidden="true">…</span>
+                {%- else -%}
+                  <span class="is-current" aria-current="page">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </nav>
+        {%- endif -%}
+      {%- else -%}
+        <p data-no-results>Er zijn nog geen collecties.</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collectie-overzicht",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Ontdek"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Collecties"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductietekst",
+      "default": "<p>Blader door alle collecties van Up to Date Damesmode.</p>"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "label": "Collecties per pagina",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Kolommen op desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    }
+  ]
+}
+{% endschema %}

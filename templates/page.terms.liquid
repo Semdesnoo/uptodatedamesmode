@@ -1,0 +1,190 @@
+<style>
+  /* Pagina-header (gecentreerd) */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: var(--sp-1);
+  }
+
+  /* Leeskolom: één smalle, rustige kolom voor de juridische tekst */
+  .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .legal__lead {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    padding-bottom: var(--sp-2);
+    margin-bottom: var(--sp-2);
+    border-bottom: var(--border);
+  }
+
+  /* Genummerde artikelen */
+  .legal-article + .legal-article {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .legal-article h2 {
+    font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+    margin-bottom: var(--sp-1);
+    scroll-margin-top: 96px;
+  }
+  .legal-article h3 {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+
+  /* Alinea's & lijsten: ruime regelafstand, prettig leesbaar */
+  .legal p {
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-1);
+  }
+  .legal p:last-child { margin-bottom: 0; }
+  .legal ul,
+  .legal ol {
+    list-style: revert;
+    padding-left: 1.4rem;
+    margin-bottom: var(--sp-1);
+    color: var(--ink-soft);
+  }
+  .legal li { margin-bottom: 0.4rem; }
+  .legal li:last-child { margin-bottom: 0; }
+  .legal address {
+    font-style: normal;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+
+  /* Afbeelding-blok */
+  .legal-figure {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .legal-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: var(--border);
+  }
+  .legal-figure figcaption {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: var(--sp-0_75);
+    text-align: center;
+  }
+
+  /* Slot-/contactblok onderaan de tekst */
+  .legal__note {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: var(--bg-alt);
+    border: var(--border);
+  }
+  .legal__note p { margin-bottom: var(--sp-0_5); }
+  .legal__note p:last-child { margin-bottom: 0; }
+</style>
+
+<!-- BREADCRUMB -->
+<div class="container">
+  <nav class="breadcrumb" aria-label="Kruimelpad">
+    <ul>
+      <li><a href="{{ routes.root_url }}">Home</a></li>
+      <li><span aria-current="page">{{ page.title | default: 'Algemene voorwaarden' }}</span></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- PAGINA-HEADER: eyebrow + titel + laatst bijgewerkt -->
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow reveal">Juridisch</p>
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: 'Algemene voorwaarden' }}</h1>
+    <p class="page-header__meta reveal" data-delay="2">Laatst bijgewerkt: 22 juni 2026</p>
+  </div>
+</section>
+
+<!-- LEESKOLOM: juridische tekst in genummerde artikelen -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="legal reveal">
+
+      <div class="legal__lead"><p>Deze algemene voorwaarden zijn van toepassing op alle aanbiedingen, bestellingen en overeenkomsten die via de webshop van Up to Date Damesmode tot stand komen. Lees ze zorgvuldig door voordat je een bestelling plaatst. Door een bestelling te plaatsen ga je akkoord met deze voorwaarden.</p></div>
+
+      <article class="legal-article">
+        <h2>1. Definities</h2>
+        <p>In deze algemene voorwaarden wordt verstaan onder:</p><ul><li><strong>Ondernemer:</strong> Up to Date Damesmode, die producten op afstand aan consumenten aanbiedt.</li><li><strong>Consument:</strong> de natuurlijke persoon die niet handelt in de uitoefening van beroep of bedrijf en met de ondernemer een overeenkomst aangaat.</li><li><strong>Overeenkomst:</strong> de overeenkomst op afstand die tussen de ondernemer en de consument tot stand komt via de webshop.</li><li><strong>Herroepingsrecht:</strong> de mogelijkheid van de consument om binnen de bedenktijd af te zien van de overeenkomst.</li><li><strong>Bedenktijd:</strong> de termijn waarbinnen de consument gebruik kan maken van het herroepingsrecht.</li><li><strong>Dag:</strong> kalenderdag.</li><li><strong>Werkdag:</strong> elke dag van maandag tot en met vrijdag, met uitzondering van algemeen erkende feestdagen.</li></ul>
+      </article>
+
+      <article class="legal-article">
+        <h2>2. Identiteit van de ondernemer</h2>
+        <p>Up to Date Damesmode<br>Detailhandel in kleding en aanverwante artikelen alsmede styliste<br>Van Beethovensingel 58<br>3055 JK Rotterdam<br>Nederland</p><p>Eenmanszaak &middot; Hoofdvestiging<br>KVK-nummer: 51041715<br>Vestigingsnummer: 000021135061<br>E-mail: <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a></p><p>Ons btw-identificatienummer wordt op verzoek verstrekt en vermeld op de factuur. Je kunt ons per e-mail bereiken; we reageren doorgaans binnen 1&ndash;2 werkdagen.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>3. Toepasselijkheid</h2>
+        <p>Deze algemene voorwaarden zijn van toepassing op elk aanbod van de ondernemer en op elke tot stand gekomen overeenkomst op afstand tussen de ondernemer en de consument.</p><p>Voordat de overeenkomst wordt gesloten, wordt de tekst van deze algemene voorwaarden langs elektronische weg aan de consument beschikbaar gesteld, op zodanige wijze dat deze door de consument op een eenvoudige manier kan worden opgeslagen op een duurzame gegevensdrager.</p><p>Afwijkingen van deze voorwaarden zijn uitsluitend geldig indien deze vooraf en schriftelijk door de ondernemer zijn bevestigd. Op de verwerking van persoonsgegevens is daarnaast ons <a href="/pages/privacybeleid">privacybeleid</a> van toepassing; voor het gebruik van cookies verwijzen wij naar ons <a href="/pages/cookies">cookiebeleid</a>.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>4. Het aanbod</h2>
+        <p>Indien een aanbod een beperkte geldigheidsduur heeft of onder voorwaarden geschiedt, wordt dit nadrukkelijk in het aanbod vermeld. Het aanbod bevat een volledige en nauwkeurige omschrijving van de aangeboden producten, zodat de consument een goede beoordeling van het aanbod kan maken.</p><p>Wij streven ernaar de kleuren, materialen en afmetingen van onze producten zo waarheidsgetrouw mogelijk weer te geven. Afbeeldingen zijn een waarheidsgetrouwe weergave van de aangeboden producten; kleine afwijkingen in kleurweergave als gevolg van je beeldscherm kunnen voorkomen en vormen geen grond voor schadevergoeding.</p><p>Alle prijzen zijn vermeld in euro's en inclusief 21% btw, maar exclusief eventuele verzendkosten, tenzij uitdrukkelijk anders vermeld. Kennelijke vergissingen of kennelijke fouten in het aanbod, zoals een evidente prijs- of typefout, binden de ondernemer niet.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>5. De overeenkomst</h2>
+        <p>De overeenkomst komt tot stand op het moment dat de consument het aanbod aanvaardt en voldoet aan de daarbij gestelde voorwaarden, dat wil zeggen op het moment dat de bestelling wordt geplaatst en afgerond.</p><p>De ondernemer bevestigt de ontvangst van de bestelling onverwijld langs elektronische weg, doorgaans per e-mail. Zolang de ontvangst van deze aanvaarding niet is bevestigd, kan de consument de overeenkomst ontbinden.</p><p>De ondernemer treft passende technische en organisatorische maatregelen ter beveiliging van de elektronische overdracht van gegevens en zorgt voor een veilige webomgeving.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>6. Prijzen &amp; betaling</h2>
+        <p>De in het aanbod genoemde prijzen zijn inclusief 21% btw. De prijs die geldt op het moment van bestellen is bindend, ook indien de prijs nadien wijzigt.</p><p><strong>Betaalmethoden.</strong> Je kunt veilig afrekenen met de volgende betaalmethoden:</p><ul><li>iDEAL</li><li>Creditcard (Visa en Mastercard)</li><li>PayPal</li><li>Klarna (achteraf betalen, binnen 14 dagen na ontvangst)</li></ul><p><strong>Betaaltermijn.</strong> Betaling vindt in beginsel direct bij het plaatsen van de bestelling plaats. Maak je gebruik van achteraf betalen via Klarna, dan geldt de daarbij vermelde betaaltermijn. De consument is verplicht onjuistheden in verstrekte of vermelde betaalgegevens onverwijld aan de ondernemer te melden. Bij niet-tijdige betaling kan de ondernemer, na ingebrekestelling, de wettelijk toegestane kosten in rekening brengen. Zie ook onze pagina <a href="/pages/betaalmethoden">betaalmethoden</a>.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>7. Levering &amp; uitvoering</h2>
+        <p>De ondernemer neemt de grootst mogelijke zorgvuldigheid in acht bij het in ontvangst nemen en uitvoeren van bestellingen. Als plaats van levering geldt het adres dat de consument aan de ondernemer kenbaar heeft gemaakt.</p><p><strong>Levertijd.</strong> Voorraadartikelen worden doorgaans dezelfde of de eerstvolgende werkdag verzonden. Bestellingen worden zo spoedig mogelijk, maar uiterlijk binnen 30 dagen, uitgevoerd, tenzij een andere leveringstermijn is overeengekomen. Lukt het niet om binnen deze termijn te leveren, dan ontvang je hierover tijdig bericht en heb je het recht de overeenkomst kosteloos te ontbinden.</p><p><strong>Verzendkosten.</strong></p><ul><li>Bestellingen vanaf €75 binnen Nederland: gratis verzending.</li><li>Bestellingen onder €75 binnen Nederland: €4,95 verzendkosten.</li><li>Bestellingen naar België: €6,95 verzendkosten.</li></ul><p><strong>Risico-overgang.</strong> Het risico van beschadiging en/of vermissing van producten berust bij de ondernemer tot het moment van bezorging aan de consument of een vooraf aangewezen en aan de ondernemer bekendgemaakte vertegenwoordiger, tenzij uitdrukkelijk anders is overeengekomen. Meer informatie vind je op de pagina <a href="/pages/verzending-retour">verzending &amp; retour</a>.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>8. Herroepingsrecht</h2>
+        <p>Bij de aankoop van producten heeft de consument de mogelijkheid de overeenkomst zonder opgave van redenen te ontbinden gedurende een bedenktijd van 30 dagen. Deze termijn gaat in op de dag nadat de consument, of een vooraf door hem aangewezen derde, het product heeft ontvangen.</p><p><strong>Hoe te herroepen.</strong> Wil je gebruikmaken van je herroepingsrecht, meld dit dan binnen de bedenktijd via je account of per e-mail aan <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>. Je kunt daarvoor het modelformulier voor herroeping gebruiken, maar dit is niet verplicht. Na de melding heb je nog 14 dagen om het product terug te sturen.</p><p>Tijdens de bedenktijd gaat de consument zorgvuldig om met het product en de verpakking. Hij zal het product slechts uitpakken of gebruiken in de mate die nodig is om de aard, de kenmerken en de werking van het product vast te stellen, zoals dit ook in een fysieke winkel zou mogen. Je mag een kledingstuk dus passen, maar niet dragen.</p><p><strong>Kosten van terugzending.</strong> Het terugsturen binnen Nederland is gratis; je ontvangt een retourlabel. Voor retouren vanuit België komen de kosten van terugzending voor rekening van de consument, tenzij anders vermeld. De ondernemer vergoedt het volledige aankoopbedrag, inclusief de eventueel betaalde verzendkosten van de heenzending, binnen 14 dagen na ontvangst van de herroeping, mits het product retour is ontvangen of een bewijs van terugzending is overgelegd.</p><p><strong>Uitsluitingen.</strong> Het herroepingsrecht geldt niet voor onder meer:</p><ul><li>producten die op maat zijn gemaakt of duidelijk voor een specifieke persoon zijn vervaardigd;</li><li>verzegelde producten die om redenen van hygiëne niet kunnen worden teruggezonden en waarvan de verzegeling na levering is verbroken;</li><li>cadeaubonnen, voor zover deze zijn gebruikt.</li></ul>
+      </article>
+
+      <article class="legal-article">
+        <h2>9. Conformiteit &amp; garantie</h2>
+        <p>De ondernemer staat ervoor in dat de producten voldoen aan de overeenkomst, aan de in het aanbod vermelde specificaties, aan de redelijke eisen van deugdelijkheid en/of bruikbaarheid en aan de op de datum van de totstandkoming van de overeenkomst bestaande wettelijke bepalingen.</p><p>De consument heeft recht op de wettelijke garantie: een product moet bij normaal gebruik doen wat je er redelijkerwijs van mag verwachten. Vertoont een product een gebrek, neem dan zo spoedig mogelijk contact met ons op. Afhankelijk van de situatie zorgen wij voor herstel, vervanging of terugbetaling. Een commerciële garantie van een fabrikant laat de wettelijke rechten van de consument onverlet.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>10. Klachtenregeling</h2>
+        <p>Klachten over de uitvoering van de overeenkomst moeten binnen een redelijke termijn, volledig en duidelijk omschreven, worden ingediend bij de ondernemer nadat de consument de gebreken heeft geconstateerd.</p><p>Ingediende klachten worden binnen een termijn van 14 dagen, gerekend vanaf de datum van ontvangst, beantwoord. Als een klacht een voorzienbaar langere verwerkingstijd vraagt, dan ontvang je binnen die 14 dagen een bericht van ontvangst en een indicatie wanneer je een meer uitvoerig antwoord kunt verwachten.</p><p>Kom je er samen met ons niet uit, dan kun je je geschil voorleggen via het Europees ODR-platform (Online Dispute Resolution) op <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">ec.europa.eu/consumers/odr</a>. Een klacht schort de verplichtingen van de ondernemer niet op, tenzij de ondernemer schriftelijk anders aangeeft.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>11. Aansprakelijkheid</h2>
+        <p>De aansprakelijkheid van de ondernemer is beperkt tot hetgeen in deze voorwaarden en op grond van dwingend recht is bepaald. De ondernemer is niet aansprakelijk voor indirecte schade, waaronder gevolgschade, gederfde winst of schade door bedrijfs- of andere stagnatie.</p><p>Voor zover de ondernemer aansprakelijk is, is deze aansprakelijkheid beperkt tot het factuurbedrag van de betreffende bestelling. De in dit artikel opgenomen beperkingen gelden niet indien de schade het gevolg is van opzet of bewuste roekeloosheid van de ondernemer, of indien dwingendrechtelijke bepalingen zich daartegen verzetten.</p>
+      </article>
+
+      <article class="legal-article">
+        <h2>12. Toepasselijk recht</h2>
+        <p>Op overeenkomsten tussen de ondernemer en de consument waarop deze algemene voorwaarden betrekking hebben, is uitsluitend Nederlands recht van toepassing, ook indien de consument in het buitenland woonachtig is.</p><p>Geschillen worden voorgelegd aan de daartoe bevoegde rechter, onverminderd het recht van de consument om een geschil voor te leggen aan een onafhankelijke geschillencommissie of via het hierboven genoemde ODR-platform.</p>
+      </article>
+
+      <div class="legal__note">
+        <p>Heb je een vraag over deze algemene voorwaarden of over je bestelling?</p><p>Neem gerust contact met ons op via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>. We helpen je graag verder. Bekijk ook onze <a href="/pages/contact">contactpagina</a> en <a href="/pages/veelgestelde-vragen">veelgestelde vragen</a>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>

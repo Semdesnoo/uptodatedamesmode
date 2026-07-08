@@ -1,0 +1,210 @@
+<footer class="site-footer">
+  <div class="container container--wide">
+
+    <div class="footer-main">
+      <!-- Brand-kolom -->
+      <div class="footer-brand">
+        {%- if section.settings.footer_logo != blank -%}
+          <img class="footer-brand__logo" src="{{ section.settings.footer_logo | image_url: width: 500 }}" alt="{{ shop.name | escape }}" loading="lazy" style="max-height: {{ section.settings.footer_logo_height | default: 48 }}px;">
+        {%- else -%}
+          <span class="brand">Up to Date Damesmode</span>
+        {%- endif -%}
+        {% if section.settings.brand_text != blank %}
+          <p>{{ section.settings.brand_text }}</p>
+        {% endif %}
+        {% assign footer_email = settings.company_email | default: 'info@uptodatedamesmode.nl' %}
+        <a class="footer-email" href="mailto:{{ footer_email }}">{{ footer_email }}</a>
+        {%- if settings.company_phone != blank -%}
+          <a class="footer-email" href="tel:{{ settings.company_phone | remove: ' ' | remove: '-' }}">{{ settings.company_phone }}</a>
+        {%- endif -%}
+      </div>
+
+      {% assign footer_menus = '1,2,3' | split: ',' %}
+      {% for n in footer_menus %}
+        {% liquid
+          assign heading_key = 'footer_heading_' | append: n
+          assign menu_key = 'footer_menu_' | append: n
+          assign col_heading = section.settings[heading_key]
+          assign col_menu = section.settings[menu_key]
+        %}
+        {% if n == '1' %}{% assign col_heading = col_heading | default: 'Shop' %}{% endif %}
+        {% if n == '2' %}{% assign col_heading = col_heading | default: 'Klantenservice' %}{% endif %}
+        {% if n == '3' %}{% assign col_heading = col_heading | default: 'Over Up to Date Damesmode' %}{% endif %}
+        <div class="footer-col">
+          {% if col_heading != blank %}
+            <h3>{{ col_heading }}</h3>
+          {% endif %}
+          {% if linklists[col_menu].links.size > 0 %}
+            <ul>
+              {% for link in linklists[col_menu].links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <ul>
+              {% case n %}
+                {% when '1' %}
+                  {%- comment -%} Geen eigen menu gekoppeld: toon automatisch je echte Shopify-collecties (max 6). {%- endcomment -%}
+                  {%- assign shown = 0 -%}
+                  {%- for collection in collections -%}
+                    {%- unless collection.handle == 'frontpage' or collection.handle == 'home-page' -%}
+                      {%- if shown < 6 -%}
+                        <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+                        {%- assign shown = shown | plus: 1 -%}
+                      {%- endif -%}
+                    {%- endunless -%}
+                  {%- endfor -%}
+                {% when '2' %}
+                  <li><a href="/pages/verzending-retour">Verzending &amp; retour</a></li>
+                  <li><a href="/pages/maattabel">Maattabel</a></li>
+                  <li><a href="/pages/veelgestelde-vragen">Veelgestelde vragen</a></li>
+                  <li><a href="/pages/contact">Contact</a></li>
+                  <li><a href="/pages/betaalmethoden">Betaalmethoden</a></li>
+                {% when '3' %}
+                  <li><a href="/pages/over-ons">Ons verhaal</a></li>
+              {% endcase %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Sociale iconen gecentreerd (SKIMS-stijl) -->
+    <div class="footer-social footer-social--center">
+      {% assign ig_url = section.settings.social_instagram | default: settings.social_instagram | default: 'https://www.instagram.com/uptodatedamesmode/' %}
+      {% assign tt_url = section.settings.social_tiktok | default: settings.social_tiktok | default: 'https://www.tiktok.com/@uptodatedamesmode' %}
+      {% assign fb_url = section.settings.social_facebook | default: settings.social_facebook | default: 'https://www.facebook.com/uptodatedamesmode/' %}
+      <a href="{{ ig_url }}" target="_blank" rel="noopener noreferrer" aria-label="Up to Date Damesmode op Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg>
+      </a>
+      <a href="{{ tt_url }}" target="_blank" rel="noopener noreferrer" aria-label="Up to Date Damesmode op TikTok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M14 4v9.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 7a4 4 0 0 0 4 3"/></svg>
+      </a>
+      <a href="{{ fb_url }}" target="_blank" rel="noopener noreferrer" aria-label="Up to Date Damesmode op Facebook">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2.2l.4-3H14V8.5c0-.3.2-.5.5-.5z"/></svg>
+      </a>
+    </div>
+
+    <!-- Onderbalk -->
+    <div class="footer-bottom">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      <div class="legal-links">
+        {% if linklists[section.settings.footer_legal_menu].links.size > 0 %}
+          {% for link in linklists[section.settings.footer_legal_menu].links %}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {% endfor %}
+        {% else %}
+          <a href="/pages/algemene-voorwaarden">Algemene voorwaarden</a>
+          <a href="/pages/privacybeleid">Privacybeleid</a>
+          <a href="/pages/cookies">Cookies</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Logo in footer",
+      "info": "Leeg = de merknaam als tekst."
+    },
+    {
+      "type": "range",
+      "id": "footer_logo_height",
+      "label": "Logo-hoogte",
+      "min": 24,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "textarea",
+      "id": "brand_text",
+      "label": "Merktekst",
+      "default": "Tijdloze mode voor de vrouw van nu — met liefde samengesteld in Nederland."
+    },
+    {
+      "type": "header",
+      "content": "Sociale media (jouw eigen links)"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram-URL"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok-URL"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook-URL"
+    },
+    {
+      "type": "header",
+      "content": "Linkkolom 1"
+    },
+    {
+      "type": "text",
+      "id": "footer_heading_1",
+      "label": "Kop kolom 1",
+      "default": "Shop"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_1",
+      "label": "Menu kolom 1",
+      "info": "Maak een menu in Shopify → Content → Menu's en kies het hier. Leeg = we tonen automatisch je collecties."
+    },
+    {
+      "type": "header",
+      "content": "Linkkolom 2"
+    },
+    {
+      "type": "text",
+      "id": "footer_heading_2",
+      "label": "Kop kolom 2",
+      "default": "Klantenservice"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_2",
+      "label": "Menu kolom 2",
+      "info": "Kies hier je eigen menu (Shopify → Content → Menu's). Leeg = standaard klantenservice-links."
+    },
+    {
+      "type": "header",
+      "content": "Linkkolom 3"
+    },
+    {
+      "type": "text",
+      "id": "footer_heading_3",
+      "label": "Kop kolom 3",
+      "default": "Over Up to Date Damesmode"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_3",
+      "label": "Menu kolom 3",
+      "info": "Kies hier je eigen menu (Shopify → Content → Menu's). Leeg = standaardlink naar 'Ons verhaal'."
+    },
+    {
+      "type": "header",
+      "content": "Onderbalk"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_legal_menu",
+      "label": "Juridische links"
+    }
+  ]
+}
+{% endschema %}

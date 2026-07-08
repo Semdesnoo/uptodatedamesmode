@@ -1,0 +1,102 @@
+<section class="section section--alt">
+  <div class="container container--wide">
+    <div class="section-head section-head--center reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-head__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="reviews-grid is-mobile-slider" data-autoslide="3000">
+      {%- for block in section.blocks -%}
+        {%- assign stars = block.settings.stars | default: 5 -%}
+        <figure class="review reveal"{% if forloop.index0 > 0 %} data-delay="{{ forloop.index0 }}"{% endif %} {{ block.shopify_attributes }}>
+          <div class="review__stars" aria-label="{{ stars }} van 5 sterren">{% for i in (1..stars) %}★{% endfor %}</div>
+          <blockquote class="review__quote">{{ block.settings.quote }}</blockquote>
+          <figcaption class="review__author">{{ block.settings.author }}</figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Klantbeoordelingen",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop",
+      "default": "Wat klanten zeggen"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Kop",
+      "default": "Geliefd om de kwaliteit"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Beoordeling",
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "label": "Aantal sterren",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "\"Eindelijk kleding die past én jaren meegaat.\""
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Naam",
+          "default": "Sanne uit Utrecht"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Klantbeoordelingen",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "quote": "\"Eindelijk kleding die past én jaren meegaat. De stoffen voelen luxe en de pasvorm is precies goed.\"",
+            "author": "Sanne uit Utrecht"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "quote": "\"Snelle levering en prachtig ingepakt. Mijn linnen blazer is een vast onderdeel van mijn garderobe geworden.\"",
+            "author": "Marieke uit Den Haag"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "quote": "\"Het persoonlijke styling-advies was goud waard. Ik voel me zelfverzekerd in alles wat ik bestel.\"",
+            "author": "Esther uit Eindhoven"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

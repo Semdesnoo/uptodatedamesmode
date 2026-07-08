@@ -1,0 +1,377 @@
+{%- comment -%}
+  Privacybeleid — bewerkbare inhoudspagina.
+  Alle tekst komt uit section.settings en section.blocks, zodat de eigenaar
+  de inhoud in de Thema-editor kan aanpassen zonder code aan te raken.
+  De HTML-structuur, klassenamen en het pagina-eigen {% style %}-blok zijn
+  exact behouden (zelfde uitstraling). De gegevenstabel (artikel 3) staat
+  vanwege de richtext-beperking als vast HTML-blok in het bijbehorende
+  block-type 'article_table'.
+{%- endcomment -%}
+
+{%- style -%}
+  /* Pagina-header (gecentreerd) */
+  #shopify-section-{{ section.id }} .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  #shopify-section-{{ section.id }} .page-header__meta {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: var(--sp-1);
+  }
+
+  /* Eén rustige leeskolom */
+  #shopify-section-{{ section.id }} .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  #shopify-section-{{ section.id }} .legal__intro {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    padding-bottom: var(--sp-2);
+    margin-bottom: var(--sp-2);
+    border-bottom: var(--border);
+  }
+  #shopify-section-{{ section.id }} .legal section + section { margin-top: clamp(2rem, 4vw, 3rem); }
+  #shopify-section-{{ section.id }} .legal h2 {
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    margin-bottom: var(--sp-1);
+  }
+  #shopify-section-{{ section.id }} .legal h2 .legal__num {
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    margin-right: 0.6rem;
+    vertical-align: 0.12em;
+  }
+  #shopify-section-{{ section.id }} .legal h3 {
+    font-size: 1.1rem;
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+  #shopify-section-{{ section.id }} .legal p { color: var(--ink-soft); margin-bottom: var(--sp-1); }
+  #shopify-section-{{ section.id }} .legal p:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .legal ul {
+    list-style: none;
+    margin: 0 0 var(--sp-1);
+    padding: 0;
+  }
+  #shopify-section-{{ section.id }} .legal ul li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.55rem;
+    color: var(--ink-soft);
+  }
+  #shopify-section-{{ section.id }} .legal ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 6px;
+    height: 1px;
+    background: var(--accent);
+  }
+  #shopify-section-{{ section.id }} .legal ul li:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .legal address {
+    font-style: normal;
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-1);
+  }
+
+  /* Compacte definitie-/gegevenstabel binnen de leeskolom */
+  #shopify-section-{{ section.id }} .legal__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--sp-1) 0;
+    font-size: 0.95rem;
+  }
+  #shopify-section-{{ section.id }} .legal__table th,
+  #shopify-section-{{ section.id }} .legal__table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.9rem;
+    border-bottom: var(--border);
+    color: var(--ink-soft);
+  }
+  #shopify-section-{{ section.id }} .legal__table th {
+    width: 42%;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 640px) {
+    #shopify-section-{{ section.id }} .legal__table,
+    #shopify-section-{{ section.id }} .legal__table tbody,
+    #shopify-section-{{ section.id }} .legal__table tr,
+    #shopify-section-{{ section.id }} .legal__table th,
+    #shopify-section-{{ section.id }} .legal__table td { display: block; width: 100%; }
+    #shopify-section-{{ section.id }} .legal__table th { border-bottom: none; padding-bottom: 0.2rem; }
+    #shopify-section-{{ section.id }} .legal__table td { padding-top: 0.2rem; }
+  }
+{%- endstyle -%}
+
+{%- comment -%} BREADCRUMB {%- endcomment -%}
+<div class="container">
+  <nav class="breadcrumb" aria-label="Kruimelpad">
+    <ul>
+      <li><a href="{{ routes.root_url }}">Home</a></li>
+      <li><span aria-current="page">{{ page.title | default: 'Privacybeleid' }}</span></li>
+    </ul>
+  </nav>
+</div>
+
+{%- comment -%} PAGINA-HEADER {%- endcomment -%}
+<section class="page-header">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: 'Privacybeleid' }}</h1>
+    {%- if section.settings.meta != blank -%}
+      <p class="page-header__meta reveal" data-delay="2">{{ section.settings.meta }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%} LEESKOLOM {%- endcomment -%}
+<section class="section section--tight">
+  <div class="container">
+    <article class="legal reveal">
+
+      {%- if section.settings.intro != blank -%}
+        <div class="legal__intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'article' -%}
+            <section {{ block.shopify_attributes }}>
+              {%- if block.settings.number != blank or block.settings.heading != blank -%}
+                <h2><span class="legal__num">{{ block.settings.number }}</span>{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {{ block.settings.body }}
+            </section>
+
+          {%- when 'article_address' -%}
+            <section {{ block.shopify_attributes }}>
+              {%- if block.settings.number != blank or block.settings.heading != blank -%}
+                <h2><span class="legal__num">{{ block.settings.number }}</span>{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {{ block.settings.body_before }}
+              {%- if block.settings.address != blank -%}
+                <address>{{ block.settings.address }}</address>
+              {%- endif -%}
+              {{ block.settings.body_after }}
+            </section>
+
+          {%- when 'article_table' -%}
+            <section {{ block.shopify_attributes }}>
+              {%- if block.settings.number != blank or block.settings.heading != blank -%}
+                <h2><span class="legal__num">{{ block.settings.number }}</span>{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {{ block.settings.body_before }}
+              <table class="legal__table">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ block.settings.table_col_1 }}</th>
+                    <th scope="col">{{ block.settings.table_col_2 }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Het verwerken en uitvoeren van je bestelling, inclusief levering en retouren</th>
+                    <td>Uitvoering van de overeenkomst</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het afhandelen van betalingen en het beheren van je account</th>
+                    <td>Uitvoering van de overeenkomst</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het beantwoorden van vragen en het bieden van klantenservice</th>
+                    <td>Uitvoering van de overeenkomst en gerechtvaardigd belang</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het voldoen aan wettelijke verplichtingen, zoals de fiscale bewaarplicht</th>
+                    <td>Wettelijke verplichting</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het verbeteren van onze webshop, fraudepreventie en beveiliging</th>
+                    <td>Gerechtvaardigd belang</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het versturen van onze nieuwsbrief en gepersonaliseerde aanbiedingen</th>
+                    <td>Toestemming</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Het plaatsen van analytische en marketingcookies</th>
+                    <td>Toestemming</td>
+                  </tr>
+                </tbody>
+              </table>
+              {{ block.settings.body_after }}
+            </section>
+
+          {%- when 'image' -%}
+            {%- if block.settings.image != blank -%}<figure class="page-image" {{ block.shopify_attributes }}>{{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,800,1200,1400', sizes: '(max-width: 900px) 100vw, 760px' }}{% if block.settings.caption != blank %}<figcaption>{{ block.settings.caption }}</figcaption>{% endif %}</figure>{%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+    </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pagina — Privacybeleid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow (bovenschrift)",
+      "default": "Juridisch"
+    },
+    {
+      "type": "text",
+      "id": "meta",
+      "label": "Laatst bijgewerkt",
+      "default": "Laatst bijgewerkt: 22 juni 2026"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductie",
+      "info": "Korte inleiding bovenaan de leeskolom."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Artikel",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijvoorbeeld: 1."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "Tekst"
+        }
+      ]
+    },
+    {
+      "type": "article_address",
+      "name": "Artikel met adres",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijvoorbeeld: 1."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "body_before",
+          "label": "Tekst boven het adres"
+        },
+        {
+          "type": "richtext",
+          "id": "address",
+          "label": "Adres",
+          "info": "Gebruik <br> voor regelafbrekingen."
+        },
+        {
+          "type": "richtext",
+          "id": "body_after",
+          "label": "Tekst onder het adres"
+        }
+      ]
+    },
+    {
+      "type": "article_table",
+      "name": "Artikel met tabel",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijvoorbeeld: 3."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "body_before",
+          "label": "Tekst boven de tabel"
+        },
+        {
+          "type": "text",
+          "id": "table_col_1",
+          "label": "Tabel — kop kolom 1",
+          "default": "Doeleinde"
+        },
+        {
+          "type": "text",
+          "id": "table_col_2",
+          "label": "Tabel — kop kolom 2",
+          "default": "Rechtsgrond"
+        },
+        {
+          "type": "richtext",
+          "id": "body_after",
+          "label": "Tekst onder de tabel"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Onderschrift (optioneel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pagina — Privacybeleid"
+    }
+  ]
+}
+{% endschema %}

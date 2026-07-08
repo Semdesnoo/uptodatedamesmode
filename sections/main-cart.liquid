@@ -1,0 +1,466 @@
+<section class="section">
+  <div class="container container--wide">
+
+    <div class="section-head reveal">
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h1 class="section-head__title">{{ section.settings.heading }}</h1>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+
+      <div class="cart-empty">
+        <p>{{ section.settings.empty_text }}</p>
+        <a class="btn btn--outline" href="{{ section.settings.empty_link | default: routes.all_products_collection_url }}">
+          {{ section.settings.empty_button_label }}
+        </a>
+      </div>
+
+    {%- else -%}
+
+      {%- form 'cart', cart, class: 'cart-page' -%}
+
+        <div class="cart-grid">
+
+          {%- comment -%} ---- PRODUCTLIJST ---- {%- endcomment -%}
+          <div class="cart-lines">
+            <div class="cart-lines__head">
+              <span>Product</span>
+              <span>Aantal</span>
+              <span>Totaal</span>
+            </div>
+
+            {%- for item in cart.items -%}
+              <div class="cart-item">
+
+                <a class="cart-item__media" href="{{ item.url }}">
+                  {%- if item.image -%}
+                    {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.title, widths: '120, 180, 240', sizes: '90px' }}
+                  {%- else -%}
+                    <div class="media media--portrait" data-label="{{ item.product.title | escape }}"></div>
+                  {%- endif -%}
+                </a>
+
+                <div class="cart-item__info">
+                  <p class="cart-item__name"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
+                  {%- unless item.variant.title contains 'Default' -%}
+                    <p class="cart-item__meta">{{ item.variant.title }}</p>
+                  {%- endunless -%}
+                  {%- if item.line_level_discount_allocations.size > 0 -%}
+                    {%- for discount in item.line_level_discount_allocations -%}
+                      <p class="cart-item__meta cart-item__discount">{{ discount.discount_application.title }} (−{{ discount.amount | money }})</p>
+                    {%- endfor -%}
+                  {%- endif -%}
+                  <p class="cart-item__unit">{{ item.final_price | money }} per stuk</p>
+                  <a class="cart-item__remove-link" href="{{ item.url_to_remove }}">Verwijderen</a>
+                </div>
+
+                <div class="cart-item__qty">
+                  <div class="cart-qty" data-cart-qty>
+                    <button type="button" data-qty-dec aria-label="Aantal verlagen">−</button>
+                    <label class="visually-hidden" for="updates_{{ item.key }}">Aantal voor {{ item.product.title | escape }}</label>
+                    <input id="updates_{{ item.key }}" class="cart-qty__input" type="number" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric" data-qty-input aria-label="Aantal" />
+                    <button type="button" data-qty-inc aria-label="Aantal verhogen">+</button>
+                  </div>
+                </div>
+
+                <div class="cart-item__price">
+                  {%- if item.original_line_price != item.final_line_price -%}
+                    <span class="price-old">{{ item.original_line_price | money }}</span>
+                    <span class="price-sale">{{ item.final_line_price | money }}</span>
+                  {%- else -%}
+                    {{ item.final_line_price | money }}
+                  {%- endif -%}
+                </div>
+
+              </div>
+            {%- endfor -%}
+
+            {%- if section.settings.show_note -%}
+              <div class="cart-note field">
+                <label for="cart-note">{{ section.settings.note_label }}</label>
+                <textarea id="cart-note" name="note" rows="3" placeholder="{{ section.settings.note_placeholder }}">{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- comment -%} ---- SAMENVATTING ---- {%- endcomment -%}
+          <aside class="cart-summary">
+            <div class="cart-summary__inner">
+
+              {%- assign threshold = section.settings.free_shipping_threshold | default: 75 -%}
+              {%- assign threshold_cents = threshold | times: 100 -%}
+              {%- if section.settings.show_free_shipping and threshold_cents > 0 -%}
+                {%- if cart.total_price >= threshold_cents -%}
+                  <div class="cart-ship cart-ship--ok">
+                    <p><span class="cart-ship__check" aria-hidden="true">✓</span> Top! Je bestelling wordt <strong>gratis verzonden</strong>.</p>
+                  </div>
+                {%- else -%}
+                  {%- assign remaining = threshold_cents | minus: cart.total_price -%}
+                  {%- assign pct = cart.total_price | times: 100.0 | divided_by: threshold_cents | round -%}
+                  <div class="cart-ship">
+                    <p>Nog <strong>{{ remaining | money }}</strong> en je verzending is <strong>gratis</strong>.</p>
+                    <div class="cart-ship__track"><span class="cart-ship__fill" style="width: {{ pct }}%;"></span></div>
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+
+              <div class="summary-rows">
+                <div class="summary-row"><span>Subtotaal</span><span>{{ cart.total_price | money }}</span></div>
+                {%- if cart.total_discounts > 0 -%}
+                  <div class="summary-row summary-row--discount"><span>Korting</span><span>−{{ cart.total_discounts | money }}</span></div>
+                {%- endif -%}
+              </div>
+
+              <p class="cart-tax-note text-muted">{{ section.settings.tax_note }}</p>
+
+              <div class="cart-actions">
+                <button class="btn btn--block" type="submit" name="checkout">Afrekenen</button>
+                <a class="btn btn--outline btn--block" href="{{ routes.all_products_collection_url }}">Verder winkelen</a>
+              </div>
+
+              <ul class="cart-trust">
+                <li><span aria-hidden="true">✓</span> Veilig betalen</li>
+                <li><span aria-hidden="true">✓</span> 30 dagen bedenktijd</li>
+                <li><span aria-hidden="true">✓</span> Gratis verzending vanaf €{{ threshold }}</li>
+              </ul>
+
+            </div>
+          </aside>
+
+        </div>
+
+      {%- endform -%}
+
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  .cart-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  /* ---- Productlijst ---- */
+  .cart-lines {
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  .cart-item:last-of-type { border-bottom: none; }
+  .cart-lines__head {
+    display: grid;
+    grid-template-columns: 1fr auto 7rem;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    padding-bottom: var(--sp-1);
+    border-bottom: var(--border);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cart-lines__head span:nth-child(2) { text-align: center; }
+  .cart-lines__head span:last-child { text-align: right; }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 90px 1fr auto 7rem;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    align-items: start;
+    padding-block: clamp(1.25rem, 3vw, 1.75rem);
+    border-bottom: var(--border);
+  }
+  /* Zachte, afgeronde productminiatuur */
+  .cart-item__media {
+    display: block;
+    width: 90px;
+  }
+  .cart-item__media img,
+  .cart-item__media .media {
+    width: 90px;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: block;
+  }
+  .cart-item__info { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+  .cart-item__name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+  .cart-item__name a { transition: color var(--t-fast); }
+  .cart-item__name a:hover { color: var(--accent); }
+  .cart-item__meta { font-size: 0.85rem; color: var(--muted); }
+  .cart-item__discount { color: var(--accent-deep); }
+  .cart-item__unit { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+  .cart-item__remove-link {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    align-self: flex-start;
+    transition: color var(--t-fast);
+  }
+  .cart-item__remove-link:hover { color: var(--sale); }
+
+  /* Aantal-stepper */
+  .cart-qty {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .cart-qty button {
+    width: 2.1rem;
+    font-size: 1rem;
+    color: var(--ink);
+    transition: background var(--t-fast);
+  }
+  .cart-qty button:hover { background: var(--bg-alt); }
+  .cart-qty__input {
+    width: 2.6rem;
+    text-align: center;
+    border: none;
+    border-inline: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    -moz-appearance: textfield;
+  }
+  .cart-qty__input::-webkit-outer-spin-button,
+  .cart-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .cart-item__price {
+    text-align: right;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  .cart-item__price .price-old { display: block; color: var(--muted); text-decoration: line-through; font-size: 0.85rem; }
+  .cart-item__price .price-sale { color: var(--sale); }
+
+  .cart-note { margin-top: var(--sp-1_5); }
+  .cart-note label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--sp-0_5);
+  }
+  .cart-note textarea {
+    width: 100%;
+    padding: 0.9em 1em;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    border-radius: var(--radius);
+    resize: vertical;
+  }
+  .cart-note textarea:focus { outline: none; border-color: var(--accent); }
+
+  /* ---- Samenvatting ---- */
+  .cart-summary { position: sticky; top: 100px; }
+  .cart-summary__inner {
+    background: var(--bg-alt);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1_5);
+  }
+
+  /* Gratis-verzending voortgang */
+  .cart-ship { font-size: 0.9rem; color: var(--ink-soft); }
+  .cart-ship p { margin: 0; }
+  .cart-ship--ok p { color: var(--accent-deep); }
+  .cart-ship__check { color: var(--accent-deep); font-weight: 600; }
+  .cart-ship__track {
+    margin-top: 0.6rem;
+    height: 4px;
+    background: color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .cart-ship__fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width var(--t-slow);
+  }
+
+  .summary-rows { display: flex; flex-direction: column; gap: 0.5rem; padding-top: var(--sp-1); border-top: var(--border); }
+  .summary-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-1);
+  }
+  .summary-row span:first-child { color: var(--ink-soft); }
+  .summary-row span:last-child {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+  .summary-row--discount span { color: var(--accent-deep); font-size: 0.95rem; font-family: var(--font-body); }
+
+  .cart-tax-note { font-size: 0.8rem; margin: 0; }
+  .cart-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .cart-trust {
+    list-style: none;
+    margin: 0;
+    padding: var(--sp-1) 0 0;
+    border-top: var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .cart-trust li { display: flex; align-items: center; gap: 0.5rem; }
+  .cart-trust span { color: var(--accent-deep); font-weight: 600; }
+
+  .cart-empty { text-align: center; padding-block: clamp(2rem, 6vw, 4rem); display: flex; flex-direction: column; align-items: center; gap: var(--sp-1_5); }
+  .cart-empty p { color: var(--ink-soft); }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 900px) {
+    .cart-grid { grid-template-columns: 1fr; gap: var(--sp-2); }
+    .cart-summary { position: static; }
+  }
+  @media (max-width: 600px) {
+    .cart-lines__head { display: none; }
+    .cart-item {
+      grid-template-columns: 72px 1fr;
+      grid-template-areas: "media info" "media qty" ". price";
+      gap: 0.4rem 1rem;
+      row-gap: 0.6rem;
+    }
+    .cart-item__media { grid-area: media; width: 72px; }
+    .cart-item__media img, .cart-item__media .media { width: 72px; }
+    .cart-item__info { grid-area: info; }
+    .cart-item__qty { grid-area: qty; }
+    .cart-item__price { grid-area: price; text-align: left; }
+  }
+</style>
+
+<script>
+  (function () {
+    /* Aantal aanpassen: +/− knoppen en handmatige invoer werken de winkelwagen meteen bij. */
+    document.querySelectorAll("[data-cart-qty]").forEach(function (wrap) {
+      var input = wrap.querySelector("[data-qty-input]");
+      if (!input || !input.form) return;
+      var form = input.form;
+      function apply() { if (form.requestSubmit) { form.requestSubmit(); } else { form.submit(); } }
+      var dec = wrap.querySelector("[data-qty-dec]");
+      var inc = wrap.querySelector("[data-qty-inc]");
+      if (dec) dec.addEventListener("click", function () { input.value = Math.max(0, (parseInt(input.value, 10) || 0) - 1); apply(); });
+      if (inc) inc.addEventListener("click", function () { input.value = (parseInt(input.value, 10) || 0) + 1; apply(); });
+      input.addEventListener("change", apply);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Winkelmand",
+  "tag": "section",
+  "class": "section-main-cart",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenschrift",
+      "default": "Je selectie"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Kop",
+      "default": "Winkelmand"
+    },
+    {
+      "type": "header",
+      "content": "Lege winkelmand"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Tekst lege winkelmand",
+      "default": "Je winkelmand is nog leeg."
+    },
+    {
+      "type": "text",
+      "id": "empty_button_label",
+      "label": "Knoptekst",
+      "default": "Verder winkelen"
+    },
+    {
+      "type": "url",
+      "id": "empty_link",
+      "label": "Knoplink (leeg = alle producten)"
+    },
+    {
+      "type": "header",
+      "content": "Gratis verzending"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_free_shipping",
+      "label": "Toon gratis-verzending-balk",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Drempel gratis verzending (€)",
+      "default": 75
+    },
+    {
+      "type": "header",
+      "content": "Opmerkingen & totalen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Toon opmerkingenveld",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "note_label",
+      "label": "Label opmerkingenveld",
+      "default": "Opmerking bij je bestelling"
+    },
+    {
+      "type": "text",
+      "id": "note_placeholder",
+      "label": "Placeholder opmerkingenveld",
+      "default": "Bijzonderheden voor de bezorging of het inpakken"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Notitie onder subtotaal",
+      "default": "Verzendkosten en eventuele kortingen worden bij het afrekenen berekend."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Winkelmand"
+    }
+  ]
+}
+{% endschema %}

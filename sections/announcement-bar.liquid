@@ -1,0 +1,72 @@
+{%- liquid
+  assign ann_style = ''
+  if section.settings.bg_color != blank
+    assign ann_style = ann_style | append: '--announce-bg:' | append: section.settings.bg_color | append: ';'
+  endif
+  if section.settings.text_color != blank
+    assign ann_style = ann_style | append: '--announce-ink:' | append: section.settings.text_color | append: ';'
+  endif
+-%}
+<div class="announcement" data-announcement{% if ann_style != blank %} style="{{ ann_style }}"{% endif %}>
+  <div class="announcement__viewport">
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <span class="announcement__item{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+      {%- endfor -%}
+    {%- else -%}
+      <span class="announcement__item is-active">Wekelijkse nieuwe collectie</span>
+      <span class="announcement__item">Voor 17:00 besteld = morgen in huis 📦</span>
+      <span class="announcement__item">30 dagen bedenktijd</span>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Aankondigingsbalk",
+  "tag": "section",
+  "class": "announcement-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Kleuren (leeg = zachtroze standaard)"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Achtergrondkleur",
+      "info": "Leeg laten voor de zachtroze tess v-stijl."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Tekstkleur"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Bericht",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst",
+          "default": "Gratis verzending vanaf €75"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Aankondigingsbalk",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Wekelijkse nieuwe collectie" } },
+        { "type": "message", "settings": { "text": "Voor 17:00 besteld = morgen in huis 📦" } },
+        { "type": "message", "settings": { "text": "30 dagen bedenktijd" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

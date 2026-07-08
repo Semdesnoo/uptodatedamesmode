@@ -1,0 +1,60 @@
+{%- comment -%}
+  Productkaart (.product-card)
+  Gebruik: {% render 'product-card', product: product %}
+  Verwacht: een 'product' object.
+  Layout (tess v-stijl): gecentreerde tekst, "Nieuw"-label rechtsboven, en een
+  "Voeg toe aan winkelmandje"-knop die bij hover onderaan de foto verschijnt en
+  het eerste beschikbare variant direct in de winkelmand legt (AJAX, zie global.js).
+{%- endcomment -%}
+{%- liquid
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+  assign is_new = false
+  if product.tags contains 'nieuw' or product.tags contains 'Nieuw'
+    assign is_new = true
+  endif
+  assign qa_variant = product.selected_or_first_available_variant
+-%}
+<article class="product-card reveal" data-card>
+  <div class="product-card__media-wrap">
+    <a class="product-card__media-link" href="{{ product.url }}" title="{{ product.title | escape }}">
+      {%- if is_new -%}
+        <span class="badge">Nieuw</span>
+      {%- elsif on_sale -%}
+        <span class="badge badge--sale">Sale</span>
+      {%- endif -%}
+      {%- if product.featured_media -%}
+        <div class="media media--portrait">
+          {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', alt: product.title, widths: '300, 400, 600, 800', sizes: '(max-width: 749px) 90vw, 25vw' }}
+        </div>
+      {%- else -%}
+        <div class="media media--portrait" data-label="{{ product.title | escape }}"></div>
+      {%- endif -%}
+    </a>
+
+    {%- if product.available -%}
+      {%- form 'product', product, class: 'product-card__form' -%}
+        <input type="hidden" name="id" value="{{ qa_variant.id }}">
+        <div class="product-card__quick">
+          <button type="submit" name="add" class="btn btn--sm btn--block product-card__add">Voeg toe aan winkelmandje</button>
+        </div>
+      {%- endform -%}
+    {%- else -%}
+      <div class="product-card__quick">
+        <a class="btn btn--sm btn--block product-card__add" href="{{ product.url }}">Uitverkocht</a>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <h3 class="product-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+  <p class="product-card__price">
+    {%- if on_sale -%}
+      <span class="price-old">{{ product.compare_at_price | money }}</span>
+      <span class="price-sale">{{ product.price | money }}</span>
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </p>
+</article>

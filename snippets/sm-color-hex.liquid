@@ -1,0 +1,26 @@
+{%- comment -%} Kleurnaam (NL/EN) -> hexcode. Param: name. Output: hex of leeg. {%- endcomment -%}
+{%- assign n = name | downcase | strip -%}
+{%- assign hex = '' -%}
+{%- if n contains 'donkerblauw' or n contains 'navy' or n contains 'marine' -%}{%- assign hex = '#2c3e5a' -%}
+{%- elsif n contains 'lichtblauw' -%}{%- assign hex = '#9cc0db' -%}
+{%- elsif n contains 'blauw' or n contains 'blue' or n contains 'jeans' or n contains 'denim' or n contains 'kobalt' -%}{%- assign hex = '#3b5b86' -%}
+{%- elsif n contains 'zwart' or n contains 'black' -%}{%- assign hex = '#1c1a17' -%}
+{%- elsif n contains 'gebroken wit' or n contains 'offwhite' or n contains 'off-white' -%}{%- assign hex = '#f3efe7' -%}
+{%- elsif n contains 'wit' or n contains 'white' -%}{%- assign hex = '#ffffff' -%}
+{%- elsif n contains 'bordeaux' or n contains 'wijnrood' or n contains 'burgundy' -%}{%- assign hex = '#6e2333' -%}
+{%- elsif n contains 'rood' or n contains 'red' -%}{%- assign hex = '#9a3b2e' -%}
+{%- elsif n contains 'olijf' or n contains 'khaki' -%}{%- assign hex = '#6b6a3c' -%}
+{%- elsif n contains 'groen' or n contains 'green' -%}{%- assign hex = '#5b6650' -%}
+{%- elsif n contains 'camel' or n contains 'cognac' -%}{%- assign hex = '#b07d4e' -%}
+{%- elsif n contains 'beige' or n contains 'zand' or n contains 'sand' or n contains 'naturel' or n contains 'creme' or n contains 'crème' or n contains 'ecru' or n contains 'taupe' -%}{%- assign hex = '#d8cbb6' -%}
+{%- elsif n contains 'bruin' or n contains 'brown' -%}{%- assign hex = '#8a6a4a' -%}
+{%- elsif n contains 'antraciet' or n contains 'charcoal' -%}{%- assign hex = '#3a3a3a' -%}
+{%- elsif n contains 'grijs' or n contains 'grey' or n contains 'gray' -%}{%- assign hex = '#9a958c' -%}
+{%- elsif n contains 'roze' or n contains 'pink' or n contains 'rose' or n contains 'rosé' -%}{%- assign hex = '#d9a8aa' -%}
+{%- elsif n contains 'paars' or n contains 'purple' or n contains 'lila' or n contains 'lavendel' -%}{%- assign hex = '#7a5a86' -%}
+{%- elsif n contains 'geel' or n contains 'yellow' or n contains 'oker' or n contains 'mosterd' -%}{%- assign hex = '#d8b24a' -%}
+{%- elsif n contains 'oranje' or n contains 'orange' or n contains 'terra' -%}{%- assign hex = '#cf7333' -%}
+{%- elsif n contains 'goud' or n contains 'gold' -%}{%- assign hex = '#c9a24a' -%}
+{%- elsif n contains 'zilver' or n contains 'silver' -%}{%- assign hex = '#c8c8c8' -%}
+{%- endif -%}
+{{- hex -}}

@@ -1,0 +1,402 @@
+{%- comment -%}
+  Pagina "Cookiebeleid" — bewerkbaar via de Thema-editor.
+  De tekst komt uit section.settings (kop/intro/datum) en section.blocks
+  (juridische artikelen: kop + richtext). De cookie-TABEL staat als vaste HTML
+  in het tabel-block (een <table> kan niet via een richtext-setting).
+  Het pagina-eigen CSS uit de blauwdruk (cookies.html) staat hieronder in een
+  {% style %}-blok; dit staat NIET in base.css. Uitstraling en klassenamen zijn
+  exact behouden.
+{%- endcomment -%}
+
+{% style %}
+  /* Pagina-header (gecentreerd) */
+  .legal-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .legal-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .legal-header__meta {
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    margin-top: var(--sp-1);
+  }
+
+  /* Eén rustige leeskolom */
+  .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .legal__intro {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+  .legal section { margin-top: clamp(2.25rem, 4vw, 3rem); }
+  .legal h2 {
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    margin-bottom: var(--sp-0_75);
+  }
+  .legal h2 .legal__num {
+    color: var(--accent);
+    font-size: 0.7em;
+    margin-right: 0.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .legal h3 {
+    font-size: 1.1rem;
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+  .legal p {
+    color: var(--ink-soft);
+    margin-top: var(--sp-1);
+    line-height: 1.8;
+  }
+  .legal ul {
+    list-style: disc;
+    padding-left: 1.4rem;
+    margin-top: var(--sp-1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .legal ul li {
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .legal ul li::marker { color: var(--accent); }
+  .legal strong { color: var(--ink); font-weight: 500; }
+
+  /* Cookie-tabel */
+  .legal-table-wrap {
+    margin-top: var(--sp-1_5);
+    overflow-x: auto;
+    border: var(--border);
+    background: var(--surface);
+  }
+  .legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 560px;
+  }
+  .legal-table caption {
+    caption-side: bottom;
+    text-align: left;
+    padding: var(--sp-1) var(--sp-1_5);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .legal-table th,
+  .legal-table td {
+    padding: 0.85rem 1.1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+  }
+  .legal-table thead th {
+    background: var(--bg-alt);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .legal-table tbody th {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .legal-table td { color: var(--ink-soft); }
+  .legal-table tbody tr:last-child th,
+  .legal-table tbody tr:last-child td { border-bottom: none; }
+
+  /* Contactblok onderaan de leeskolom */
+  .legal-contact {
+    margin-top: var(--sp-1_5);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--bg-alt);
+    border: var(--border);
+  }
+  .legal-contact p { margin-top: 0.4rem; }
+  .legal-contact p:first-child { margin-top: 0; }
+  /* Accent-links in het contactblok (behoudt de uitstraling van .link-accent
+     nu de links via een richtext-setting komen en geen class kunnen dragen) */
+  .legal-contact a {
+    color: var(--accent);
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--t-fast);
+  }
+  .legal-contact a:hover { background-size: 100% 1px; }
+{% endstyle %}
+
+<!-- BREADCRUMB -->
+<nav class="container breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    <li><span aria-current="page">{{ page.title | default: 'Cookiebeleid' }}</span></li>
+  </ul>
+</nav>
+
+<!-- PAGINA-HEADER -->
+<section class="legal-header">
+  <div class="container">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="legal-header__title reveal" data-delay="1">{{ page.title | default: 'Cookiebeleid' }}</h1>
+    {%- if section.settings.meta != blank -%}
+      <p class="legal-header__meta reveal" data-delay="2">{{ section.settings.meta }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<!-- LEESKOLOM -->
+<section class="section section--tight">
+  <div class="container">
+    <article class="legal reveal">
+
+      {%- if section.settings.intro != blank -%}
+        <div class="legal__intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'article' -%}
+            <section {{ block.shopify_attributes }}>
+              <h2>
+                {%- if block.settings.number != blank -%}<span class="legal__num">{{ block.settings.number }}</span>{%- endif -%}
+                {{ block.settings.heading }}
+              </h2>
+              {{ block.settings.content }}
+            </section>
+
+          {%- when 'cookie_table' -%}
+            <section {{ block.shopify_attributes }}>
+              <h2>
+                {%- if block.settings.number != blank -%}<span class="legal__num">{{ block.settings.number }}</span>{%- endif -%}
+                {{ block.settings.heading }}
+              </h2>
+              {{ block.settings.content }}
+
+              <div class="legal-table-wrap">
+                <table class="legal-table">
+                  {%- if block.settings.table_caption != blank -%}
+                    <caption>{{ block.settings.table_caption }}</caption>
+                  {%- endif -%}
+                  <thead>
+                    <tr>
+                      <th scope="col">Cookie</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Doel</th>
+                      <th scope="col">Bewaartermijn</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">sm_session</th>
+                      <td>Functioneel / noodzakelijk</td>
+                      <td>Houdt je sessie en de inhoud van je winkelmand bij tijdens je bezoek.</td>
+                      <td>Sessie (tot sluiten browser)</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">sm_cookie_consent</th>
+                      <td>Functioneel / noodzakelijk</td>
+                      <td>Onthoudt je gekozen cookievoorkeuren, zodat we deze niet telkens opnieuw vragen.</td>
+                      <td>12 maanden</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">sm_voorkeuren</th>
+                      <td>Functioneel</td>
+                      <td>Bewaart voorkeuren zoals recent bekeken artikelen en weergave-instellingen.</td>
+                      <td>6 maanden</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">_ga</th>
+                      <td>Analytisch</td>
+                      <td>Onderscheidt bezoekers om geanonimiseerde bezoekstatistieken op te bouwen.</td>
+                      <td>24 maanden</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">_gid</th>
+                      <td>Analytisch</td>
+                      <td>Meet het gebruik van afzonderlijke pagina&rsquo;s om de website te verbeteren.</td>
+                      <td>24 uur</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">_fbp</th>
+                      <td>Marketing / tracking</td>
+                      <td>Meet advertentieprestaties en toont relevante advertenties via sociale platforms.</td>
+                      <td>3 maanden</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+          {%- when 'contact' -%}
+            <section {{ block.shopify_attributes }}>
+              <h2>
+                {%- if block.settings.number != blank -%}<span class="legal__num">{{ block.settings.number }}</span>{%- endif -%}
+                {{ block.settings.heading }}
+              </h2>
+              {{ block.settings.content }}
+              <div class="legal-contact">
+                {{ block.settings.contact_details }}
+              </div>
+            </section>
+
+          {%- when 'image' -%}
+            {%- if block.settings.image != blank -%}<figure class="page-image" {{ block.shopify_attributes }}>{{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '400,800,1200,1400', sizes: '(max-width: 900px) 100vw, 760px' }}{% if block.settings.caption != blank %}<figcaption>{{ block.settings.caption }}</figcaption>{% endif %}</figure>{%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+    </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pagina — Cookiebeleid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Juridisch"
+    },
+    {
+      "type": "text",
+      "id": "meta",
+      "label": "Laatst bijgewerkt",
+      "default": "Laatst bijgewerkt: 22 juni 2026"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introductietekst",
+      "info": "Inleidende paragraaf bovenaan de leeskolom."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Artikel",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijv. 1. — laat leeg om te verbergen."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Inhoud",
+          "info": "Ondersteunt alleen <p>, <br>, <strong>, <em>, <ul>, <ol>, <li> en <a>. Geen koppen of tabellen."
+        }
+      ]
+    },
+    {
+      "type": "cookie_table",
+      "name": "Artikel met cookie-tabel",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijv. 4. — laat leeg om te verbergen."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Inhoud (boven de tabel)"
+        },
+        {
+          "type": "text",
+          "id": "table_caption",
+          "label": "Tabel-onderschrift (caption)"
+        },
+        {
+          "type": "paragraph",
+          "content": "De cookie-tabel zelf is vaste HTML in de sectie en kan niet via de editor worden gewijzigd (tabellen worden niet ondersteund in richtext)."
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Artikel met contactblok",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Nummer",
+          "info": "Bijv. 8. — laat leeg om te verbergen."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Kop"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Inhoud (boven het contactblok)"
+        },
+        {
+          "type": "richtext",
+          "id": "contact_details",
+          "label": "Contactgegevens (in gemarkeerd blok)"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Afbeelding",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Onderschrift (optioneel)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pagina — Cookiebeleid"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,633 @@
+{%- comment -%}
+  Pagina "Over ons" — bewerkbaar via de Thema-editor.
+  De opmaak is een 1-op-1 replica van de blauwdruk (over-ons.html): de 2-koloms
+  hero, het persoonlijke merkverhaal van de eigenaresse, de waarden-grid met iconen, de
+  "Onze belofte"-split, het manifest-citaat, de team-sectie (Monique & Marjolein),
+  de cijfers/stats en het bedrijfs-/KVK-blok onderaan.
+
+  Alle belangrijke teksten komen uit section.settings; de vier waarden komen uit
+  blocks ("waarde"). De hero-afbeelding, de belofte-afbeelding en de twee
+  teamfoto's zijn bewerkbaar via een image_picker; is er geen afbeelding geupload,
+  dan valt het terug op de oorspronkelijke .media-placeholder met label, zodat het
+  er netjes blijft uitzien.
+
+  Het pagina-eigen CSS uit de blauwdruk staat hieronder LETTERLIJK in een
+  {% style %}-blok; dit staat NIET in base.css. Uitstraling en klassenamen zijn
+  exact behouden. GEEN page.content.
+{%- endcomment -%}
+
+{% style %}
+    /* Hero-split: kop/intro naast een .media-placeholder */
+    .about-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding-block: clamp(3rem, 7vw, 6rem);
+    }
+    .about-hero__body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp-1);
+    }
+    .about-hero__body h1 {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+    }
+    .about-hero__media .media { aspect-ratio: 4 / 3; }
+    .about-hero__media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    /* Merkverhaal: gecentreerde, rustige tekstkolom */
+    .story-prose {
+      max-width: 62ch;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1_5);
+    }
+    .story-prose p {
+      font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+    .story-prose .signature {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--ink);
+    }
+
+    /* Waarden-sectie */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sp-2);
+    }
+    .value {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-0_75);
+    }
+    .value__icon {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: var(--border);
+      color: var(--accent);
+    }
+    .value__icon svg { width: 22px; height: 22px; }
+    .value h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+    .value p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Manifest / citaat-blok */
+    .manifest__quote {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(1.6rem, 4vw, 2.85rem);
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      max-width: 22ch;
+      margin-inline: auto;
+      text-align: center;
+    }
+    .manifest__quote em,
+    .manifest__quote .text-accent {
+      color: var(--accent);
+      font-style: italic;
+    }
+    .manifest__cite {
+      display: block;
+      margin-top: var(--sp-2);
+      font-family: var(--font-body);
+      font-size: 0.74rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--bg) 70%, transparent);
+    }
+
+
+    /* Team-sectie (de twee makers) */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-2);
+      max-width: 620px;
+      margin-inline: auto;
+    }
+    .team-grid img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-note {
+      margin-top: var(--sp-2);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .team-note strong { color: var(--ink-soft); letter-spacing: 0.04em; }
+    .team-member__name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 400;
+      margin-top: var(--sp-1);
+    }
+    .team-member__role {
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Editorial-media met geuploade foto */
+    .editorial__media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* CTA-sectie naar de collectie */
+    .about-cta {
+      text-align: center;
+      max-width: 56ch;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-1_5);
+    }
+    .about-cta h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); }
+    .about-cta p { color: var(--ink-soft); }
+    /* Onderste blok: witte achtergrond met zwarte tekst */
+    .about-cta-section { background-color: var(--bg); }
+    .about-cta-section .about-cta h2 { color: var(--ink); }
+    .about-cta-section .about-cta p { color: var(--ink-soft); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .about-hero { grid-template-columns: 1fr; gap: var(--sp-2); }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-1); }
+    }
+{% endstyle %}
+
+<!-- ============================================================
+     HERO-SPLIT: kop "Ons verhaal" + introzin naast de hero-afbeelding.
+     ============================================================ -->
+<section class="section--tight">
+  <div class="container container--wide">
+    <!-- Broodkruimel voor context -->
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ section.settings.heading | default: 'Over ons' }}</span></li>
+      </ul>
+    </nav>
+
+    <div class="about-hero">
+      <div class="about-hero__body reveal">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1>{{ section.settings.heading | default: 'Ons verhaal' }}</h1>
+        {%- if section.settings.intro != blank -%}
+          <div class="lead">{{ section.settings.intro }}</div>
+        {%- endif -%}
+        {%- if section.settings.hero_button_label != blank -%}
+          <a class="btn btn--outline" href="{{ section.settings.hero_button_link | default: '/collections/all' }}">{{ section.settings.hero_button_label }}</a>
+        {%- endif -%}
+      </div>
+      <div class="about-hero__media reveal" data-delay="1">
+        {%- if section.settings.hero_image != blank -%}
+          {%- render 'sm-picture', image: section.settings.hero_image, image_mobile: section.settings.hero_image_mobile, alt: section.settings.hero_alt | default: 'Onze winkel in Hillegersberg · Up to Date Damesmode', loading: 'eager', fetchpriority: 'high', widths: '400,800,1200,1600', sizes: '(max-width: 900px) 100vw, 50vw' -%}
+        {%- else -%}
+          <div class="media media--landscape" data-label="{{ section.settings.hero_alt | default: 'Onze winkel in Hillegersberg · Up to Date Damesmode' }}" role="img" aria-label="Het atelier van Up to Date Damesmode, met stoffen in natuurlijke tinten"></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MERKVERHAAL: warme, persoonlijke tekst in alinea's
+     ============================================================ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      {%- if section.settings.story_eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.story_eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="section-head__title">{{ section.settings.story_heading | default: 'Een vertrouwd adres in Hillegersberg' }}</h2>
+    </div>
+    <div class="story-prose reveal" data-delay="1">
+      {{ section.settings.story_body }}
+      {%- if section.settings.story_signature != blank -%}
+        <p class="signature">{{ section.settings.story_signature }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WAARDEN-SECTIE: waar Up to Date Damesmode voor staat (blocks)
+     ============================================================ -->
+<section class="section">
+  <div class="container container--wide">
+    <div class="section-head section-head--center reveal">
+      {%- if section.settings.values_eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.values_eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="section-head__title">{{ section.settings.values_heading | default: 'Onze waarden' }}</h2>
+    </div>
+    <div class="values-grid">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'waarde' -%}
+          <div class="value reveal"{% if forloop.index0 > 0 %} data-delay="{{ forloop.index0 }}"{% endif %} {{ block.shopify_attributes }}>
+            <span class="value__icon" aria-hidden="true">
+              {%- case block.settings.icon -%}
+                {%- when 'clock' -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                {%- when 'shield' -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                {%- when 'heart' -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/></svg>
+                {%- when 'chat' -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/></svg>
+              {%- endcase -%}
+            </span>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MANIFEST / CITAAT-BLOK: grote Fraunces-quote op donkere sectie
+     ============================================================ -->
+<section class="section section--ink">
+  <div class="container">
+    <figure class="reveal">
+      <blockquote class="manifest__quote">{{ section.settings.manifest_quote }}</blockquote>
+      {%- if section.settings.manifest_cite != blank -%}
+        <figcaption class="manifest__cite">{{ section.settings.manifest_cite }}</figcaption>
+      {%- endif -%}
+    </figure>
+  </div>
+</section>
+
+<!-- (Team-sectie en KVK-blok verwijderd op verzoek) -->
+
+<!-- ============================================================
+     CTA-SECTIE: naar de collectie
+     ============================================================ -->
+<section class="section about-cta-section">
+  <div class="container">
+    <div class="about-cta reveal">
+      {%- if section.settings.cta_eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.cta_eyebrow }}</p>
+      {%- endif -%}
+      <h2>{{ section.settings.cta_heading | default: 'Ontdek de collectie' }}</h2>
+      {%- if section.settings.cta_body != blank -%}
+        <p>{{ section.settings.cta_body }}</p>
+      {%- endif -%}
+      {%- if section.settings.cta_button_label != blank -%}
+        <a class="btn" href="{{ section.settings.cta_button_link | default: '/collections/all' }}">{{ section.settings.cta_button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Pagina — Over ons",
+  "tag": "section",
+  "max_blocks": 50,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero (Ons verhaal)"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Wie zijn wij"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel",
+      "default": "Ons verhaal"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Introtekst",
+      "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met veel plezier fashion en damesmode. Welkom bij Up to Date Damesmode — jouw vertrouwde adres in Hillegersberg.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero-afbeelding",
+      "info": "Liggende foto (4:3). Leeg = nette placeholder met label."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_mobile",
+      "label": "Hero — mobiele foto (optioneel)",
+      "info": "Leeg = desktopfoto wordt gebruikt."
+    },
+    {
+      "type": "text",
+      "id": "hero_alt",
+      "label": "Hero — alt-tekst / label",
+      "default": "Onze winkel in Hillegersberg · Up to Date Damesmode"
+    },
+    {
+      "type": "text",
+      "id": "hero_button_label",
+      "label": "Hero — knoptekst",
+      "default": "Ontdek de collectie"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_link",
+      "label": "Hero — knoplink"
+    },
+    {
+      "type": "header",
+      "content": "Merkverhaal"
+    },
+    {
+      "type": "text",
+      "id": "story_eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Onze winkel"
+    },
+    {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Kop",
+      "default": "Een vertrouwd adres in Hillegersberg"
+    },
+    {
+      "type": "richtext",
+      "id": "story_body",
+      "label": "Tekst",
+      "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met hart en ziel fashion en damesmode. In al die jaren heb ik ontelbaar veel vrouwen mogen helpen aan een outfit waarin ze zich écht mooi en zelfverzekerd voelen.</p><p>Al een lange tijd zijn wij een vertrouwd gezicht in Hillegersberg. Sinds kort zijn we verhuisd naar een nieuwe locatie in Hillegersberg: een gloednieuwe winkel met meer ruimte, dezelfde persoonlijke aandacht en natuurlijk onze nieuwste collectie.</p><p>Kom gerust gezellig langs om alles op je gemak te bekijken en te passen. Liever vanuit huis shoppen? Bestel dan het product uit onze winkel; wij versturen het direct met de post naar je toe.</p>"
+    },
+    {
+      "type": "text",
+      "id": "story_signature",
+      "label": "Ondertekening",
+      "default": "Tot snel, Mirjam Verbeek"
+    },
+    {
+      "type": "header",
+      "content": "Waarden (kop)"
+    },
+    {
+      "type": "text",
+      "id": "values_eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Waar we voor staan"
+    },
+    {
+      "type": "text",
+      "id": "values_heading",
+      "label": "Kop",
+      "default": "Onze waarden"
+    },
+    {
+      "type": "paragraph",
+      "content": "De vier waarden zelf voeg je toe als blokken ('Waarde') onderaan deze sectie."
+    },
+    {
+      "type": "header",
+      "content": "Manifest / citaat"
+    },
+    {
+      "type": "richtext",
+      "id": "manifest_quote",
+      "label": "Citaat",
+      "default": "<p>Iedereen verdient het om met een mooie outfit <em>én</em> een goed gevoel de deur uit te gaan.</p>"
+    },
+    {
+      "type": "text",
+      "id": "manifest_cite",
+      "label": "Bron (optioneel)"
+    },
+    {
+      "type": "header",
+      "content": "Team (de makers)"
+    },
+    {
+      "type": "text",
+      "id": "team_eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Achter Up to Date Damesmode"
+    },
+    {
+      "type": "text",
+      "id": "team_heading",
+      "label": "Kop",
+      "default": "Marjolein & Monique"
+    },
+    {
+      "type": "textarea",
+      "id": "team_intro",
+      "label": "Intro",
+      "default": "Twee beste vriendinnen, één passie voor mode. Samen staan we elke dag voor je klaar — in de winkel en online."
+    },
+    {
+      "type": "image_picker",
+      "id": "member1_image",
+      "label": "Foto teamlid 1",
+      "info": "Staande foto. Leeg = nette placeholder met naam."
+    },
+    {
+      "type": "image_picker",
+      "id": "member1_image_mobile",
+      "label": "Teamlid 1 — mobiele foto (optioneel)",
+      "info": "Leeg = desktopfoto wordt gebruikt."
+    },
+    {
+      "type": "text",
+      "id": "member1_name",
+      "label": "Teamlid 1 — naam",
+      "default": "Marjolein"
+    },
+    {
+      "type": "text",
+      "id": "member1_role",
+      "label": "Teamlid 1 — rol",
+      "default": "Eigenaresse & beste vriendin"
+    },
+    {
+      "type": "image_picker",
+      "id": "member2_image",
+      "label": "Foto teamlid 2",
+      "info": "Staande foto. Leeg = nette placeholder met naam."
+    },
+    {
+      "type": "image_picker",
+      "id": "member2_image_mobile",
+      "label": "Teamlid 2 — mobiele foto (optioneel)",
+      "info": "Leeg = desktopfoto wordt gebruikt."
+    },
+    {
+      "type": "text",
+      "id": "member2_name",
+      "label": "Teamlid 2 — naam",
+      "default": "Monique"
+    },
+    {
+      "type": "text",
+      "id": "member2_role",
+      "label": "Teamlid 2 — rol",
+      "default": "Eigenaresse & beste vriendin"
+    },
+    {
+      "type": "richtext",
+      "id": "kvk_note",
+      "label": "Bedrijfs- / KVK-blok",
+      "default": "<p>Up to Date Damesmode is een eenmanszaak (detailhandel in kleding en aanverwante artikelen alsmede styliste), gevestigd aan de Van Beethovensingel 58, 3055 JK Rotterdam, en ingeschreven bij de Kamer van Koophandel onder KVK-nummer 51041715 (vestigingsnummer 000021135061).</p>"
+    },
+    {
+      "type": "header",
+      "content": "Oproep (CTA)"
+    },
+    {
+      "type": "text",
+      "id": "cta_eyebrow",
+      "label": "Bovenkop (eyebrow)",
+      "default": "Klaar om te ontdekken?"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Kop",
+      "default": "Ontdek de collectie"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_body",
+      "label": "Tekst",
+      "default": "Blader door onze collectie en vind iets waar je je goed in voelt. Kom je liever langs? Je bent van harte welkom in onze nieuwe winkel in Hillegersberg."
+    },
+    {
+      "type": "text",
+      "id": "cta_button_label",
+      "label": "Knoptekst",
+      "default": "Naar de collectie"
+    },
+    {
+      "type": "url",
+      "id": "cta_button_link",
+      "label": "Knoplink"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "waarde",
+      "name": "Waarde",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "clock", "label": "Klok (tijdloos)" },
+            { "value": "shield", "label": "Schild (kwaliteit)" },
+            { "value": "heart", "label": "Hart (bewust)" },
+            { "value": "chat", "label": "Tekstballon (service)" }
+          ],
+          "default": "clock"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Tijdloos boven trends"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Tekst",
+          "default": "We ontwerpen voor de lange termijn. Geen wegwerpmode, maar silhouetten die jaren relevant blijven en moeiteloos blijven kloppen."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pagina — Over ons",
+      "blocks": [
+        {
+          "type": "waarde",
+          "settings": {
+            "icon": "clock",
+            "title": "Ervaren in mode",
+            "text": "Al jaren leven wij voor mode. Die ervaring voel je terug in alles wat we voor je uitkiezen."
+          }
+        },
+        {
+          "type": "waarde",
+          "settings": {
+            "icon": "shield",
+            "title": "Met zorg uitgekozen",
+            "text": "We selecteren elk stuk met aandacht: mooie kwaliteit, een fijne pasvorm en kleuren die je moeiteloos combineert."
+          }
+        },
+        {
+          "type": "waarde",
+          "settings": {
+            "icon": "heart",
+            "title": "Jij staat voorop",
+            "text": "Onze grootste passie is jou blij maken, zodat je met een mooie outfit én een goed gevoel de deur uitgaat."
+          }
+        },
+        {
+          "type": "waarde",
+          "settings": {
+            "icon": "chat",
+            "title": "Persoonlijk advies",
+            "text": "Of je nu langskomt of online shopt: we denken graag met je mee met eerlijk, persoonlijk stylingadvies."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

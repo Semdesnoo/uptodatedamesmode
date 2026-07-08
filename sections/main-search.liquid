@@ -1,0 +1,101 @@
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">Zoeken</span></li>
+      </ul>
+    </nav>
+
+    <div class="search-page">
+      <header class="search-page__head reveal" style="text-align:center; max-width:54ch; margin:0 auto var(--sp-2);">
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+        <h1 style="font-size:clamp(2rem, 4.5vw, 3rem); margin:var(--sp-0_75) 0;">{{ section.settings.heading }}</h1>
+      </header>
+
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-form" style="max-width:520px; margin:0 auto var(--sp-2);">
+        <label class="visually-hidden" for="search-page-input">Zoek in de collectie</label>
+        <input id="search-page-input"
+               type="search"
+               name="q"
+               value="{{ search.terms | escape }}"
+               placeholder="Waar ben je naar op zoek?"
+               autocomplete="off">
+        <button class="btn btn--sm" type="submit">Zoek</button>
+      </form>
+
+      {%- if search.performed -%}
+        {%- if search.results_count == 0 -%}
+          <p style="text-align:center; color:var(--muted);">
+            Geen resultaten gevonden voor &ldquo;{{ search.terms | escape }}&rdquo;. Probeer een andere zoekterm of bekijk de
+            <a href="{{ routes.all_products_collection_url }}" style="color:var(--accent); text-decoration:underline; text-underline-offset:2px;">volledige collectie</a>.
+          </p>
+        {%- else -%}
+          <p style="text-align:center; color:var(--ink-soft); margin-bottom:var(--sp-2);">
+            {{ search.results_count }}
+            {%- if search.results_count == 1 %} resultaat{% else %} resultaten{% endif %} voor &ldquo;{{ search.terms | escape }}&rdquo;
+          </p>
+
+          {%- paginate search.results by 12 -%}
+            <div class="grid grid--4" data-grid>
+              {%- for item in search.results -%}
+                {%- if item.object_type == 'product' -%}
+                  {% render 'product-card', product: item %}
+                {%- else -%}
+                  <article class="product-card reveal" data-card>
+                    <h3 class="product-card__name"><a href="{{ item.url }}">{{ item.title }}</a></h3>
+                    {%- if item.object_type == 'article' or item.object_type == 'page' -%}
+                      <p class="product-card__cat">
+                        {%- if item.object_type == 'article' -%}Artikel{%- else -%}Pagina{%- endif -%}
+                      </p>
+                    {%- endif -%}
+                  </article>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="pagination" aria-label="Paginering" style="margin-top:var(--sp-3); display:flex; justify-content:center; gap:0.75rem;">
+                {%- if paginate.previous -%}
+                  <a class="btn btn--outline btn--sm" href="{{ paginate.previous.url }}">Vorige</a>
+                {%- endif -%}
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a class="btn btn--outline btn--sm" href="{{ part.url }}">{{ part.title }}</a>
+                  {%- else -%}
+                    <span class="btn btn--sm" aria-current="page">{{ part.title }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if paginate.next -%}
+                  <a class="btn btn--outline btn--sm" href="{{ paginate.next.url }}">Volgende</a>
+                {%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+      {%- else -%}
+        <p style="text-align:center; color:var(--muted);">Typ hierboven een zoekterm om producten te vinden.</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Zoekresultaten",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Boventitel",
+      "default": "Zoeken"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel",
+      "default": "Zoekresultaten"
+    }
+  ]
+}
+{% endschema %}

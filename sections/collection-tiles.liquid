@@ -1,0 +1,106 @@
+<section class="section">
+  <div class="container container--wide">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="section-head section-head--center reveal">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section-head__title">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <div class="grid grid--4 is-mobile-slider" data-autoslide="2000">
+      {%- for block in section.blocks -%}
+        {%- assign tile_collection = block.settings.collection -%}
+        {%- if block.settings.link != blank -%}
+          {%- assign tile_url = block.settings.link -%}
+        {%- elsif tile_collection != blank -%}
+          {%- assign tile_url = tile_collection.url -%}
+        {%- else -%}
+          {%- assign tile_url = '#' -%}
+        {%- endif -%}
+        {%- if block.settings.label != blank -%}
+          {%- assign tile_label = block.settings.label -%}
+        {%- elsif tile_collection != blank -%}
+          {%- assign tile_label = tile_collection.title -%}
+        {%- else -%}
+          {%- assign tile_label = 'Categorie' -%}
+        {%- endif -%}
+        <a class="category-tile reveal"{% if forloop.index0 > 0 %} data-delay="{{ forloop.index0 }}"{% endif %} href="{{ tile_url }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <figure class="media media--portrait">
+              {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: tile_label, widths: '300, 400, 600, 800', sizes: '(max-width: 749px) 90vw, 25vw' }}
+            </figure>
+          {%- elsif tile_collection.featured_image != blank -%}
+            <figure class="media media--portrait">
+              {{ tile_collection.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', alt: tile_label, widths: '300, 400, 600, 800', sizes: '(max-width: 749px) 90vw, 25vw' }}
+            </figure>
+          {%- else -%}
+            <div class="media media--portrait" data-label="{{ tile_label | escape }}"></div>
+          {%- endif -%}
+          <div class="category-tile__label"><h3>{{ tile_label }}</h3><span>Shop nu</span></div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Categorie-tegels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop",
+      "default": "Ontdek per categorie"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Kop",
+      "default": "Vind jouw stijl"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Categorie-tegel",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collectie"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Afbeelding (overschrijft collectie-afbeelding)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (overschrijft collectie-titel)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (overschrijft collectie-link)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Categorie-tegels",
+      "blocks": [
+        { "type": "tile", "settings": { "label": "Jurken" } },
+        { "type": "tile", "settings": { "label": "Tops & blouses" } },
+        { "type": "tile", "settings": { "label": "Broeken & rokken" } },
+        { "type": "tile", "settings": { "label": "Accessoires" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

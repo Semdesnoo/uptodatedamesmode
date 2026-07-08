@@ -1,0 +1,261 @@
+{%- comment -%}
+  Privacybeleid — ZELFSTANDIG paginasjabloon (geen losse sectie nodig).
+  CSS, HTML en alle blok-inhoud staan hier inline zodat de weergave identiek blijft,
+  ook wanneer losse secties niet mee-uploaden. Alleen page.title, shop.name en routes.*
+  blijven dynamisch.
+{%- endcomment -%}
+
+<style>
+  /* Pagina-header (gecentreerd) */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__meta {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: var(--sp-1);
+  }
+
+  /* Eén rustige leeskolom */
+  .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .legal__intro {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    padding-bottom: var(--sp-2);
+    margin-bottom: var(--sp-2);
+    border-bottom: var(--border);
+  }
+  .legal section + section { margin-top: clamp(2rem, 4vw, 3rem); }
+  .legal h2 {
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    margin-bottom: var(--sp-1);
+  }
+  .legal h2 .legal__num {
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    margin-right: 0.6rem;
+    vertical-align: 0.12em;
+  }
+  .legal h3 {
+    font-size: 1.1rem;
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+  .legal p { color: var(--ink-soft); margin-bottom: var(--sp-1); }
+  .legal p:last-child { margin-bottom: 0; }
+  .legal ul {
+    list-style: none;
+    margin: 0 0 var(--sp-1);
+    padding: 0;
+  }
+  .legal ul li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.55rem;
+    color: var(--ink-soft);
+  }
+  .legal ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 6px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .legal ul li:last-child { margin-bottom: 0; }
+  .legal address {
+    font-style: normal;
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-1);
+  }
+
+  /* Compacte definitie-/gegevenstabel binnen de leeskolom */
+  .legal__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--sp-1) 0;
+    font-size: 0.95rem;
+  }
+  .legal__table th,
+  .legal__table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.9rem;
+    border-bottom: var(--border);
+    color: var(--ink-soft);
+  }
+  .legal__table th {
+    width: 42%;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 640px) {
+    .legal__table,
+    .legal__table tbody,
+    .legal__table tr,
+    .legal__table th,
+    .legal__table td { display: block; width: 100%; }
+    .legal__table th { border-bottom: none; padding-bottom: 0.2rem; }
+    .legal__table td { padding-top: 0.2rem; }
+  }
+</style>
+
+{%- comment -%} BREADCRUMB {%- endcomment -%}
+<div class="container">
+  <nav class="breadcrumb" aria-label="Kruimelpad">
+    <ul>
+      <li><a href="{{ routes.root_url }}">Home</a></li>
+      <li><span aria-current="page">{{ page.title | default: 'Privacybeleid' }}</span></li>
+    </ul>
+  </nav>
+</div>
+
+{%- comment -%} PAGINA-HEADER {%- endcomment -%}
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow reveal">Juridisch</p>
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: 'Privacybeleid' }}</h1>
+    <p class="page-header__meta reveal" data-delay="2">Laatst bijgewerkt: 22 juni 2026</p>
+  </div>
+</section>
+
+{%- comment -%} LEESKOLOM {%- endcomment -%}
+<section class="section section--tight">
+  <div class="container">
+    <article class="legal reveal">
+
+      <div class="legal__intro"><p>Up to Date Damesmode (hierna: &ldquo;Up to Date Damesmode&rdquo;, &ldquo;wij&rdquo; of &ldquo;ons&rdquo;) hecht grote waarde aan de bescherming van jouw persoonsgegevens. In dit privacybeleid leggen we helder uit welke persoonsgegevens we verzamelen, voor welke doeleinden en op welke rechtsgrond we deze verwerken, hoelang we ze bewaren, met wie we ze delen en welke rechten je hebt. We verwerken jouw persoonsgegevens in overeenstemming met de Algemene verordening gegevensbescherming (AVG) en de Uitvoeringswet AVG.</p></div>
+
+      {%- comment -%} Artikel 1 — Verwerkingsverantwoordelijke (article_address) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">1.</span>Verwerkingsverantwoordelijke</h2>
+        <p>De verwerkingsverantwoordelijke voor de verwerking van jouw persoonsgegevens, zoals beschreven in dit privacybeleid, is:</p>
+        <address><p>Up to Date Damesmode<br>Detailhandel in kleding en aanverwante artikelen alsmede styliste<br>Van Beethovensingel 58<br>3055 JK Rotterdam<br>Nederland<br>Eenmanszaak &middot; Hoofdvestiging<br>KVK-nummer: 51041715<br>Vestigingsnummer: 000021135061</p></address>
+        <p>Heb je vragen over dit privacybeleid of over de verwerking van jouw gegevens? Neem dan contact met ons op via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>.</p><p>Up to Date Damesmode heeft geen wettelijke verplichting om een functionaris voor gegevensbescherming aan te stellen. Voor alle privacyvragen kun je terecht bij onze klantenservice.</p>
+      </section>
+
+      {%- comment -%} Artikel 2 — Welke persoonsgegevens we verzamelen (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">2.</span>Welke persoonsgegevens we verzamelen</h2>
+        <p>Afhankelijk van de manier waarop je gebruikmaakt van onze webshop en diensten, verwerken wij de volgende categorie&euml;n persoonsgegevens:</p><ul><li><strong>NAW-gegevens:</strong> voor- en achternaam, factuuradres en bezorgadres.</li><li><strong>Contactgegevens:</strong> e-mailadres en telefoonnummer.</li><li><strong>Bestelgegevens:</strong> bestelde artikelen, maten, ordernummer, bestelgeschiedenis en eventuele retouren.</li><li><strong>Betaalgegevens:</strong> de door jou gekozen betaalmethode en de transactiestatus. De volledige betaalgegevens (zoals kaart- of rekeningnummer) worden verwerkt door onze betaalprovider; wij slaan deze niet zelf op.</li><li><strong>Accountgegevens:</strong> indien je een account aanmaakt, je inloggegevens en voorkeuren.</li><li><strong>Communicatiegegevens:</strong> de inhoud van berichten die je ons stuurt via e-mail, telefoon of het contactformulier.</li><li><strong>Gegevens over websitegebruik:</strong> IP-adres, apparaat- en browsertype, bezochte pagina&rsquo;s en klikgedrag, voor zover verzameld via cookies en vergelijkbare technieken.</li></ul><p>We verzamelen alleen de gegevens die nodig zijn voor de in dit beleid genoemde doeleinden. Verstrek je bepaalde gegevens niet, dan kunnen we mogelijk je bestelling niet uitvoeren of je vraag niet beantwoorden.</p>
+      </section>
+
+      {%- comment -%} Artikel 3 — Doeleinden en rechtsgronden (article_table) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">3.</span>Doeleinden en rechtsgronden</h2>
+        <p>Wij verwerken jouw persoonsgegevens uitsluitend voor specifieke doeleinden en op basis van een geldige rechtsgrond uit artikel 6 AVG. Hieronder vind je een overzicht.</p>
+        <table class="legal__table">
+          <thead>
+            <tr>
+              <th scope="col">Doeleinde</th>
+              <th scope="col">Rechtsgrond</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Het verwerken en uitvoeren van je bestelling, inclusief levering en retouren</th>
+              <td>Uitvoering van de overeenkomst</td>
+            </tr>
+            <tr>
+              <th scope="row">Het afhandelen van betalingen en het beheren van je account</th>
+              <td>Uitvoering van de overeenkomst</td>
+            </tr>
+            <tr>
+              <th scope="row">Het beantwoorden van vragen en het bieden van klantenservice</th>
+              <td>Uitvoering van de overeenkomst en gerechtvaardigd belang</td>
+            </tr>
+            <tr>
+              <th scope="row">Het voldoen aan wettelijke verplichtingen, zoals de fiscale bewaarplicht</th>
+              <td>Wettelijke verplichting</td>
+            </tr>
+            <tr>
+              <th scope="row">Het verbeteren van onze webshop, fraudepreventie en beveiliging</th>
+              <td>Gerechtvaardigd belang</td>
+            </tr>
+            <tr>
+              <th scope="row">Het versturen van onze nieuwsbrief en gepersonaliseerde aanbiedingen</th>
+              <td>Toestemming</td>
+            </tr>
+            <tr>
+              <th scope="row">Het plaatsen van analytische en marketingcookies</th>
+              <td>Toestemming</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Verwerken we gegevens op basis van een gerechtvaardigd belang, dan maken we steeds een afweging tussen ons belang en jouw recht op privacy. Verwerken we op basis van jouw toestemming, dan kun je deze toestemming op elk moment intrekken (zie artikel 9).</p>
+      </section>
+
+      {%- comment -%} Artikel 4 — Bewaartermijnen (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">4.</span>Bewaartermijnen</h2>
+        <p>We bewaren jouw persoonsgegevens niet langer dan noodzakelijk is voor de doeleinden waarvoor ze zijn verzameld, tenzij we wettelijk verplicht zijn ze langer te bewaren. We hanteren de volgende richttermijnen:</p><ul><li><strong>Bestel- en betaalgegevens:</strong> in verband met de fiscale bewaarplicht bewaren we facturen en bijbehorende gegevens 7 jaar.</li><li><strong>Accountgegevens:</strong> zolang je account actief is; na verwijdering of langdurige inactiviteit verwijderen of anonimiseren we de gegevens.</li><li><strong>Contact- en klantenservicegegevens:</strong> tot 2 jaar na het laatste contact, om je vervolgvragen goed te kunnen behandelen.</li><li><strong>Nieuwsbriefgegevens:</strong> totdat je je uitschrijft of je toestemming intrekt.</li><li><strong>Cookiegegevens:</strong> conform de bewaartermijnen die zijn vermeld in ons <a href="cookies.html">cookiebeleid</a>.</li></ul><p>Na afloop van de toepasselijke bewaartermijn verwijderen of anonimiseren we jouw persoonsgegevens.</p>
+      </section>
+
+      {%- comment -%} Artikel 5 — Delen met derden (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">5.</span>Delen met derden</h2>
+        <p>We verkopen jouw persoonsgegevens nooit aan derden. We delen gegevens uitsluitend met partijen die ons helpen bij de uitvoering van onze dienstverlening of wanneer we daartoe wettelijk verplicht zijn. Het gaat onder meer om de volgende categorie&euml;n ontvangers:</p><ul><li><strong>Bezorgdienst:</strong> voor de bezorging van je bestelling delen we je naam en bezorgadres met onze logistiek partner, zoals PostNL.</li><li><strong>Betaalprovider:</strong> voor de veilige afhandeling van betalingen schakelen we een externe betaaldienstverlener in.</li><li><strong>E-mail- en nieuwsbriefdienst:</strong> voor het versturen van transactionele e-mails en onze nieuwsbrief maken we gebruik van een externe e-maildienstverlener.</li><li><strong>IT- en hostingpartners:</strong> voor de hosting, het onderhoud en de beveiliging van onze webshop.</li><li><strong>Bevoegde instanties:</strong> wanneer we daartoe wettelijk verplicht zijn, bijvoorbeeld op grond van een rechtmatig verzoek van een toezichthouder of opsporingsinstantie.</li></ul><p>Met partijen die in onze opdracht persoonsgegevens verwerken (verwerkers), sluiten we een verwerkersovereenkomst. Daarin leggen we onder meer vast dat zij de gegevens passend beveiligen, vertrouwelijk behandelen en uitsluitend gebruiken voor de met ons overeengekomen doeleinden.</p>
+      </section>
+
+      {%- comment -%} Artikel 6 — Doorgifte buiten de EER (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">6.</span>Doorgifte buiten de EER</h2>
+        <p>Wij verwerken jouw persoonsgegevens in beginsel binnen de Europese Economische Ruimte (EER). Het kan voorkomen dat een door ons ingeschakelde dienstverlener gegevens verwerkt in een land buiten de EER.</p><p>In dat geval zorgen we voor passende waarborgen zoals vereist door de AVG, bijvoorbeeld een adequaatheidsbesluit van de Europese Commissie of het gebruik van de standaardcontractbepalingen (Standard Contractual Clauses). Op verzoek lichten we toe welke waarborgen van toepassing zijn.</p>
+      </section>
+
+      {%- comment -%} Artikel 7 — Cookies (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">7.</span>Cookies</h2>
+        <p>Onze webshop maakt gebruik van cookies en vergelijkbare technieken. Functionele cookies zijn noodzakelijk voor de werking van de website, bijvoorbeeld om je winkelmand te onthouden. Voor analytische en marketingcookies vragen we vooraf jouw toestemming.</p><p>Een uitgebreide uitleg over de cookies die we gebruiken, hun doel en bewaartermijnen, en hoe je je voorkeuren kunt aanpassen, lees je in ons <a href="cookies.html">cookiebeleid</a>.</p>
+      </section>
+
+      {%- comment -%} Artikel 8 — Beveiliging (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">8.</span>Beveiliging</h2>
+        <p>We nemen passende technische en organisatorische maatregelen om jouw persoonsgegevens te beschermen tegen verlies, misbruik en ongeoorloofde toegang. Denk hierbij aan versleutelde verbindingen (SSL/TLS), toegangsbeveiliging, geheimhoudingsplicht voor medewerkers en periodieke evaluatie van onze beveiligingsmaatregelen.</p><p>Heb je het vermoeden dat jouw gegevens niet goed beveiligd zijn of dat er sprake is van misbruik? Neem dan zo snel mogelijk contact met ons op via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>.</p>
+      </section>
+
+      {%- comment -%} Artikel 9 — Jouw rechten (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">9.</span>Jouw rechten</h2>
+        <p>Op grond van de AVG heb je verschillende rechten met betrekking tot jouw persoonsgegevens. Je hebt het recht op:</p><ul><li><strong>Inzage:</strong> opvragen welke persoonsgegevens we van je verwerken.</li><li><strong>Rectificatie:</strong> onjuiste of onvolledige gegevens laten corrigeren of aanvullen.</li><li><strong>Verwijdering:</strong> je gegevens laten wissen (het &lsquo;recht op vergetelheid&rsquo;), voor zover er geen wettelijke bewaarplicht geldt.</li><li><strong>Beperking:</strong> de verwerking van je gegevens tijdelijk laten beperken.</li><li><strong>Bezwaar:</strong> bezwaar maken tegen verwerkingen die berusten op een gerechtvaardigd belang, en tegen direct marketing.</li><li><strong>Dataportabiliteit:</strong> de door jou verstrekte gegevens in een gangbaar, machineleesbaar formaat ontvangen of laten overdragen.</li><li><strong>Intrekken van toestemming:</strong> een eerder gegeven toestemming op elk moment intrekken, zonder dat dit afbreuk doet aan de rechtmatigheid van de verwerking v&oacute;&oacute;r de intrekking.</li></ul>
+      </section>
+
+      {%- comment -%} Artikel 10 — Hoe je jouw rechten uitoefent (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">10.</span>Hoe je jouw rechten uitoefent</h2>
+        <p>Wil je een van bovenstaande rechten uitoefenen? Stuur dan een verzoek naar <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>. Om je privacy te beschermen kunnen we je vragen je identiteit te bevestigen voordat we je verzoek in behandeling nemen.</p><p>We reageren in beginsel binnen &eacute;&eacute;n maand op je verzoek. Is je verzoek complex of ontvangen we veel verzoeken, dan kan deze termijn met maximaal twee maanden worden verlengd. We laten je hierover dan tijdig weten. Het uitoefenen van je rechten is in principe kosteloos.</p>
+      </section>
+
+      {%- comment -%} Artikel 11 — Klacht bij de Autoriteit Persoonsgegevens (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">11.</span>Klacht bij de Autoriteit Persoonsgegevens</h2>
+        <p>We helpen je graag verder als je een klacht hebt over de manier waarop we met jouw persoonsgegevens omgaan. Kom je er met ons niet uit, dan heb je het recht een klacht in te dienen bij de toezichthouder, de Autoriteit Persoonsgegevens.</p><p>Meer informatie en het indienen van een klacht vind je op <a href="https://www.autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener noreferrer">autoriteitpersoonsgegevens.nl</a>.</p>
+      </section>
+
+      {%- comment -%} Artikel 12 — Wijzigingen in dit privacybeleid (article) {%- endcomment -%}
+      <section>
+        <h2><span class="legal__num">12.</span>Wijzigingen in dit privacybeleid</h2>
+        <p>We kunnen dit privacybeleid van tijd tot tijd aanpassen, bijvoorbeeld bij wijzigingen in onze dienstverlening of in de wet- en regelgeving. De meest actuele versie vind je altijd op deze pagina, met bovenaan de datum van de laatste wijziging.</p><p>Bij ingrijpende wijzigingen die voor jou van belang zijn, informeren we je waar mogelijk actief, bijvoorbeeld per e-mail of via een melding op onze website. We raden je aan dit beleid regelmatig te raadplegen.</p>
+      </section>
+
+    </article>
+  </div>
+</section>

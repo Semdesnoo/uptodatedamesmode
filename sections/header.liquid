@@ -1,0 +1,409 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+-%}
+<header class="site-header site-header--solid" data-header-section="{{ section.id }}">
+  <div class="container container--wide header-inner">
+    <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Menu openen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <line x1="3" y1="7" x2="21" y2="7" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="17" x2="21" y2="17" />
+      </svg>
+    </button>
+
+    <a class="brand{% if section.settings.logo != blank %} brand--has-logo{% endif %}" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home"{% if section.settings.logo != blank %} style="--logo-h:{{ section.settings.logo_height | default: 46 }}px"{% endif %}>
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 480 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '120, 180, 240, 360, 480', sizes: '240px', alt: shop.name, class: 'brand__logo' }}
+      {%- else -%}
+        Up to Date Damesmode
+      {%- endif -%}
+    </a>
+
+    <nav class="main-nav" aria-label="Hoofdnavigatie">
+      <ul>
+        {%- if menu.links.size > 0 -%}
+          {%- for link in menu.links -%}
+            {%- if link.links != blank -%}
+              {%- comment -%} ---- Mega-menu: categorie-kolommen + optionele promo-afbeeldingen ---- {%- endcomment -%}
+              {%- assign link_title_dc = link.title | downcase | strip -%}
+              {%- comment -%} Tel promo-afbeeldingen van het EERSTE bijpassende blok (zo blijft de telling gelijk aan wat we daadwerkelijk tonen) {%- endcomment -%}
+              {%- assign promo_count = 0 -%}
+              {%- assign counted_promo = false -%}
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'promo' and counted_promo == false -%}
+                  {%- assign block_menu_dc = block.settings.menu_item | downcase | strip -%}
+                  {%- if block_menu_dc == link_title_dc -%}
+                    {%- if block.settings.image_1 != blank -%}{%- assign promo_count = promo_count | plus: 1 -%}{%- endif -%}
+                    {%- if block.settings.image_2 != blank -%}{%- assign promo_count = promo_count | plus: 1 -%}{%- endif -%}
+                    {%- assign counted_promo = true -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- comment -%} Heeft een subitem zelf nog subitems? Dan kolommen-met-kop. {%- endcomment -%}
+              {%- assign has_nested = false -%}
+              {%- for childlink in link.links -%}
+                {%- if childlink.links != blank -%}{%- assign has_nested = true -%}{%- endif -%}
+              {%- endfor -%}
+              <li class="nav-item-dropdown nav-item-mega" data-dropdown>
+                <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true" data-dropdown-toggle>{{ link.title }}
+                  <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                </button>
+                <div class="mega{% if promo_count > 0 %} mega--has-promo{% endif %}" data-dropdown-menu>
+                  <div class="mega__inner{% if promo_count == 0 %} mega__inner--no-promo{% endif %}">
+                    <div class="mega__nav{% if has_nested %} mega__nav--cols{% endif %}">
+                      {%- if has_nested -%}
+                        {%- for childlink in link.links -%}
+                          <div class="mega__col">
+                            {%- if childlink.links != blank -%}
+                              <a class="mega__col-head" href="{{ childlink.url }}"{% if childlink.active %} aria-current="page"{% endif %}>{{ childlink.title }}</a>
+                              <ul>
+                                {%- for grandchild in childlink.links -%}
+                                  <li><a href="{{ grandchild.url }}"{% if grandchild.active %} class="is-active" aria-current="page"{% endif %}>{{ grandchild.title }}</a></li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- else -%}
+                              <ul>
+                                <li><a href="{{ childlink.url }}"{% if childlink.active %} class="is-active" aria-current="page"{% endif %}>{{ childlink.title }}</a></li>
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
+                      {%- else -%}
+                        <div class="mega__col{% if link.links.size > 8 %} mega__col--split{% endif %}">
+                          <ul>
+                            {%- for childlink in link.links -%}
+                              <li><a href="{{ childlink.url }}"{% if childlink.active %} class="is-active" aria-current="page"{% endif %}>{{ childlink.title }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        </div>
+                      {%- endif -%}
+                      <a class="mega__all" href="{{ link.url }}">Bekijk alle {{ link.title | downcase }} <span aria-hidden="true">&rsaquo;</span></a>
+                    </div>
+
+                    {%- if promo_count > 0 -%}
+                      <div class="mega__promos">
+                        {%- assign shown_promo = false -%}
+                        {%- for block in section.blocks -%}
+                          {%- if block.type == 'promo' and shown_promo == false -%}
+                            {%- assign block_menu_dc = block.settings.menu_item | downcase | strip -%}
+                            {%- if block_menu_dc == link_title_dc -%}
+                              {%- if block.settings.image_1 != blank -%}
+                                <a class="mega__promo" href="{{ block.settings.link_1 | default: link.url }}" {{ block.shopify_attributes }}>
+                                  <figure class="media media--landscape">{{ block.settings.image_1 | image_url: width: 640 | image_tag: loading: 'lazy', alt: block.settings.caption_1, widths: '300, 480, 640', sizes: '(max-width: 1100px) 40vw, 20vw' }}</figure>
+                                  {%- if block.settings.caption_1 != blank -%}<span class="mega__promo-cap">{{ block.settings.caption_1 }} <span aria-hidden="true">&rsaquo;</span></span>{%- endif -%}
+                                </a>
+                              {%- endif -%}
+                              {%- if block.settings.image_2 != blank -%}
+                                <a class="mega__promo" href="{{ block.settings.link_2 | default: link.url }}">
+                                  <figure class="media media--landscape">{{ block.settings.image_2 | image_url: width: 640 | image_tag: loading: 'lazy', alt: block.settings.caption_2, widths: '300, 480, 640', sizes: '(max-width: 1100px) 40vw, 20vw' }}</figure>
+                                  {%- if block.settings.caption_2 != blank -%}<span class="mega__promo-cap">{{ block.settings.caption_2 }} <span aria-hidden="true">&rsaquo;</span></span>{%- endif -%}
+                                </a>
+                              {%- endif -%}
+                              {%- assign shown_promo = true -%}
+                            {%- endif -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </li>
+            {%- else -%}
+              <li><a href="{{ link.url }}"{% if link.active %} class="is-active" aria-current="page"{% endif %}>{{ link.title }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          <li><a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} class="is-active" aria-current="page"{% endif %}>Home</a></li>
+          <li><a href="/collections/all">Collectie</a></li>
+          <li class="nav-item-dropdown nav-item-mega" data-dropdown>
+            <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true" data-dropdown-toggle>Producten
+              <svg class="nav-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+            </button>
+            <div class="mega" data-dropdown-menu>
+              <div class="mega__inner mega__inner--no-promo">
+                <div class="mega__nav">
+                  <div class="mega__col">
+                    <ul>
+                      {%- comment -%} Geen eigen menu gekoppeld: toon automatisch je echte Shopify-collecties. {%- endcomment -%}
+                      {%- for collection in collections -%}
+                        {%- unless collection.handle == 'frontpage' or collection.handle == 'home-page' -%}
+                          <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+                        {%- endunless -%}
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                  <a class="mega__all" href="/collections/all">Bekijk alle producten <span aria-hidden="true">&rsaquo;</span></a>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li><a href="/pages/over-ons">Over ons</a></li>
+          <li><a href="/pages/contact">Contact</a></li>
+        {%- endif -%}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn header-actions__desktop" data-search-open aria-label="Zoeken openen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.5" y2="16.5" />
+        </svg>
+      </button>
+      <a class="icon-btn header-actions__desktop" href="{{ routes.account_url }}" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+        </svg>
+      </a>
+      <a class="icon-btn header-actions__desktop" href="{{ section.settings.wishlist_link | default: routes.account_url }}" aria-label="Verlanglijst">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
+        </svg>
+      </a>
+      <button class="icon-btn" data-cart-open aria-label="Winkelmand openen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M6 8h12l-1 12H7L6 8z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" />
+        </svg>
+        <span class="cart-count" data-cart-count{% if cart.item_count == 0 %} data-empty="true"{% endif %}>{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="overlay" data-overlay></div>
+
+<nav class="mobile-nav" id="mobile-nav" data-mobile-nav aria-label="Mobiele navigatie" aria-hidden="true">
+  <div class="mobile-nav__head">
+    <span class="brand">Up to Date Damesmode</span>
+    <button class="icon-btn" data-menu-close aria-label="Menu sluiten">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+      </svg>
+    </button>
+  </div>
+  <div class="mobile-nav__links">
+    {%- if menu.links.size > 0 -%}
+      {%- for link in menu.links -%}
+        {%- if link.links != blank -%}
+          <details class="mobile-nav__group">
+            <summary>{{ link.title }}</summary>
+            <div class="mobile-nav__sub">
+              {%- for childlink in link.links -%}
+                {%- if childlink.links != blank -%}
+                  <span class="mobile-nav__subhead">{{ childlink.title }}</span>
+                  {%- for grandchild in childlink.links -%}
+                    <a href="{{ grandchild.url }}"{% if grandchild.active %} class="is-active" aria-current="page"{% endif %}>{{ grandchild.title }}</a>
+                  {%- endfor -%}
+                {%- else -%}
+                  <a href="{{ childlink.url }}"{% if childlink.active %} class="is-active" aria-current="page"{% endif %}>{{ childlink.title }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+              <a class="mobile-nav__suball" href="{{ link.url }}">Bekijk alle {{ link.title | downcase }}</a>
+            </div>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}"{% if link.active %} class="is-active" aria-current="page"{% endif %}>{{ link.title }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.root_url }}"{% if request.page_type == 'index' %} class="is-active" aria-current="page"{% endif %}>Home</a>
+      <a href="/collections/all">Collectie</a>
+      <details class="mobile-nav__group">
+        <summary>Producten</summary>
+        <div class="mobile-nav__sub">
+          {%- for collection in collections -%}
+            {%- unless collection.handle == 'frontpage' or collection.handle == 'home-page' -%}
+              <a href="{{ collection.url }}">{{ collection.title }}</a>
+            {%- endunless -%}
+          {%- endfor -%}
+          <a href="/collections/all">Alle producten</a>
+        </div>
+      </details>
+      <a href="/pages/over-ons">Over ons</a>
+      <a href="/pages/contact">Contact</a>
+    {%- endif -%}
+  </div>
+  <div class="mobile-nav__utils">
+    <button class="mobile-nav__util" type="button" data-search-open>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.5" y2="16.5" />
+      </svg>
+      <span>Zoeken</span>
+    </button>
+    <a class="mobile-nav__util" href="{{ routes.account_url }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+      </svg>
+      <span>Account</span>
+    </a>
+  </div>
+  <div class="mobile-nav__foot">
+    <p>Gratis verzending vanaf €75</p>
+    <p>{{ settings.company_email | default: 'info@uptodatedamesmode.nl' }}</p>
+  </div>
+</nav>
+
+<aside class="cart-drawer" data-cart aria-label="Winkelmand" aria-hidden="true">
+  <div class="cart-drawer__head">
+    <h2>Winkelmand</h2>
+    <button class="icon-btn" data-cart-close aria-label="Winkelmand sluiten">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+      </svg>
+    </button>
+  </div>
+  <div class="cart-drawer__body">
+    {%- comment -%} Beide containers staan er ALTIJD (leeg-melding + itemlijst); JS toont/verbergt ze.
+       Zo werkt 'toevoegen' vanaf een productkaart ook als de winkelmand bij het laden leeg was. {%- endcomment -%}
+    <div class="cart-empty" data-cart-empty{% if cart.item_count > 0 %} hidden{% endif %}>
+      <p>Je winkelmand is nog leeg.</p>
+      <button class="btn btn--outline btn--sm" data-cart-close>Verder winkelen</button>
+    </div>
+    <div data-cart-items>
+      {%- for item in cart.items -%}
+        <div class="cart-item">
+          <a href="{{ item.url }}">
+            {%- if item.image != blank -%}
+              {{ item.image | image_url: width: 128 | image_tag: loading: 'lazy', alt: item.product.title, widths: '64, 96, 128', sizes: '64px' }}
+            {%- else -%}
+              <div class="media media--portrait" data-label="{{ item.product.title | escape }}"></div>
+            {%- endif -%}
+          </a>
+          <div>
+            <p class="cart-item__name"><a href="{{ item.url }}">{{ item.product.title }}</a></p>
+            {%- unless item.product.has_only_default_variant -%}
+              <p class="cart-item__meta">{{ item.variant.title }}</p>
+            {%- endunless -%}
+            <p class="cart-item__meta">Aantal: {{ item.quantity }}</p>
+          </div>
+          <p class="cart-item__price">{{ item.final_line_price | money }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="cart-saved" data-saved hidden>
+      <p class="cart-saved__title">Bewaard voor later</p>
+      <div data-saved-items></div>
+      <p class="cart-saved__hint">Maak een <a href="{{ routes.account_url }}">account</a> aan om je verlanglijst te bewaren.</p>
+    </div>
+  </div>
+  <div class="cart-drawer__foot">
+    <div class="row">
+      <span>Subtotaal</span>
+      {%- if cart.item_count == 0 -%}
+        <span class="text-muted">Berekend bij afrekenen</span>
+      {%- else -%}
+        <span>{{ cart.total_price | money }}</span>
+      {%- endif -%}
+    </div>
+    <a class="btn btn--block" href="{{ routes.cart_url }}">Afrekenen</a>
+  </div>
+</aside>
+
+<div class="toast-stack" data-toast aria-live="polite" aria-atomic="true"></div>
+
+<div class="search-overlay" data-search aria-label="Zoeken" aria-hidden="true">
+  <div class="container search-overlay__inner">
+    <button class="icon-btn search-close" data-search-close aria-label="Zoeken sluiten" style="margin-bottom:1rem;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+      </svg>
+    </button>
+    <form class="search-form" role="search" action="{{ routes.search_url }}" method="get">
+      <label class="visually-hidden" for="search-input">Zoek in de collectie</label>
+      <input id="search-input" name="q" type="search" placeholder="Waar ben je naar op zoek?" autocomplete="off" />
+      <button class="btn btn--sm" type="submit">Zoek</button>
+    </form>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Koptekst",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Upload je logo (PNG met transparante achtergrond werkt het mooist). Leeg = de merknaam als tekst."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo-hoogte",
+      "default": 46
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "Beheer dit menu in Shopify → Content → Menu's. Menu-items met subitems worden automatisch een mega-menu. Sleep je een sub-sub-niveau eronder, dan krijg je meerdere kolommen (bijv. 'Friday Denim' en 'Jumpsuits' naast elkaar)."
+    },
+    {
+      "type": "url",
+      "id": "wishlist_link",
+      "label": "Verlanglijst-link (hartje)",
+      "info": "Leeg = het hartje linkt naar de accountpagina, waar de verlanglijst staat."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promo",
+      "name": "Mega-menu promo",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Toont 1–2 promo-afbeeldingen rechts in het mega-menu van één menu-item (zoals bij 'Friday Denim')."
+        },
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Bij welk menu-item?",
+          "info": "Typ de exacte titel van het hoofd-menu-item, bijv. 'friday denim' of 'kleding' (hoofdletters maken niet uit)."
+        },
+        {
+          "type": "header",
+          "content": "Promo 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Afbeelding 1"
+        },
+        {
+          "type": "text",
+          "id": "caption_1",
+          "label": "Bijschrift 1",
+          "default": "de perfecte basics, ontdek ze hier"
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "Link 1"
+        },
+        {
+          "type": "header",
+          "content": "Promo 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Afbeelding 2"
+        },
+        {
+          "type": "text",
+          "id": "caption_2",
+          "label": "Bijschrift 2",
+          "default": "vind jouw perfecte fit met onze gids"
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "Link 2"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,155 @@
+{%- comment -%}
+  Generieke pagina-sectie: breadcrumb, pagina-header en {{ page.content }}
+  in een rustige leeskolom (zelfde prose-stijl als de juridische blauwdruk-pagina's).
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  #shopify-section-{{ section.id }} .page-header__meta {
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: var(--sp-1);
+  }
+
+  #shopify-section-{{ section.id }} .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  #shopify-section-{{ section.id }} .legal h2 {
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    margin-block: clamp(2rem, 4vw, 3rem) var(--sp-1);
+  }
+  #shopify-section-{{ section.id }} .legal h2:first-child { margin-top: 0; }
+  #shopify-section-{{ section.id }} .legal h3 {
+    font-size: 1.1rem;
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+  #shopify-section-{{ section.id }} .legal p {
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-1);
+  }
+  #shopify-section-{{ section.id }} .legal p:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .legal ul,
+  #shopify-section-{{ section.id }} .legal ol {
+    list-style: none;
+    margin: 0 0 var(--sp-1);
+    padding: 0;
+  }
+  #shopify-section-{{ section.id }} .legal li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.55rem;
+    color: var(--ink-soft);
+  }
+  #shopify-section-{{ section.id }} .legal li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 6px;
+    height: 1px;
+    background: var(--accent);
+  }
+  #shopify-section-{{ section.id }} .legal li:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .legal a { color: var(--accent-deep); text-decoration: underline; }
+  #shopify-section-{{ section.id }} .legal address {
+    font-style: normal;
+    color: var(--ink-soft);
+    margin-bottom: var(--sp-1);
+  }
+  #shopify-section-{{ section.id }} .legal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--sp-1) 0;
+    font-size: 0.95rem;
+  }
+  #shopify-section-{{ section.id }} .legal th,
+  #shopify-section-{{ section.id }} .legal td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.9rem;
+    border-bottom: var(--border);
+    color: var(--ink-soft);
+  }
+  #shopify-section-{{ section.id }} .legal th {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+{%- endstyle -%}
+
+{%- comment -%} Inhoudspaginas die als maatwerk-sjabloon door Shopify geweigerd worden, tonen we hier via de pagina-handle. {%- endcomment -%}
+{%- case page.handle -%}
+  {%- when 'algemene-voorwaarden' -%}
+    {% render 'sm-voorwaarden' %}
+  {%- when 'verzending-retour' -%}
+    {% render 'sm-verzending' %}
+  {%- when 'veelgestelde-vragen' -%}
+    {% render 'sm-vragen' %}
+  {%- when 'betaalmethoden' -%}
+    {% render 'sm-betaalmethoden' %}
+  {%- else -%}
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Kruimelpad">
+        <ul>
+          <li><a href="{{ routes.root_url }}">Home</a></li>
+          <li><span aria-current="page">{{ page.title }}</span></li>
+        </ul>
+      </nav>
+    </div>
+
+    <section class="page-header">
+      <div class="container">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow reveal">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h1 class="page-header__title reveal" data-delay="1">{{ page.title }}</h1>
+        {%- if section.settings.show_published_date -%}
+          <p class="page-header__meta reveal" data-delay="2">
+            Laatst bijgewerkt: {{ page.published_at | date: '%-d %B %Y' }}
+          </p>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <article class="legal reveal">
+          {{ page.content }}
+        </article>
+      </div>
+    </section>
+{%- endcase -%}
+
+{% schema %}
+{
+  "name": "Pagina",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkopje (eyebrow)",
+      "info": "Klein label boven de titel, bijvoorbeeld 'Juridisch'. Laat leeg om te verbergen.",
+      "default": "Juridisch"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_published_date",
+      "label": "Toon datum laatste wijziging",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

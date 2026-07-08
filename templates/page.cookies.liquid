@@ -1,0 +1,287 @@
+<style>
+  /* Pagina-header (gecentreerd) */
+  .legal-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .legal-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .legal-header__meta {
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    margin-top: var(--sp-1);
+  }
+
+  /* Eén rustige leeskolom */
+  .legal {
+    max-width: 760px;
+    margin-inline: auto;
+  }
+  .legal__intro {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+  .legal section { margin-top: clamp(2.25rem, 4vw, 3rem); }
+  .legal h2 {
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    margin-bottom: var(--sp-0_75);
+  }
+  .legal h2 .legal__num {
+    color: var(--accent);
+    font-size: 0.7em;
+    margin-right: 0.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .legal h3 {
+    font-size: 1.1rem;
+    margin-top: var(--sp-1_5);
+    margin-bottom: var(--sp-0_5);
+  }
+  .legal p {
+    color: var(--ink-soft);
+    margin-top: var(--sp-1);
+    line-height: 1.8;
+  }
+  .legal ul {
+    list-style: disc;
+    padding-left: 1.4rem;
+    margin-top: var(--sp-1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .legal ul li {
+    color: var(--ink-soft);
+    line-height: 1.75;
+  }
+  .legal ul li::marker { color: var(--accent); }
+  .legal strong { color: var(--ink); font-weight: 500; }
+
+  /* Cookie-tabel */
+  .legal-table-wrap {
+    margin-top: var(--sp-1_5);
+    overflow-x: auto;
+    border: var(--border);
+    background: var(--surface);
+  }
+  .legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 560px;
+  }
+  .legal-table caption {
+    caption-side: bottom;
+    text-align: left;
+    padding: var(--sp-1) var(--sp-1_5);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .legal-table th,
+  .legal-table td {
+    padding: 0.85rem 1.1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+  }
+  .legal-table thead th {
+    background: var(--bg-alt);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .legal-table tbody th {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .legal-table td { color: var(--ink-soft); }
+  .legal-table tbody tr:last-child th,
+  .legal-table tbody tr:last-child td { border-bottom: none; }
+
+  /* Contactblok onderaan de leeskolom */
+  .legal-contact {
+    margin-top: var(--sp-1_5);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--bg-alt);
+    border: var(--border);
+  }
+  .legal-contact p { margin-top: 0.4rem; }
+  .legal-contact p:first-child { margin-top: 0; }
+  /* Accent-links in het contactblok (behoudt de uitstraling van .link-accent
+     nu de links via een richtext-setting komen en geen class kunnen dragen) */
+  .legal-contact a {
+    color: var(--accent);
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--t-fast);
+  }
+  .legal-contact a:hover { background-size: 100% 1px; }
+</style>
+
+<!-- BREADCRUMB -->
+<nav class="container breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    <li><span aria-current="page">{{ page.title | default: 'Cookiebeleid' }}</span></li>
+  </ul>
+</nav>
+
+<!-- PAGINA-HEADER -->
+<section class="legal-header">
+  <div class="container">
+    <p class="eyebrow reveal">Juridisch</p>
+    <h1 class="legal-header__title reveal" data-delay="1">{{ page.title | default: 'Cookiebeleid' }}</h1>
+    <p class="legal-header__meta reveal" data-delay="2">Laatst bijgewerkt: 22 juni 2026</p>
+  </div>
+</section>
+
+<!-- LEESKOLOM -->
+<section class="section section--tight">
+  <div class="container">
+    <article class="legal reveal">
+
+      <div class="legal__intro"><p>Dit cookiebeleid legt uit hoe Up to Date Damesmode (“Up to Date Damesmode”, “wij” of “ons”) cookies en vergelijkbare technieken gebruikt op de website uptodatedamesmode.nl. We leggen uit wat cookies zijn, welke soorten we plaatsen, waarvoor we ze inzetten en hoe je je voorkeuren op elk moment kunt beheren of intrekken. Lees dit beleid samen met ons <a href="privacybeleid.html">privacybeleid</a>, waarin we beschrijven hoe we met je persoonsgegevens omgaan.</p></div>
+
+      <!-- Artikel 1 -->
+      <section>
+        <h2>
+          <span class="legal__num">1.</span>
+          Wat zijn cookies?
+        </h2>
+        <p>Cookies zijn kleine tekstbestanden die bij een bezoek aan onze website op je computer, tablet of telefoon worden geplaatst en daar (tijdelijk of langer) worden bewaard. Ze stellen de website in staat je apparaat te herkennen bij een volgend bezoek. Naast cookies maken we soms gebruik van vergelijkbare technieken, zoals pixels, web beacons en lokale opslag (local storage); waar we in dit beleid over “cookies” spreken, bedoelen we ook deze technieken.</p><p>We maken onderscheid tussen <strong>sessiecookies</strong>, die automatisch worden verwijderd zodra je je browser sluit, en <strong>permanente cookies</strong>, die voor een vastgestelde periode op je apparaat bewaard blijven. Daarnaast onderscheiden we cookies die door onszelf worden geplaatst (first-party cookies) en cookies die door derden worden geplaatst (third-party cookies).</p>
+      </section>
+
+      <!-- Artikel 2 -->
+      <section>
+        <h2>
+          <span class="legal__num">2.</span>
+          Waarom gebruiken we cookies?
+        </h2>
+        <p>We gebruiken cookies om onze website goed te laten werken en om je een prettige, persoonlijke winkelervaring te bieden. Concreet zetten we cookies onder meer in om:</p><ul><li>de website veilig en technisch betrouwbaar te laten functioneren;</li><li>de inhoud van je winkelmand te onthouden tijdens je bezoek;</li><li>je voorkeuren te bewaren, zoals je cookie-instellingen;</li><li>te analyseren hoe bezoekers onze website gebruiken, zodat we deze kunnen verbeteren;</li><li>relevante advertenties en aanbiedingen te kunnen tonen, binnen en buiten onze website.</li></ul>
+      </section>
+
+      <!-- Artikel 3 -->
+      <section>
+        <h2>
+          <span class="legal__num">3.</span>
+          Welke soorten cookies gebruiken we?
+        </h2>
+        <p>Hieronder lichten we de verschillende soorten cookies toe die op onze website kunnen worden geplaatst. Functionele en noodzakelijke cookies plaatsen we altijd; voor de overige cookies vragen we vooraf je toestemming via de cookiemelding.</p><p><strong>Functionele en noodzakelijke cookies.</strong> Deze cookies zijn nodig om de website te laten werken en kunnen niet worden uitgeschakeld. Ze zorgen er bijvoorbeeld voor dat je kunt inloggen, dat je winkelmand wordt onthouden en dat het afrekenproces veilig verloopt. Voor deze cookies is op grond van de wet geen toestemming vereist.</p><p><strong>Analytische cookies.</strong> Met analytische cookies meten we hoe bezoekers onze website gebruiken: welke pagina’s populair zijn, hoe lang men blijft en waar bezoekers eventueel afhaken. Deze inzichten helpen ons de website te verbeteren. We hebben onze analyse zo ingericht dat de impact op je privacy beperkt blijft, en we vragen hiervoor je toestemming voor zover de wet dat voorschrijft.</p><p><strong>Marketing- en trackingcookies.</strong> Marketing- en trackingcookies volgen je surfgedrag, zodat we je relevante advertenties kunnen tonen op onze website en op websites en platforms van derden. Ook helpen ze ons om het bereik en de effectiviteit van onze campagnes te meten. Deze cookies plaatsen we uitsluitend met je toestemming.</p><p><strong>Social media-cookies.</strong> Op onze website kunnen knoppen en ingesloten inhoud van sociale netwerken (zoals Instagram, TikTok en Facebook) staan. Deze partijen kunnen via hun cookies je gebruik registreren en gegevens combineren met informatie waarover zij al beschikken. Het gebruik van deze cookies en gegevens valt onder het privacy- en cookiebeleid van de betreffende social media-partij. Ook deze cookies plaatsen we alleen met je toestemming.</p>
+      </section>
+
+      <!-- Artikel 4 — met cookie-tabel -->
+      <section>
+        <h2>
+          <span class="legal__num">4.</span>
+          Overzicht van gebruikte cookies
+        </h2>
+        <p>In de onderstaande tabel vind je voorbeelden van cookies die op onze website kunnen worden geplaatst, met telkens het type, het doel en de bewaartermijn. Deze lijst is illustratief; de exacte cookies kunnen variëren afhankelijk van de diensten die we inzetten.</p>
+
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <caption>Tabel 1 — Voorbeelden van cookies op uptodatedamesmode.nl, gegroepeerd per type.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Cookie</th>
+                <th scope="col">Type</th>
+                <th scope="col">Doel</th>
+                <th scope="col">Bewaartermijn</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">sm_session</th>
+                <td>Functioneel / noodzakelijk</td>
+                <td>Houdt je sessie en de inhoud van je winkelmand bij tijdens je bezoek.</td>
+                <td>Sessie (tot sluiten browser)</td>
+              </tr>
+              <tr>
+                <th scope="row">sm_cookie_consent</th>
+                <td>Functioneel / noodzakelijk</td>
+                <td>Onthoudt je gekozen cookievoorkeuren, zodat we deze niet telkens opnieuw vragen.</td>
+                <td>12 maanden</td>
+              </tr>
+              <tr>
+                <th scope="row">sm_voorkeuren</th>
+                <td>Functioneel</td>
+                <td>Bewaart voorkeuren zoals recent bekeken artikelen en weergave-instellingen.</td>
+                <td>6 maanden</td>
+              </tr>
+              <tr>
+                <th scope="row">_ga</th>
+                <td>Analytisch</td>
+                <td>Onderscheidt bezoekers om geanonimiseerde bezoekstatistieken op te bouwen.</td>
+                <td>24 maanden</td>
+              </tr>
+              <tr>
+                <th scope="row">_gid</th>
+                <td>Analytisch</td>
+                <td>Meet het gebruik van afzonderlijke pagina&rsquo;s om de website te verbeteren.</td>
+                <td>24 uur</td>
+              </tr>
+              <tr>
+                <th scope="row">_fbp</th>
+                <td>Marketing / tracking</td>
+                <td>Meet advertentieprestaties en toont relevante advertenties via sociale platforms.</td>
+                <td>3 maanden</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Artikel 5 -->
+      <section>
+        <h2>
+          <span class="legal__num">5.</span>
+          Cookies van derden
+        </h2>
+        <p>Voor sommige functionaliteiten maken we gebruik van diensten van derden. Deze partijen kunnen via onze website hun eigen cookies plaatsen. Het gaat onder meer om:</p><ul><li><strong>Analyseaanbieders</strong> die ons helpen het gebruik van de website inzichtelijk te maken;</li><li><strong>Advertentienetwerken en sociale platforms</strong> waarmee we campagnes voeren en bereik meten;</li><li><strong>Betaaldienstverleners</strong> die een veilig en betrouwbaar afrekenproces mogelijk maken.</li></ul><p>Wij hebben geen volledige zeggenschap over de cookies die deze partijen plaatsen en over de gegevens die zij daarmee verzamelen. We raden je aan het privacy- en cookiebeleid van de betreffende partijen te raadplegen voor meer informatie over hoe zij met je gegevens omgaan.</p>
+      </section>
+
+      <!-- Artikel 6 -->
+      <section>
+        <h2>
+          <span class="legal__num">6.</span>
+          Je toestemming en voorkeuren beheren
+        </h2>
+        <p>Bij je eerste bezoek aan onze website tonen we een cookiemelding waarin je kunt kiezen welke cookies je accepteert. Je toestemming voor analytische, marketing- en social media-cookies is volledig vrijwillig. Je kunt je keuze op elk moment wijzigen of intrekken via de link “Cookie-instellingen” onder aan onze website; functionele en noodzakelijke cookies blijven altijd actief.</p><p>Daarnaast kun je cookies beheren en verwijderen via de instellingen van je browser. Je kunt je browser zo instellen dat cookies worden geweigerd of dat je een melding krijgt voordat een cookie wordt geplaatst. Houd er rekening mee dat onze website hierdoor mogelijk niet meer volledig werkt. De manier waarop je dit instelt, verschilt per browser:</p><ul><li><strong>Google Chrome:</strong> Instellingen › Privacy en beveiliging › Cookies van derden.</li><li><strong>Mozilla Firefox:</strong> Instellingen › Privacy &amp; beveiliging › Cookies en websitegegevens.</li><li><strong>Apple Safari:</strong> Instellingen › Privacy › Cookies en websitegegevens beheren.</li><li><strong>Microsoft Edge:</strong> Instellingen › Cookies en site-machtigingen › Cookies en sitegegevens beheren.</li></ul>
+      </section>
+
+      <!-- Artikel 7 -->
+      <section>
+        <h2>
+          <span class="legal__num">7.</span>
+          Wijzigingen in dit cookiebeleid
+        </h2>
+        <p>We kunnen dit cookiebeleid van tijd tot tijd aanpassen, bijvoorbeeld wanneer we nieuwe cookies gaan gebruiken of wanneer wet- en regelgeving daartoe aanleiding geeft. De meest actuele versie vind je altijd op deze pagina. Bij belangrijke wijzigingen vragen we, waar nodig, opnieuw je toestemming. Bovenaan deze pagina staat wanneer dit beleid voor het laatst is bijgewerkt.</p>
+      </section>
+
+      <!-- Artikel 8 — met contactblok -->
+      <section>
+        <h2>
+          <span class="legal__num">8.</span>
+          Contact
+        </h2>
+        <p>Heb je vragen over dit cookiebeleid of over de manier waarop wij met je gegevens omgaan? Neem dan gerust contact met ons op. Meer informatie over de verwerking van je persoonsgegevens vind je in ons <a href="privacybeleid.html">privacybeleid</a>.</p>
+        <div class="legal-contact">
+          <p><strong>Up to Date Damesmode</strong></p><p>Van Beethovensingel 58, 3055 JK Rotterdam</p><p>E-mail: <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a></p><p>Eenmanszaak &middot; Hoofdvestiging</p><p>KVK-nummer: 51041715<br>Vestigingsnummer: 000021135061</p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</section>

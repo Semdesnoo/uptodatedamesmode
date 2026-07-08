@@ -1,0 +1,314 @@
+<style>
+  /* Pagina-header met intro */
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: var(--sp-1) auto 0;
+  }
+  .page-header__intro a { white-space: nowrap; }
+
+  /* Maattabel-blok: kop + tabel onder elkaar */
+  .size-block { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .size-block:last-child { margin-bottom: 0; }
+  .size-block__head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: var(--sp-1_5);
+  }
+  .size-block__title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  .size-block__note { color: var(--muted); font-size: 0.9rem; }
+
+  /* Tabel — responsive: horizontaal scrollbaar op smal scherm */
+  .size-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: var(--border);
+    background: var(--surface);
+  }
+  .size-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+    font-size: 0.95rem;
+  }
+  .size-table caption {
+    text-align: left;
+    padding: var(--sp-1) var(--sp-1_5);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--line);
+  }
+  .size-table th,
+  .size-table td {
+    padding: 0.85rem 1.15rem;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+  .size-table thead th {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: var(--bg-alt);
+    white-space: nowrap;
+  }
+  .size-table tbody th {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .size-table tbody td { color: var(--ink-soft); }
+  .size-table tbody tr:last-child th,
+  .size-table tbody tr:last-child td { border-bottom: none; }
+  .size-table tbody tr:hover th,
+  .size-table tbody tr:hover td { background: color-mix(in srgb, var(--bg-alt) 55%, transparent); }
+
+  /* "Hoe meet ik?" — uitleg + opsomming */
+  .measure-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .measure-list { display: flex; flex-direction: column; gap: var(--sp-1_5); }
+  .measure-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-bottom: var(--sp-1_5);
+    border-bottom: var(--border);
+  }
+  .measure-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .measure-list__term {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ink);
+  }
+  .measure-list__desc { color: var(--ink-soft); }
+
+  /* Klein advies-blokje */
+  .size-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-1);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--bg-alt);
+    border: var(--border);
+    border-left: 3px solid var(--accent);
+  }
+  .size-tip svg {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    color: var(--accent);
+    margin-top: 0.15rem;
+  }
+  .size-tip__text strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+  .size-tip__text p { color: var(--ink-soft); }
+
+  /* CTA-blok onderaan */
+  .size-cta { text-align: center; }
+  .size-cta h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); margin-bottom: var(--sp-1); }
+  .size-cta p { color: var(--ink-soft); max-width: 50ch; margin: 0 auto var(--sp-1_5); }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    .measure-layout { grid-template-columns: 1fr; gap: var(--sp-2); }
+  }
+</style>
+
+<!-- BREADCRUMB -->
+<nav class="container container--wide breadcrumb" aria-label="Kruimelpad">
+  <ul>
+    <li><a href="{{ routes.root_url }}">Home</a></li>
+    <li><span aria-current="page">{{ page.title | default: 'Maattabel' }}</span></li>
+  </ul>
+</nav>
+
+<!-- PAGINA-HEADER: titel + introzin -->
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow reveal">Klantenservice</p>
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: 'Maattabel' }}</h1>
+    <div class="page-header__intro reveal" data-delay="2"><p>Vind moeiteloos je juiste maat. Bepaal je confectiemaat met de tabellen hieronder of meet jezelf op met een meetlint voor een nauwkeurig resultaat. Twijfel je nog? Gebruik de <a href="/products">maat-adviseur op elke productpagina</a>.</p></div>
+  </div>
+</section>
+
+<!-- MAATTABELLEN: kleding + schoenen -->
+<section class="section">
+  <div class="container">
+
+    <!-- Blok: size_kleding -->
+    <div class="size-block reveal">
+      <div class="size-block__head">
+        <h2 class="size-block__title">Kleding (dames)</h2>
+        <p class="size-block__note">Alle afmetingen zijn lichaamsmaten in centimeters.</p>
+      </div>
+
+      <div class="size-table-wrap">
+        <table class="size-table">
+          <caption>Maten dameskleding</caption>
+          <thead>
+            <tr>
+              <th scope="col">Maat</th>
+              <th scope="col">Confectie</th>
+              <th scope="col">Borst (cm)</th>
+              <th scope="col">Taille (cm)</th>
+              <th scope="col">Heup (cm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">XS</th>
+              <td>34</td>
+              <td>80 – 84</td>
+              <td>62 – 66</td>
+              <td>88 – 92</td>
+            </tr>
+            <tr>
+              <th scope="row">S</th>
+              <td>36</td>
+              <td>84 – 88</td>
+              <td>66 – 70</td>
+              <td>92 – 96</td>
+            </tr>
+            <tr>
+              <th scope="row">M</th>
+              <td>38</td>
+              <td>88 – 92</td>
+              <td>70 – 74</td>
+              <td>96 – 100</td>
+            </tr>
+            <tr>
+              <th scope="row">L</th>
+              <td>40</td>
+              <td>92 – 96</td>
+              <td>74 – 78</td>
+              <td>100 – 104</td>
+            </tr>
+            <tr>
+              <th scope="row">XL</th>
+              <td>42</td>
+              <td>96 – 102</td>
+              <td>78 – 84</td>
+              <td>104 – 110</td>
+            </tr>
+            <tr>
+              <th scope="row">XXL</th>
+              <td>44</td>
+              <td>102 – 108</td>
+              <td>84 – 90</td>
+              <td>110 – 116</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Blok: size_schoenen -->
+    <div class="size-block reveal" data-delay="1">
+      <div class="size-block__head">
+        <h2 class="size-block__title">Schoenen</h2>
+        <p class="size-block__note">Meet je voet aan het einde van de dag, wanneer hij iets gezwollen is.</p>
+      </div>
+
+      <div class="size-table-wrap">
+        <table class="size-table">
+          <caption>Maten dameschoenen</caption>
+          <thead>
+            <tr>
+              <th scope="col">EU</th>
+              <th scope="col">Lengte voet (cm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">36</th><td>23,0</td></tr>
+            <tr><th scope="row">37</th><td>23,7</td></tr>
+            <tr><th scope="row">38</th><td>24,3</td></tr>
+            <tr><th scope="row">39</th><td>25,0</td></tr>
+            <tr><th scope="row">40</th><td>25,7</td></tr>
+            <tr><th scope="row">41</th><td>26,0</td></tr>
+            <tr><th scope="row">42</th><td>26,5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOE MEET IK MEZELF? -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="measure-layout">
+
+      <!-- Uitleg -->
+      <div class="reveal">
+        <p class="eyebrow">Stap voor stap</p>
+        <h2 class="size-block__title" style="margin-top:var(--sp-0_75);">Hoe meet ik mezelf?</h2>
+        <div style="color:var(--ink-soft); margin-top:var(--sp-1); max-width:46ch;"><p>Pak een zacht meetlint en meet bij voorkeur over dunne kleding of op de blote huid. Houd het meetlint recht en horizontaal rond je lichaam — niet te strak en niet te los. Sta ontspannen en adem rustig uit. Vergelijk je maten daarna met de kolommen in de tabel hierboven.</p></div>
+      </div>
+
+      <!-- Opsomming van de metingen -->
+      <ul class="measure-list reveal" data-delay="1">
+        <li>
+          <span class="measure-list__term">Borst</span>
+          <span class="measure-list__desc">Meet rond het volste deel van je borst, met het meetlint over de schouderbladen langs je rug.</span>
+        </li>
+        <li>
+          <span class="measure-list__term">Taille</span>
+          <span class="measure-list__desc">Meet rond het smalste deel van je middel, doorgaans net boven de navel.</span>
+        </li>
+        <li>
+          <span class="measure-list__term">Heup</span>
+          <span class="measure-list__desc">Meet rond het volste deel van je heupen, met je voeten tegen elkaar.</span>
+        </li>
+      </ul>
+
+    </div>
+
+    <!-- Klein advies-blokje -->
+    <div class="size-tip reveal" data-delay="2" style="margin-top:clamp(2rem, 5vw, 3rem);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" /><line x1="12" y1="11" x2="12" y2="16" /><circle cx="12" cy="8" r="0.6" fill="currentColor" />
+      </svg>
+      <div class="size-tip__text">
+        <strong>Tussen twee maten?</strong>
+        <p><p>Kies de grotere voor extra comfort.</p></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA NAAR COLLECTIE -->
+<section class="section">
+  <div class="container size-cta reveal">
+    <p class="eyebrow">Klaar om te shoppen</p>
+    <h2>Vind jouw maat in de collectie</h2>
+    <p><p>Nu je je maat kent, ontdek je onze tijdloze stukken — bij elk artikel vind je de afmetingen en pasvorm.</p></p>
+    <a class="btn" href="/collections/all">Bekijk de collectie</a>
+  </div>
+</section>

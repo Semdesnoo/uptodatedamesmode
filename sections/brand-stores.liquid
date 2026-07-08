@@ -1,0 +1,132 @@
+{%- comment -%}
+  "Onze winkels" — rij plaats-tags (tess v-stijl). Elke tag is een blok met een
+  plaatsnaam en een optionele link (bijv. naar een winkel-/contactpagina).
+{%- endcomment -%}
+<section class="section section--tight brand-stores">
+  <div class="container container--wide">
+    <div class="section-head section-head--center reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-head__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p>{{ section.settings.text }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="store-tags reveal">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign tag_class = 'store-tag' -%}
+          {%- if block.settings.highlight -%}{%- assign tag_class = tag_class | append: ' store-tag--highlight' -%}{%- endif -%}
+          {%- if block.settings.link != blank -%}
+            <a class="{{ tag_class }}" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>{{ block.settings.name }}</a>
+          {%- else -%}
+            <span class="{{ tag_class }}" {{ block.shopify_attributes }}>{{ block.settings.name }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <span class="store-tag">Rotterdam</span>
+        <span class="store-tag">Plaatsnaam</span>
+        <span class="store-tag store-tag--highlight">Plaatsnaam</span>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .store-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .store-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.55em 1.25em;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  }
+  a.store-tag:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .store-tag--highlight {
+    background: var(--announce-bg, #F7E4E9);
+    border-color: transparent;
+    color: var(--announce-ink, #5A2E39);
+  }
+  a.store-tag--highlight:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Onze winkels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Bovenkop"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Kop",
+      "default": "Onze winkels"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Subtekst"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Plaats",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Plaatsnaam",
+          "default": "Rotterdam"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optioneel)"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Uitlichten (roze)",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Onze winkels",
+      "blocks": [
+        { "type": "store", "settings": { "name": "Rotterdam" } },
+        { "type": "store", "settings": { "name": "Plaatsnaam" } },
+        { "type": "store", "settings": { "name": "Plaatsnaam", "highlight": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

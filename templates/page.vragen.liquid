@@ -1,0 +1,344 @@
+<!-- Zelfstandig pagina-sjabloon "Veelgestelde vragen" (voorheen sectie page-vragen + template page.vragen.json).
+     Alle sectie- en blokdata is hieronder letterlijk uitgeschreven; er is geen losse sectie meer nodig. -->
+
+<style>
+    /* Pagina-header met intro */
+    .page-header {
+      padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+      text-align: center;
+    }
+    .page-header__title {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      margin-top: var(--sp-0_75);
+    }
+    .page-header__intro {
+      color: var(--ink-soft);
+      max-width: 52ch;
+      margin: var(--sp-1) auto 0;
+    }
+
+    /* FAQ gegroepeerd per thema */
+    .faq-groups {
+      max-width: 820px;
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2.5rem, 5vw, 4rem);
+    }
+    .faq-group__head {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-1);
+      margin-bottom: var(--sp-0_5);
+    }
+    .faq-group__title {
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    }
+    .faq-group__intro {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: var(--sp-1);
+      max-width: 64ch;
+    }
+
+    /* FAQ-accordions met native <details> (zelfde stijl als de FAQ op contact.html) */
+    .faq-list {
+      border-top: var(--border);
+    }
+    .faq-item { border-bottom: var(--border); }
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-1);
+      padding-block: var(--sp-1_5);
+      cursor: pointer;
+      list-style: none;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      transition: color var(--t-fast);
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--accent); }
+    .faq-item summary .faq-icon {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      position: relative;
+      transition: transform var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before,
+    .faq-item summary .faq-icon::after {
+      content: "";
+      position: absolute;
+      background: currentColor;
+      transition: opacity var(--t-fast);
+    }
+    .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+    .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+    .faq-item[open] summary .faq-icon::after { opacity: 0; }
+    .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 68ch; }
+    .faq-item__answer p + p { margin-top: var(--sp-0_75); }
+    /* Accent-links binnen de antwoorden (richtext kan geen class dragen) */
+    .faq-item__answer a,
+    .faq-group__intro a {
+      color: var(--accent);
+      background-image: linear-gradient(var(--accent), var(--accent));
+      background-size: 0% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      transition: background-size var(--t-fast);
+    }
+    .faq-item__answer a:hover,
+    .faq-group__intro a:hover { background-size: 100% 1px; }
+
+    /* Optionele afbeelding tussen de thema's */
+    .faq-figure {
+      max-width: 820px;
+      margin-inline: auto;
+    }
+    .faq-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .faq-figure figcaption {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: var(--sp-0_75);
+      text-align: center;
+    }
+
+    /* Afsluitend "vraag er niet bij"-blok */
+    .faq-cta {
+      max-width: 820px;
+      margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+      padding: clamp(1.75rem, 4vw, 2.75rem);
+      background: var(--surface);
+      border: var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-1);
+    }
+    .faq-cta h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+    .faq-cta p {
+      color: var(--ink-soft);
+      max-width: 50ch;
+    }
+</style>
+
+<!-- BREADCRUMB + PAGINA-HEADER -->
+<section class="page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">{{ page.title | default: 'Veelgestelde vragen' }}</span></li>
+      </ul>
+    </nav>
+
+    <p class="eyebrow reveal">Klantenservice</p>
+    <h1 class="page-header__title reveal" data-delay="1">Veelgestelde vragen</h1>
+    <div class="page-header__intro reveal" data-delay="2"><p>Antwoorden op de vragen die we het vaakst krijgen — over bestellen, verzending, retourneren, betalen en de juiste maat. Staat je vraag er niet bij? We helpen je graag persoonlijk verder.</p></div>
+  </div>
+</section>
+
+<!-- FAQ GEGROEPEERD PER THEMA -->
+<section class="section">
+  <div class="container">
+    <div class="faq-groups">
+
+      <!-- Thema: Bestellen -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Bestellen</h2>
+        </div>
+        <p class="faq-group__intro">Alles over het plaatsen, wijzigen en volgen van je bestelling.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Kan ik bestellen zonder een account aan te maken?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Ja, je kunt bij ons afrekenen als gast, zonder account aan te maken. Je vult tijdens het bestellen alleen je bezorg- en betaalgegevens in. Een account maken kan natuurlijk wel handig zijn: je bestellingen en retouren staan dan netjes op één plek en je hoeft je gegevens niet steeds opnieuw in te vullen.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Kan ik mijn bestelling nog wijzigen of annuleren?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Omdat we bestellingen snel verwerken, is wijzigen of annuleren alleen mogelijk zolang je pakket nog niet is verzonden. Neem daarom zo snel mogelijk contact op met onze klantenservice via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>, dan kijken we direct wat er nog kan. Is je bestelling al onderweg? Dan kun je gebruikmaken van je 30 dagen bedenktijd en het artikel kosteloos retourneren.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Hoe gebruik ik een kortingscode?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Je vult je kortingscode in tijdens het afrekenen, in het veld ‘Kortingscode’. Klik op ‘Toepassen’ en de korting wordt direct van je totaalbedrag afgetrokken. Let op: er kan doorgaans maar één kortingscode per bestelling worden gebruikt, en sommige acties gelden niet in combinatie met afgeprijsde artikelen.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Een artikel is uitverkocht — komt het terug?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Van veel geliefde artikelen bestellen we bij, maar omdat we met zorgvuldig samengestelde, beperkte collecties werken is dat niet altijd mogelijk. Op de productpagina kun je je e-mailadres achterlaten bij een uitverkochte maat; je krijgt dan automatisch bericht zodra het artikel weer op voorraad is.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Thema: Verzending & levering -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Verzending & levering</h2>
+        </div>
+        <p class="faq-group__intro">Verzendkosten, levertijden en het volgen van je pakket. Meer details lees je op <a href="/pages/verzending-retour">Verzending & retour</a>.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Wat zijn de verzendkosten?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Vanaf €75 verzenden we je bestelling gratis. Daaronder rekenen we €4,95 verzendkosten binnen Nederland. Alle tarieven, ook voor België en de rest van de EU, vind je terug op de pagina <a href="/pages/verzending-retour">Verzending & retour</a>.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Wat is de levertijd?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Bestel je op een werkdag voor 22:00 uur, dan ligt je pakket de volgende dag in huis. Binnen Nederland ontvang je je bestelling doorgaans binnen 1 tot 2 werkdagen, in België binnen 2 tot 3 werkdagen. Tijdens drukke periodes kan de levering een enkele dag langer duren.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Kan ik mijn pakket volgen met track & trace?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Zeker. Zodra je bestelling is verzonden, ontvang je per e-mail een track & trace-code waarmee je je pakket op de voet kunt volgen. Heb je een account, dan vind je de verzendstatus ook terug in je bestelgeschiedenis.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Verzenden jullie ook naar het buitenland?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Naast Nederland bezorgen we ook in België en een aantal andere EU-landen. De exacte tarieven en levertijden per land staan overzichtelijk vermeld op de pagina <a href="/pages/verzending-retour">Verzending & retour</a>. Bij het afrekenen zie je altijd vooraf welke kosten voor jouw land gelden.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Thema: Retourneren & ruilen -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Retourneren & ruilen</h2>
+        </div>
+        <p class="faq-group__intro">Hoe je iets terugstuurt of ruilt. De volledige uitleg vind je op <a href="/pages/verzending-retour">Verzending & retour</a>.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Hoeveel tijd heb ik om te retourneren?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Je hebt 30 dagen bedenktijd, gerekend vanaf de dag dat je je bestelling ontvangt. Binnen die periode mag je artikelen die ongedragen zijn en voorzien van de originele labels kosteloos terugsturen. Zo kun je in alle rust thuis passen.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Hoe stuur ik een artikel terug?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Meld je retour aan via je account of per e-mail, en gebruik het meegeleverde retourlabel om het pakket af te geven bij een afhaalpunt. Stop de artikelen het liefst terug in de originele verpakking met het ingevulde retourformulier. De stappen staan stap voor stap beschreven op <a href="/pages/verzending-retour">Verzending & retour</a>.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Wanneer krijg ik mijn geld terug?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Zodra we je retour hebben ontvangen en gecontroleerd, storten we het aankoopbedrag binnen 5 werkdagen terug op de betaalmethode waarmee je hebt betaald. Je ontvangt hiervan altijd een bevestiging per e-mail.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Kan ik een artikel ruilen voor een andere maat of kleur?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Om je zo snel mogelijk te helpen, werken we met retourneren en opnieuw bestellen in plaats van direct ruilen. Stuur het artikel dat niet past terug en plaats een nieuwe bestelling voor de gewenste maat of kleur. Zo ben je verzekerd van de juiste voorraad. Meer hierover lees je op <a href="/pages/verzending-retour">Verzending & retour</a>.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Thema: Betalen -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Betalen</h2>
+        </div>
+        <p class="faq-group__intro">Veilig en op de manier die jou het beste uitkomt. Bekijk alle opties op <a href="/pages/betaalmethoden">Betaalmethoden</a>.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Welke betaalmethoden kan ik gebruiken?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Je kunt afrekenen met iDEAL, creditcard (Visa & Mastercard), PayPal en Klarna. Een volledig overzicht van alle mogelijkheden en voorwaarden vind je op de pagina <a href="/pages/betaalmethoden">Betaalmethoden</a>.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Is betalen bij Up to Date Damesmode veilig?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Absoluut. Alle betalingen verlopen via een beveiligde verbinding (SSL) en worden afgehandeld door gecertificeerde betaalpartners. Wij slaan zelf geen volledige betaalgegevens op, zodat je gegevens altijd goed beschermd zijn.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Kan ik achteraf betalen?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Ja, met Klarna kun je achteraf betalen: je rekent je bestelling pas af nadat je hem hebt ontvangen, doorgaans binnen 14 dagen. Zo kun je eerst thuis passen en betaal je alleen wat je houdt. De exacte voorwaarden van Klarna lees je op <a href="/pages/betaalmethoden">Betaalmethoden</a>.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Thema: Maten & pasvorm -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Maten & pasvorm</h2>
+        </div>
+        <p class="faq-group__intro">De juiste maat in één keer goed. Raadpleeg ook onze <a href="/pages/maattabel">maattabel</a>.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Hoe vind ik de juiste maat?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Meet jezelf op met een meetlint en vergelijk je maten met onze <a href="/pages/maattabel">maattabel</a>, waarin alle afmetingen in centimeters staan. Twijfel je tussen twee maten? Mail dan gerust je lengte en maten naar onze stylisten via <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a> — we adviseren je graag persoonlijk.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Valt de kleding groot of klein uit?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>De meeste artikelen vallen volgens de Nederlandse standaardmaat. Wijkt een item daarvan af, dan vermelden we dat duidelijk op de productpagina, bijvoorbeeld ‘valt ruim’ of ‘valt aan de kleine kant’. Houd daarnaast de <a href="/pages/maattabel">maattabel</a> aan voor de exacte afmetingen per maat.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Thema: Account & nieuwsbrief -->
+      <div class="faq-group reveal">
+        <div class="faq-group__head">
+          <h2 class="faq-group__title">Account & nieuwsbrief</h2>
+        </div>
+        <p class="faq-group__intro">Je gegevens, je voorkeuren en de Up to Date Damesmode-club.</p>
+        <div class="faq-list" data-accordion>
+          <details class="faq-item">
+            <summary>Hoe maak ik een account aan?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Klik op het accounticoon rechtsboven en kies ‘Account aanmaken’. Je vult je e-mailadres en een wachtwoord in, en klaar. Met een account volg je eenvoudig je bestellingen en retouren, en hoef je je gegevens bij een volgende bestelling niet opnieuw in te vullen.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Hoe schrijf ik me in of uit voor de nieuwsbrief?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Inschrijven kan via het nieuwsbriefformulier onderaan elke pagina; als welkom ontvang je €10 korting op je eerste bestelling. Je ontvangt dan als eerste nieuwe collecties, stijltips en exclusieve aanbiedingen. Wil je je uitschrijven? Dat kan op elk moment via de link onderaan iedere nieuwsbrief.</p>
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>Hoe wijzig ik mijn gegevens?<span class="faq-icon" aria-hidden="true"></span></summary>
+            <div class="faq-item__answer">
+              <p>Log in op je account en ga naar ‘Mijn gegevens’ om je adres, e-mailadres of wachtwoord aan te passen. Kom je er niet uit of wil je liever dat wij iets voor je wijzigen? Stuur dan even een bericht naar <a href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a>, dan regelen we het voor je.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- AFSLUITEND BLOK: vraag er niet bij? -->
+    <div class="faq-cta reveal">
+      <p class="eyebrow">Nog een vraag?</p>
+      <h2>Staat je vraag er niet bij?</h2>
+      <p>Geen probleem — onze klantenservice helpt je graag persoonlijk verder. We reageren meestal binnen 1 werkdag.</p>
+      <a class="btn" href="/pages/contact">Neem contact op</a>
+    </div>
+  </div>
+</section>

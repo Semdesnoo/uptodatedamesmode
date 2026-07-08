@@ -1,0 +1,101 @@
+{%- comment -%} Klant — inloggen / registreren / wachtwoord vergeten {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .account-intro { text-align: center; max-width: 54ch; margin: 0 auto var(--sp-3); }
+  .account-intro h1 { font-size: clamp(2rem, 4.5vw, 3rem); margin: var(--sp-0_75) 0; }
+  .account-intro p { color: var(--ink-soft); }
+  .auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+  .auth-card { background: var(--surface); border: var(--border); padding: clamp(1.5rem, 3vw, 2.5rem); }
+  .auth-card h2 { font-size: 1.5rem; margin-bottom: var(--sp-1_5); }
+  .auth-form { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .auth-form .btn { margin-top: var(--sp-0_75); }
+  .auth-note { font-size: 0.8rem; color: var(--muted); }
+  .auth-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  .auth-errors { list-style: none; padding: var(--sp-0_75); margin-bottom: var(--sp-1); background: rgba(180,60,40,0.08); border: 1px solid rgba(180,60,40,0.25); color: var(--sale); font-size: 0.85rem; }
+  .auth-success { padding: var(--sp-0_75); margin-bottom: var(--sp-1); background: rgba(60,120,80,0.08); border: 1px solid rgba(60,120,80,0.25); font-size: 0.85rem; }
+  #recover { display: none; }
+  #recover:target { display: block; }
+  @media (max-width: 700px) { .auth-grid { grid-template-columns: 1fr; } }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><span aria-current="page">Account</span></li>
+      </ul>
+    </nav>
+
+    <div class="account">
+      <div class="account-intro reveal">
+        <p class="eyebrow">Mijn account</p>
+        <h1>Inloggen of account aanmaken</h1>
+        <p>Log in om je bestellingen en gegevens te beheren — of maak in een minuut een gratis account aan.</p>
+      </div>
+
+      {%- if recover_success == true -%}
+        <p class="auth-success reveal" style="max-width:480px; margin:0 auto var(--sp-2);">We hebben je een e-mail gestuurd met instructies om je wachtwoord te herstellen. Controleer ook je spam-map.</p>
+      {%- endif -%}
+
+      {%- comment -%} Wachtwoord-herstel (standaard verborgen; getoond via #recover anker) {%- endcomment -%}
+      <div id="recover" class="auth-card reveal" style="max-width:480px; margin:0 auto var(--sp-2);">
+        <h2>Wachtwoord vergeten</h2>
+        <p style="color:var(--ink-soft); margin-bottom:var(--sp-1);">Vul je e-mailadres in en we sturen je een link om een nieuw wachtwoord in te stellen.</p>
+        {%- form 'recover_customer_password' -%}
+          {%- if form.errors -%}
+            <ul class="auth-errors">
+              {%- for field in form.errors -%}
+                <li>{{ form.errors.messages[field] }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          <div class="auth-form">
+            <div class="field">
+              <label for="recover-email">E-mailadres</label>
+              <input type="email" name="email" id="recover-email" autocomplete="email" placeholder="je@email.nl" required>
+            </div>
+            <button class="btn btn--block" type="submit">Stuur herstel-link</button>
+            <p class="auth-note"><a href="#login">Terug naar inloggen</a></p>
+          </div>
+        {%- endform -%}
+      </div>
+
+      <div class="auth-grid" id="login">
+        <div class="auth-card auth-login-card reveal">
+          <h2>Inloggen</h2>
+          {%- form 'customer_login' -%}
+            {%- if form.errors -%}
+              <ul class="auth-errors">
+                {%- for field in form.errors -%}
+                  <li>{{ form.errors.messages[field] }}</li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            <div class="auth-form">
+              <div class="field">
+                <label for="login-email">E-mailadres</label>
+                <input type="email" name="customer[email]" id="login-email" autocomplete="email" placeholder="je@email.nl" required>
+              </div>
+              <div class="field">
+                <label for="login-pass">Wachtwoord</label>
+                <input type="password" name="customer[password]" id="login-pass" autocomplete="current-password" placeholder="Je wachtwoord" required>
+              </div>
+              <button class="btn btn--block" type="submit">Inloggen</button>
+              <p class="auth-note"><a href="#recover">Wachtwoord vergeten?</a></p>
+            </div>
+          {%- endform -%}
+        </div>
+
+        <div class="auth-card reveal" data-delay="1">
+          <h2>Account aanmaken</h2>
+          <p style="color:var(--ink-soft); margin-bottom:var(--sp-1);">Nog geen account? Maak er gratis een aan.</p>
+          <div class="auth-form">
+            <a class="btn btn--outline btn--block" href="{{ routes.account_register_url }}">Account aanmaken</a>
+            <p class="auth-note">Door een account aan te maken ga je akkoord met onze voorwaarden en ons privacybeleid.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

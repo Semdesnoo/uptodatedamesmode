@@ -1,0 +1,23 @@
+{%- comment -%}
+  Responsive <picture>: aparte foto voor mobiel (max 749px) en desktop.
+  Params: image (desktop, verplicht), image_mobile (optioneel), alt, class,
+  loading, fetchpriority, widths, sizes. Geen mobiele foto? Desktopfoto overal.
+{%- endcomment -%}
+{%- liquid
+  assign _alt = alt | default: ''
+  assign _loading = loading | default: 'lazy'
+  assign _widths = widths | default: '400, 600, 800, 1000, 1200, 1600'
+  assign _sizes = sizes | default: '100vw'
+-%}
+{%- if image != blank -%}
+  <picture>
+    {%- if image_mobile != blank -%}
+      <source media="(max-width: 749px)" srcset="{{ image_mobile | image_url: width: 500 }} 500w, {{ image_mobile | image_url: width: 750 }} 750w, {{ image_mobile | image_url: width: 1000 }} 1000w, {{ image_mobile | image_url: width: 1200 }} 1200w" sizes="{{ _sizes }}">
+    {%- endif -%}
+    {%- if fetchpriority != blank -%}
+      {{ image | image_url: width: 1600 | image_tag: loading: _loading, fetchpriority: fetchpriority, alt: _alt, widths: _widths, sizes: _sizes, class: class }}
+    {%- else -%}
+      {{ image | image_url: width: 1600 | image_tag: loading: _loading, alt: _alt, widths: _widths, sizes: _sizes, class: class }}
+    {%- endif -%}
+  </picture>
+{%- endif -%}

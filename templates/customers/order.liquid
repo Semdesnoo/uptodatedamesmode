@@ -1,0 +1,96 @@
+{%- comment -%} Klant — één bestelling {%- endcomment -%}
+<style>
+  .account { max-width: 920px; margin-inline: auto; padding-block: clamp(1rem, 3vw, 2rem) var(--section-y); }
+  .order-head { margin-bottom: var(--sp-2); }
+  .order-head h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: var(--sp-0_75) 0; }
+  .order-head p { color: var(--ink-soft); }
+  .order-section { border-top: var(--border); padding-top: var(--sp-2); margin-top: var(--sp-2); }
+  .order-section h2 { font-size: 1.3rem; margin-bottom: var(--sp-1_5); }
+  .order-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .order-table th, .order-table td { text-align: left; padding: var(--sp-0_75); border-bottom: var(--border); }
+  .order-table th { font-family: var(--font-display); font-weight: 500; }
+  .order-table td.num, .order-table th.num { text-align: right; }
+  .order-totals { width: 100%; max-width: 360px; margin-left: auto; font-size: 0.9rem; }
+  .order-totals .row { display: flex; justify-content: space-between; padding: 0.35rem 0; }
+  .order-totals .row--total { border-top: var(--border); margin-top: 0.4rem; padding-top: 0.6rem; font-family: var(--font-display); font-size: 1.1rem; }
+  .order-address { color: var(--ink-soft); line-height: 1.6; }
+</style>
+
+<section class="section--tight">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Kruimelpad">
+      <ul>
+        <li><a href="{{ routes.root_url }}">Home</a></li>
+        <li><a href="{{ routes.account_url }}">Mijn account</a></li>
+        <li><span aria-current="page">Bestelling {{ order.name }}</span></li>
+      </ul>
+    </nav>
+
+    <div class="account">
+      <div class="order-head reveal">
+        <p class="eyebrow">Bestelling</p>
+        <h1>{{ order.name }}</h1>
+        <p>Geplaatst op {{ order.created_at | date: '%d-%m-%Y' }}</p>
+        <p>Betaalstatus: {{ order.financial_status_label }} &middot; Verzendstatus: {{ order.fulfillment_status_label }}</p>
+      </div>
+
+      <div class="order-section reveal">
+        <h2>Bestelde artikelen</h2>
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="num">Aantal</th>
+              <th class="num">Prijs</th>
+              <th class="num">Totaal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td>
+                  {%- if line_item.product.url -%}
+                    <a href="{{ line_item.product.url }}">{{ line_item.title }}</a>
+                  {%- else -%}
+                    {{ line_item.title }}
+                  {%- endif -%}
+                  {%- if line_item.variant.title and line_item.variant.title != 'Default Title' -%}
+                    <br><span class="text-muted" style="font-size:0.8rem;">{{ line_item.variant.title }}</span>
+                  {%- endif -%}
+                </td>
+                <td class="num">{{ line_item.quantity }}</td>
+                <td class="num">{{ line_item.price | money }}</td>
+                <td class="num">{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+        <div class="order-totals" style="margin-top:var(--sp-1_5);">
+          <div class="row"><span>Subtotaal</span><span>{{ order.line_items_subtotal_price | money }}</span></div>
+          {%- for discount_application in order.discount_applications -%}
+            <div class="row"><span>Korting ({{ discount_application.title }})</span><span>&minus;{{ discount_application.total_allocated_amount | money }}</span></div>
+          {%- endfor -%}
+          {%- for shipping_method in order.shipping_methods -%}
+            <div class="row"><span>Verzending ({{ shipping_method.title }})</span><span>{{ shipping_method.price | money }}</span></div>
+          {%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}
+            <div class="row"><span>Btw ({{ tax_line.title }})</span><span>{{ tax_line.price | money }}</span></div>
+          {%- endfor -%}
+          <div class="row row--total"><span>Totaal</span><span>{{ order.total_price | money }}</span></div>
+        </div>
+      </div>
+
+      <div class="order-section reveal">
+        <h2>Verzendadres</h2>
+        {%- if order.shipping_address -%}
+          <p class="order-address">{{ order.shipping_address | format_address }}</p>
+        {%- else -%}
+          <p class="text-muted">Geen verzendadres beschikbaar.</p>
+        {%- endif -%}
+      </div>
+
+      <p style="margin-top:var(--sp-2);"><a class="btn btn--outline btn--sm" href="{{ routes.account_url }}">Terug naar mijn account</a></p>
+    </div>
+  </div>
+</section>
