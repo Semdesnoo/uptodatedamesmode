@@ -271,6 +271,7 @@ p {
   --m2: var(--accent);
   position: relative;
   overflow: hidden;
+  margin: 0;                      /* reset de standaard <figure>-marge (anders witte randen om hero/foto's) */
   background-color: var(--bg-alt);
   aspect-ratio: 3 / 4;            /* default = portrait */
 }
