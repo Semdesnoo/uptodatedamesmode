@@ -833,20 +833,19 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
   display: block;
   text-align: center;
   padding: 0.85em 1.4em;
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   border-radius: var(--radius);
   font-family: var(--font-body);
   font-size: 0.76rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
-  transition: color var(--t-fast);
 }
-.filter-clear:hover { color: #fff; }
+.filter-clear:hover { background: var(--accent); border-color: var(--accent); color: var(--ink); }
 [data-no-results] {
   grid-column: 1 / -1;
   padding: var(--sp-3) 0;
