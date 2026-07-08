@@ -103,7 +103,8 @@
         "tile_F7ntEH": {
           "type": "tile",
           "settings": {
-            "collection": "",
+            "collection": "jurken",
+            "image": "shopify://shop_images/3_dd50ffc3-af94-487a-8d23-fbdc8c1ed09b.png",
             "label": "Jurken",
             "link": ""
           }
