@@ -130,8 +130,9 @@
         "tile_xdAebK": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Accessoires",
+            "collection": "blazers",
+            "image": "shopify://shop_images/2_0b71e7ba-0a4b-4201-9d50-de1fad9a5eb8.png",
+            "label": "Blazers",
             "link": ""
           }
         }
