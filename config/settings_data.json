@@ -1,3 +1,49 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
-  "current": {}
+  "current": {
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {
+          "bg_color": "",
+          "text_color": ""
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/Logo_280x100px_1.png",
+          "logo_height": 46,
+          "menu": "main-menu",
+          "wishlist_link": ""
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "footer_logo_height": 48,
+          "brand_text": "Tijdloze mode voor de vrouw van nu — met liefde samengesteld in Nederland.",
+          "social_instagram": "",
+          "social_tiktok": "",
+          "social_facebook": "",
+          "footer_heading_1": "Shop",
+          "footer_menu_1": "",
+          "footer_heading_2": "Klantenservice",
+          "footer_menu_2": "",
+          "footer_heading_3": "Over Up to Date Damesmode",
+          "footer_menu_3": "",
+          "footer_legal_menu": ""
+        }
+      }
+    },
+    "content_for_index": []
+  }
 }
