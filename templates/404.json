@@ -97,6 +97,20 @@
       "name": "USP-balk",
       "settings": {}
     },
+    "editorial_fX3P9H": {
+      "type": "editorial",
+      "name": "Editorial",
+      "settings": {
+        "image": "shopify://shop_images/Image_with_text_84502920-6688-45d7-92f8-8e982d43122a.png",
+        "placeholder_label": "Over ons",
+        "eyebrow": "Over ons",
+        "heading": "Mode die up to date is, met persoonlijk advies.",
+        "text": "<p>Bij Up to Date Damesmode vind je elke week de nieuwste damesmode — met oog voor kwaliteit, pasvorm en een goed gevoel. Onze stylisten helpen je graag de perfecte outfit te vinden.</p>",
+        "button_label": "Lees ons verhaal",
+        "button_link": "",
+        "beige_bg": true
+      }
+    },
     "collection_tiles_BFj3aP": {
       "type": "collection-tiles",
       "blocks": {
@@ -156,6 +170,7 @@
     "hero_split_K9NJcY",
     "featured_products_wQFdL7",
     "usp_bar_LQfqMG",
+    "editorial_fX3P9H",
     "collection_tiles_BFj3aP"
   ]
 }
