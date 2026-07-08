@@ -1,0 +1,207 @@
+{% comment %}
+  Homepage — VOLLEDIG in de template ingebouwd (geen losse sectie-aanroepen),
+  zodat de pagina altijd werkt, ook als losse sectiebestanden niet meekomen bij het
+  uploaden. Eigen CSS staat hieronder inline; de rest komt uit base.css.
+  Volgorde: hero -> nieuwste producten -> collectie -> TikTok -> Over Ons -> reviews.
+{% endcomment %}
+
+<style>
+  /* --- TikTok-rij --- */
+  .tt-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(0.5rem, 1.5vw, 1rem); margin-top: var(--sp-1); }
+  .tt-tile { position: relative; min-width: 0; }
+  .tt-tile__link { position: relative; display: block; overflow: hidden; border: 1px solid var(--ink); background: var(--bg-alt); border-radius: var(--radius-lg); }
+  .tt-tile__media, .tt-tile__link .media { width: 100%; height: 100%; aspect-ratio: 9 / 16; object-fit: cover; display: block; transition: transform 0.6s ease; }
+  .tt-tile__link:hover .tt-tile__media { transform: scale(1.04); }
+  .tt-tile__badge { position: absolute; top: 0.5rem; right: 0.5rem; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: rgba(20, 18, 16, 0.55); border-radius: 999px; pointer-events: none; }
+  .tt-tile__badge svg { width: 15px; height: 15px; }
+  .tt-cta { text-align: center; margin-top: var(--sp-2); }
+  @media (max-width: 1100px) { .tt-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 749px) { .tt-grid { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 62%; overflow-x: auto; scrollbar-width: none; padding-bottom: 0.25rem; } .tt-grid::-webkit-scrollbar { display: none; } }
+
+  /* --- Reviews (Trustpilot-stijl) --- */
+  .reviews-tp { background: var(--bg); overflow: hidden; }
+  .reviews-tp__head { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; text-align: center; margin-bottom: clamp(2rem, 4vw, 3rem); }
+  .reviews-tp__label { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.01em; }
+  .reviews-tp__meta { color: var(--muted); font-size: 0.92rem; }
+  .reviews-tp__meta strong { color: var(--ink); font-weight: 700; }
+  .tp-stars { display: inline-flex; gap: 4px; }
+  .tp-star { width: 26px; height: 26px; background: #00b67a; color: #fff; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+  .tp-star--off { background: #dcdce6; }
+  .tp-star svg { width: 17px; height: 17px; }
+  .tp-stars--lg { gap: 5px; }
+  .tp-stars--lg .tp-star { width: 34px; height: 34px; }
+  .tp-stars--lg .tp-star svg { width: 22px; height: 22px; }
+  .reviews-tp__track { overflow: hidden; margin: 0; padding: 0.25rem 0 0.75rem; }
+  .reviews-tp__marquee { display: flex; width: max-content; padding-inline: var(--container-pad); animation: reviews-marquee 55s linear infinite; will-change: transform; }
+  .reviews-tp:hover .reviews-tp__marquee { animation-play-state: paused; }
+  .reviews-tp__marquee > .tp-card { flex: 0 0 clamp(258px, 26vw, 330px); margin-right: 1.25rem; }
+  @keyframes reviews-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .reviews-tp__marquee { animation: none; } }
+  .tp-card { background: var(--surface); border: 1px solid var(--ink); border-radius: var(--radius-lg); padding: clamp(1.25rem, 2.5vw, 1.75rem); display: flex; flex-direction: column; gap: 0.7rem; }
+  .tp-card__title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .tp-card__body { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; flex: 1; }
+  .tp-card__foot { display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.82rem; flex-wrap: wrap; }
+  .tp-card__name { font-weight: 600; color: var(--ink); }
+  .tp-card__date { color: var(--muted); }
+  .tp-card__verified { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--muted); }
+  .tp-card__verified svg { width: 16px; height: 16px; flex: none; }
+</style>
+
+{%- capture tp_star -%}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2l2.95 6.32 6.85.62-5.17 4.6 1.55 6.86L12 17.9l-6.13 3.3 1.55-6.86-5.17-4.6 6.85-.62z"/></svg>{%- endcapture -%}
+{%- capture tp_check -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#00b67a" stroke="none"/><polyline points="8 12.5 11 15.5 16 9" stroke="#fff"/></svg>{%- endcapture -%}
+{%- capture tt_badge -%}<span class="tt-tile__badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.32 2.06 1.47 3.3 3.5 3.45v2.42c-1.18.12-2.21-.27-3.41-.99l-.01 5.62c0 3.57-2.6 6.25-6.04 6.25-3.13 0-5.54-2.45-5.54-5.5 0-3.27 2.65-5.62 6.04-5.27v2.65c-.4-.13-.83-.2-1.27-.2-1.39 0-2.43 1.03-2.43 2.41 0 1.46 1.08 2.49 2.5 2.49 1.5 0 2.62-1.18 2.62-2.92V3h3.04z"/></svg></span>{%- endcapture -%}
+{%- assign tt_url = settings.social_tiktok | default: 'https://www.tiktok.com/@uptodatedamesmode' -%}
+
+{%- comment -%} ============ HERO ============ {%- endcomment -%}
+<section class="hero">
+  {%- if settings.hero_image != blank -%}
+    <div class="media media--wide">{{ settings.hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', alt: settings.hero_heading, widths: '800,1200,1600,2000,2400', sizes: '100vw' }}</div>
+  {%- else -%}
+    <div class="media media--wide" data-label="{{ settings.hero_eyebrow | default: 'Nieuw seizoen' }}" role="img" aria-label="Sfeerbeeld nieuwe collectie"></div>
+  {%- endif -%}
+  <div class="hero__overlay"></div>
+  <div class="hero__content">
+    <div class="container container--wide">
+      <p class="eyebrow reveal">{{ settings.hero_eyebrow | default: 'Nieuw seizoen' }}</p>
+      <h1 class="hero__title reveal" data-delay="1">
+        <span class="hero__title-main">{{ settings.hero_heading | default: 'Bij Up To Date Damesmode' }}</span>
+        <span class="hero__title-accent">{{ settings.hero_subheading | default: 'de nieuwste collectie' }}</span>
+      </h1>
+      <div class="hero__actions reveal" data-delay="3">
+        <a class="btn btn--light" href="{{ routes.all_products_collection_url }}">{{ settings.hero_button | default: 'Shop de collectie' }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} ============ NIEUWSTE PRODUCTEN ============ {%- endcomment -%}
+<section class="section">
+  <div class="container container--wide">
+    <div class="section-head section-head--between reveal">
+      <div>
+        <p class="eyebrow">Net binnen</p>
+        <h2 class="section-head__title">Nieuwste producten</h2>
+      </div>
+      <a class="btn--ghost" href="{{ routes.all_products_collection_url }}">Bekijk alles</a>
+    </div>
+    {%- assign new_col = settings.home_new_collection | default: collections.all -%}
+    <div class="grid grid--4">
+      {%- for product in new_col.products limit: 8 -%}
+        <article class="product-card reveal" data-card>
+          <div class="product-card__media-wrap">
+            <a class="product-card__media-link" href="{{ product.url }}" title="{{ product.title | escape }}">
+              {%- if product.featured_image -%}
+                <div class="media media--portrait">{{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: product.title, widths: '300,400,600', sizes: '(max-width:749px) 45vw, 22vw' }}</div>
+              {%- else -%}
+                <div class="media media--portrait" data-label="{{ product.title | escape }}"></div>
+              {%- endif -%}
+            </a>
+          </div>
+          <h3 class="product-card__name"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+          <p class="product-card__price">{{ product.price | money }}</p>
+        </article>
+      {%- else -%}
+        {%- for i in (1..8) -%}
+          <article class="product-card reveal" data-card>
+            <div class="product-card__media-wrap"><a class="product-card__media-link" href="{{ routes.all_products_collection_url }}"><div class="media media--portrait" data-label="Voorbeeldproduct"></div></a></div>
+            <h3 class="product-card__name"><a href="{{ routes.all_products_collection_url }}">Voorbeeldproduct</a></h3>
+            <p class="product-card__price">€0,00</p>
+          </article>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- comment -%} ============ COLLECTIE (categorie-tegels) ============ {%- endcomment -%}
+<section class="section section--alt">
+  <div class="container container--wide">
+    <div class="section-head section-head--center reveal">
+      <p class="eyebrow">Ontdek per categorie</p>
+      <h2 class="section-head__title">Onze collectie</h2>
+    </div>
+    <div class="grid grid--4 is-mobile-slider" data-autoslide="2000">
+      {%- assign cats = 'Jurken,Tops,Blazers,Broeken' | split: ',' -%}
+      {%- for cat in cats -%}
+        <a class="category-tile reveal" href="{{ routes.all_products_collection_url }}">
+          <div class="media media--portrait" data-label="{{ cat }}"></div>
+          <div class="category-tile__label"><h3>{{ cat }}</h3><span>Shop nu</span></div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- comment -%} ============ TIKTOK ============ {%- endcomment -%}
+<section class="section section--tight">
+  <div class="container container--wide">
+    <div class="section-head section-head--center reveal">
+      <p class="eyebrow">Volg ons</p>
+      <h2 class="section-head__title">@uptodatedamesmode op TikTok</h2>
+    </div>
+    <div class="tt-grid reveal">
+      {%- assign tt_labels = 'Nieuw binnen,Styling,In de winkel,Behind the scenes,Jouw look' | split: ',' -%}
+      {%- for label in tt_labels -%}
+        <div class="tt-tile">
+          <a class="tt-tile__link" href="{{ tt_url }}" target="_blank" rel="noopener noreferrer" aria-label="Bekijk @uptodatedamesmode op TikTok">
+            <div class="media tt-tile__media" data-label="{{ label }}"></div>
+            {{ tt_badge }}
+          </a>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="tt-cta reveal"><a class="btn btn--outline" href="{{ tt_url }}" target="_blank" rel="noopener noreferrer">Volg @uptodatedamesmode</a></div>
+  </div>
+</section>
+
+{%- comment -%} ============ OVER ONS (editorial) ============ {%- endcomment -%}
+<section class="section section--alt">
+  <div class="container container--wide">
+    <div class="editorial">
+      <div class="editorial__media reveal">
+        {%- if settings.about_image != blank -%}
+          <div class="media media--portrait">{{ settings.about_image | image_url: width: 1000 | image_tag: loading: 'lazy', alt: settings.about_heading, widths: '400,600,800,1000', sizes: '(max-width:749px) 90vw, 45vw' }}</div>
+        {%- else -%}
+          <div class="media media--portrait" data-label="Over ons"></div>
+        {%- endif -%}
+      </div>
+      <div class="editorial__body reveal" data-delay="1">
+        <p class="eyebrow">{{ settings.about_eyebrow | default: 'Over ons' }}</p>
+        <h2>{{ settings.about_heading | default: 'Mode die up to date is, met persoonlijk advies.' }}</h2>
+        {%- if settings.about_text != blank -%}{{ settings.about_text }}{%- else -%}<p>Bij Up to Date Damesmode vind je elke week de nieuwste damesmode — met oog voor kwaliteit, pasvorm en een goed gevoel. Onze stylisten helpen je graag de perfecte outfit te vinden.</p>{%- endif -%}
+        <a class="btn btn--outline" href="{{ pages.over-ons.url | default: '/pages/over-ons' }}">Lees ons verhaal</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} ============ REVIEWS ============ {%- endcomment -%}
+<section class="section reviews-tp">
+  <div class="container container--wide">
+    <div class="reviews-tp__head reveal">
+      <p class="eyebrow">Beoordeeld door onze klanten</p>
+      <h2 class="section-head__title">Wat onze klanten zeggen</h2>
+      <span class="reviews-tp__label">Uitstekend</span>
+      <div class="tp-stars tp-stars--lg" role="img" aria-label="4,8 van 5 sterren">{%- for i in (1..5) -%}<span class="tp-star">{{ tp_star }}</span>{%- endfor -%}</div>
+      <p class="reviews-tp__meta">TrustScore <strong>4,8</strong> &middot; <strong>12</strong> reviews</p>
+    </div>
+  </div>
+  <div class="reviews-tp__track">
+    <div class="reviews-tp__marquee">
+    {%- assign reviews = 'Snelle levering en top kwaliteit!|Binnen een dag geleverd en de kwaliteit is echt heerlijk. Zeker voor herhaling vatbaar.|Sandra V.|2 dagen geleden|5,Persoonlijk advies via de chat|Ik twijfelde over mijn maat en werd super vriendelijk geholpen. De jurk zit perfect.|Miranda K.|1 week geleden|5,Mooie collectie en fijne pasvorm|Elke week wat nieuws en het staat allemaal even mooi. Mijn favoriete webshop geworden.|Els D.|3 weken geleden|5,Altijd iets moois te vinden|Wekelijks nieuwe items en de kwaliteit blijft top. Ik bestel hier met een gerust hart.|Chantal B.|4 dagen geleden|5,Snel en netjes verpakt|Bestelling kwam supersnel en prachtig verpakt binnen. Echt een aanrader!|Priscilla M.|6 dagen geleden|5,Top klantenservice|Vraag gesteld en binnen no-time antwoord. Zo fijn dat je echt geholpen wordt.|Bianca T.|2 weken geleden|5,Kwaliteit voor een eerlijke prijs|De stoffen voelen luxe en de pasvorm is heerlijk. Ik krijg steeds complimenten.|Nadia H.|1 maand geleden|5,Mijn nieuwe favoriete winkel|Alles klopt: collectie, service en levering. Ik kom zeker terug.|Wendy R.|5 dagen geleden|4' | split: ',' -%}
+    {%- for pass in (1..2) -%}
+      {%- for d in reviews -%}
+        {%- assign p = d | split: '|' -%}
+        {%- assign rr = p[4] | plus: 0 -%}
+        <article class="tp-card"{% if pass == 2 %} aria-hidden="true"{% endif %}>
+          <div class="tp-stars" role="img" aria-label="{{ rr }} van 5 sterren">{%- for i in (1..5) -%}<span class="tp-star{% if i > rr %} tp-star--off{% endif %}">{{ tp_star }}</span>{%- endfor -%}</div>
+          <h3 class="tp-card__title">{{ p[0] }}</h3>
+          <p class="tp-card__body">{{ p[1] }}</p>
+          <div class="tp-card__foot"><span class="tp-card__name">{{ p[2] }}</span><span class="tp-card__date">{{ p[3] }}</span></div>
+          <p class="tp-card__verified">{{ tp_check }} Geverifieerd</p>
+        </article>
+      {%- endfor -%}
+    {%- endfor -%}
+    </div>
+  </div>
+</section>
