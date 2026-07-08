@@ -808,7 +808,7 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
 .mobile-nav__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-bottom: var(--sp-1_5);
   border-bottom: var(--border);
 }
@@ -2099,7 +2099,7 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
   /* Hero: de FOTO vult gegarandeerd het hele vlak; tekst + knop liggen eroverheen.
      Hoogte op .hero zelf vastzetten en .media + foto absoluut laten vullen,
      zodat er nooit een grijs/beige achtergrondblok onder de foto verschijnt. */
-  .hero { position: relative; min-height: clamp(320px, 58vh, 460px); overflow: hidden; }
+  .hero { position: relative; min-height: clamp(240px, 42vh, 340px); overflow: hidden; }
   .hero .media {
     position: absolute;
     inset: 0;
