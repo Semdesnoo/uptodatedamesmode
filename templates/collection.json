@@ -9,6 +9,16 @@
  */
 {
   "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "eyebrow": "2026",
+        "subnav_menu": "",
+        "products_per_page": 12,
+        "columns_desktop": "4",
+        "show_sorting": true
+      }
+    },
     "newsletter_A3pRm9": {
       "type": "newsletter",
       "name": "Nieuwsbrief",
@@ -18,16 +28,6 @@
         "text": "Ontvang als eerste nieuwe collecties, stijltips en exclusieve aanbiedingen. En €10 korting op je eerste bestelling.",
         "disclaimer": "Je kunt je op elk moment uitschrijven.",
         "success_text": "Welkom bij de club! Check je inbox voor je kortingscode."
-      }
-    },
-    "main": {
-      "type": "main-collection",
-      "settings": {
-        "eyebrow": "Lente/Zomer 2026",
-        "subnav_menu": "",
-        "products_per_page": 12,
-        "columns_desktop": "4",
-        "show_sorting": true
       }
     }
   },
