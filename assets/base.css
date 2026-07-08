@@ -2079,6 +2079,7 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
 
   .editorial { grid-template-columns: 1fr; gap: var(--sp-2); }
   .editorial--reverse .editorial__media { order: 0; }
+  .editorial__media .media { aspect-ratio: 1 / 1; }   /* mobiel/tablet: foto korter */
 
   .lookbook-grid { grid-template-columns: repeat(2, 1fr); }
   .lookbook-grid .media:first-child { grid-row: auto; }
