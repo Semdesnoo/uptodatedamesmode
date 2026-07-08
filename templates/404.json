@@ -22,10 +22,9 @@
       "type": "hero-split",
       "name": "Split-hero",
       "settings": {
-        "label_left": "Festival-look links",
-        "link_left": "shopify://collections",
-        "label_right": "Festival-look rechts",
-        "link_right": "",
+        "image": "shopify://shop_images/Gemini_Generated_Image_ac0epaac0epaac0e.png",
+        "image_alt": "Sfeerbeeld",
+        "link": "",
         "eyebrow": "Nieuw seizoen",
         "heading": "Bij Up To Date Damesmode",
         "text": "de nieuwste collectie",
