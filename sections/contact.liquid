@@ -155,6 +155,78 @@
     #shopify-section-{{ section.id }} .contact-form .field-row { grid-template-columns: 1fr; }
     #shopify-section-{{ section.id }} .contact-info { grid-template-columns: 1fr; }
   }
+
+  /* Custom afgeronde dropdown (Onderwerp) — vervangt de native <select>, zodat ook
+     de openklappende lijst afgerond is (dat lukt niet met een standaard select). */
+  #shopify-section-{{ section.id }} .rd-select { position: relative; }
+  #shopify-section-{{ section.id }} .rd-select__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.85em 1em;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .rd-select__toggle:hover,
+  #shopify-section-{{ section.id }} .rd-select.is-open .rd-select__toggle,
+  #shopify-section-{{ section.id }} .rd-select__toggle:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+  }
+  #shopify-section-{{ section.id }} .rd-select__value[data-placeholder] { color: var(--muted); }
+  #shopify-section-{{ section.id }} .rd-select__arrow {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    transition: transform var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .rd-select.is-open .rd-select__arrow { transform: rotate(180deg); }
+  #shopify-section-{{ section.id }} .rd-select--error .rd-select__toggle { border-color: #c0392b; }
+
+  #shopify-section-{{ section.id }} .rd-select__list {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0.4rem;
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 18px 44px rgba(20, 18, 16, 0.16);
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  #shopify-section-{{ section.id }} .rd-select__option {
+    padding: 0.7em 0.85em;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background var(--t-fast), color var(--t-fast);
+  }
+  #shopify-section-{{ section.id }} .rd-select__option:hover,
+  #shopify-section-{{ section.id }} .rd-select__option:focus-visible {
+    outline: none;
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+  #shopify-section-{{ section.id }} .rd-select__option.is-selected {
+    background: var(--accent);
+    color: #fff;
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -209,14 +281,20 @@
 
             <div class="field">
               <label for="contact-onderwerp">Onderwerp</label>
-              <select id="contact-onderwerp" name="contact[Onderwerp]" required>
-                <option value="" disabled selected>Kies een onderwerp</option>
-                <option value="Retour aanvragen">Retour aanvragen</option>
-                <option value="Ruilen">Ruilen</option>
-                <option value="Vraag over mijn bestelling">Vraag over mijn bestelling</option>
-                <option value="Maat- &amp; styladvies">Maat- &amp; styladvies</option>
-                <option value="Overig">Overig</option>
-              </select>
+              <div class="rd-select" data-rd-select>
+                <button type="button" class="rd-select__toggle" id="contact-onderwerp" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="rd-select__value" data-rd-value data-placeholder>Kies een onderwerp</span>
+                  <svg class="rd-select__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="rd-select__list" role="listbox" aria-label="Onderwerp" tabindex="-1" hidden>
+                  <li class="rd-select__option" role="option" data-value="Retour aanvragen">Retour aanvragen</li>
+                  <li class="rd-select__option" role="option" data-value="Ruilen">Ruilen</li>
+                  <li class="rd-select__option" role="option" data-value="Vraag over mijn bestelling">Vraag over mijn bestelling</li>
+                  <li class="rd-select__option" role="option" data-value="Maat- &amp; styladvies">Maat- &amp; styladvies</li>
+                  <li class="rd-select__option" role="option" data-value="Overig">Overig</li>
+                </ul>
+                <input type="hidden" name="contact[Onderwerp]" data-rd-input>
+              </div>
             </div>
 
             <div class="field">
@@ -332,6 +410,74 @@
     if (!box) return;
     try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
     if (box.focus) box.focus();
+  })();
+</script>
+
+<script>
+  (function () {
+    var root = document.getElementById("shopify-section-{{ section.id }}");
+    if (!root) return;
+    var wrap = root.querySelector("[data-rd-select]");
+    if (!wrap) return;
+    var toggle = wrap.querySelector(".rd-select__toggle");
+    var list = wrap.querySelector(".rd-select__list");
+    var valueEl = wrap.querySelector("[data-rd-value]");
+    var input = wrap.querySelector("[data-rd-input]");
+    var options = Array.prototype.slice.call(wrap.querySelectorAll(".rd-select__option"));
+
+    function open() {
+      list.hidden = false;
+      wrap.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+      var sel = wrap.querySelector(".rd-select__option.is-selected") || options[0];
+      if (sel) sel.focus();
+    }
+    function close() {
+      list.hidden = true;
+      wrap.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    function choose(opt) {
+      options.forEach(function (o) { o.classList.remove("is-selected"); o.setAttribute("aria-selected", "false"); });
+      opt.classList.add("is-selected");
+      opt.setAttribute("aria-selected", "true");
+      valueEl.textContent = opt.textContent;
+      valueEl.removeAttribute("data-placeholder");
+      input.value = opt.getAttribute("data-value");
+      wrap.classList.remove("rd-select--error");
+      close();
+      toggle.focus();
+    }
+
+    toggle.addEventListener("click", function () { list.hidden ? open() : close(); });
+    toggle.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+    options.forEach(function (opt, i) {
+      opt.setAttribute("tabindex", "-1");
+      opt.setAttribute("aria-selected", "false");
+      opt.addEventListener("click", function () { choose(opt); });
+      opt.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(opt); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); (options[i + 1] || options[0]).focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); (options[i - 1] || options[options.length - 1]).focus(); }
+        else if (e.key === "Escape") { e.preventDefault(); close(); toggle.focus(); }
+        else if (e.key === "Tab") { close(); }
+      });
+    });
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) close(); });
+
+    var form = toggle.closest("form");
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        if (!input.value) {
+          e.preventDefault();
+          wrap.classList.add("rd-select--error");
+          try { toggle.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (err) {}
+          toggle.focus();
+        }
+      });
+    }
   })();
 </script>
 
