@@ -182,13 +182,13 @@
 
       {%- comment -%} LINKS: Shopify-contactformulier {%- endcomment -%}
       <div class="reveal">
-        {%- if form.posted_successfully? -%}
-          <div class="contact-form__thanks" role="status" tabindex="-1">
-            <p>Bedankt voor je bericht!</p>
-            <p>We hebben je e-mail goed ontvangen en reageren meestal binnen 1 werkdag.</p>
-          </div>
-        {%- else -%}
-          {%- form 'contact', class: 'contact-form' -%}
+        {%- form 'contact', class: 'contact-form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="contact-form__thanks" role="status" tabindex="-1">
+              <p>Bedankt voor je bericht!</p>
+              <p>We hebben je e-mail goed ontvangen en reageren meestal binnen 1 werkdag.</p>
+            </div>
+          {%- else -%}
             {%- if form.errors -%}
               <div class="contact-form__thanks" role="alert" tabindex="-1">
                 <p>Er ging iets mis</p>
@@ -230,8 +230,8 @@
             </div>
 
             <button class="btn" type="submit">Versturen</button>
-          {%- endform -%}
-        {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
       </div>
 
       {%- comment -%} RECHTS: contactgegevens {%- endcomment -%}

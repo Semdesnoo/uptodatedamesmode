@@ -781,7 +781,7 @@
         <a class="btn--ghost" href="{{ routes.all_products_collection_url }}">Bekijk alles</a>
       </div>
       <div class="grid grid--4 is-mobile-slider" data-autoslide="2000">
-        {%- if section.settings.related_products != blank and section.settings.related_products.count > 0 -%}
+        {%- if section.settings.related_products != blank and section.settings.related_products.size > 0 -%}
           {%- for rec in section.settings.related_products limit: 6 -%}
             {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
           {%- endfor -%}
