@@ -1,41 +1,25 @@
 {%- comment -%}
-  Split-hero (tess v-stijl): twee foto's naast elkaar met een grote titel eroverheen.
-  Elke helft kan naar een eigen collectie/pagina linken. Zonder foto's tonen we
-  nette placeholders zodat de sectie nooit leeg is.
+  Split-hero: één grote foto over de volle breedte met een grote titel eroverheen.
+  De foto kan naar een collectie/pagina linken. Zonder foto tonen we een nette
+  placeholder zodat de sectie nooit leeg is.
 {%- endcomment -%}
 {%- assign height_class = 'hero-split--' | append: section.settings.height -%}
 
 <section class="hero-split {{ height_class }}">
   <div class="hero-split__panes">
-    {%- comment -%} ---- Linker helft ---- {%- endcomment -%}
-    {%- if section.settings.link_left != blank -%}
-      <a class="hero-split__pane" href="{{ section.settings.link_left }}" aria-label="{{ section.settings.label_left | default: 'Ontdek meer' | escape }}">
+    {%- if section.settings.link != blank -%}
+      <a class="hero-split__pane" href="{{ section.settings.link }}" aria-label="{{ section.settings.image_alt | default: 'Ontdek meer' | escape }}">
     {%- else -%}
       <div class="hero-split__pane">
     {%- endif -%}
-      {%- if section.settings.image_left != blank -%}
+      {%- if section.settings.image != blank -%}
         <figure class="media media--full">
-          {%- render 'sm-picture', image: section.settings.image_left, image_mobile: section.settings.image_left_mobile, alt: section.settings.label_left, loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1200', sizes: '50vw' -%}
+          {%- render 'sm-picture', image: section.settings.image, image_mobile: section.settings.image_mobile, alt: section.settings.image_alt, loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200, 1600, 2000, 2400', sizes: '100vw' -%}
         </figure>
       {%- else -%}
-        <div class="media media--full" data-label="{{ section.settings.label_left | default: 'Linker sfeerbeeld' | escape }}"></div>
+        <div class="media media--full" data-label="{{ section.settings.image_alt | default: 'Sfeerbeeld' | escape }}"></div>
       {%- endif -%}
-    {%- if section.settings.link_left != blank -%}</a>{%- else -%}</div>{%- endif -%}
-
-    {%- comment -%} ---- Rechter helft ---- {%- endcomment -%}
-    {%- if section.settings.link_right != blank -%}
-      <a class="hero-split__pane" href="{{ section.settings.link_right }}" aria-label="{{ section.settings.label_right | default: 'Ontdek meer' | escape }}">
-    {%- else -%}
-      <div class="hero-split__pane">
-    {%- endif -%}
-      {%- if section.settings.image_right != blank -%}
-        <figure class="media media--full">
-          {%- render 'sm-picture', image: section.settings.image_right, image_mobile: section.settings.image_right_mobile, alt: section.settings.label_right, loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1200', sizes: '50vw' -%}
-        </figure>
-      {%- else -%}
-        <div class="media media--full" data-label="{{ section.settings.label_right | default: 'Rechter sfeerbeeld' | escape }}"></div>
-      {%- endif -%}
-    {%- if section.settings.link_right != blank -%}</a>{%- else -%}</div>{%- endif -%}
+    {%- if section.settings.link != blank -%}</a>{%- else -%}</div>{%- endif -%}
   </div>
 
   <div class="hero-split__overlay"></div>
@@ -69,7 +53,7 @@
   .hero-split { position: relative; overflow: hidden; }
   .hero-split__panes {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0;
   }
   .hero-split__pane { position: relative; display: block; overflow: hidden; }
@@ -133,19 +117,6 @@
     justify-content: center;
     pointer-events: auto;      /* knoppen blijven klikbaar */
   }
-  /* Dunne verticale scheiding tussen de twee foto's */
-  .hero-split__panes::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: rgba(250, 248, 244, 0.35);
-    z-index: 1;
-    pointer-events: none;
-  }
-
   @media (max-width: 640px) {
     .hero-split--medium .hero-split__pane { min-height: 48vh; }
     .hero-split--large  .hero-split__pane { min-height: 56vh; }
@@ -162,53 +133,28 @@
   "settings": [
     {
       "type": "header",
-      "content": "Linker foto"
+      "content": "Foto"
     },
     {
       "type": "image_picker",
-      "id": "image_left",
-      "label": "Afbeelding links"
+      "id": "image",
+      "label": "Afbeelding"
     },
     {
       "type": "image_picker",
-      "id": "image_left_mobile",
-      "label": "Afbeelding links — mobiel (optioneel)"
+      "id": "image_mobile",
+      "label": "Afbeelding — mobiel (optioneel)"
     },
     {
       "type": "text",
-      "id": "label_left",
-      "label": "Alt-tekst / placeholder links",
-      "default": "Festival-look links"
+      "id": "image_alt",
+      "label": "Alt-tekst / placeholder",
+      "default": "Sfeerbeeld"
     },
     {
       "type": "url",
-      "id": "link_left",
-      "label": "Link links (optioneel)"
-    },
-    {
-      "type": "header",
-      "content": "Rechter foto"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_right",
-      "label": "Afbeelding rechts"
-    },
-    {
-      "type": "image_picker",
-      "id": "image_right_mobile",
-      "label": "Afbeelding rechts — mobiel (optioneel)"
-    },
-    {
-      "type": "text",
-      "id": "label_right",
-      "label": "Alt-tekst / placeholder rechts",
-      "default": "Festival-look rechts"
-    },
-    {
-      "type": "url",
-      "id": "link_right",
-      "label": "Link rechts (optioneel)"
+      "id": "link",
+      "label": "Link (optioneel)"
     },
     {
       "type": "header",
