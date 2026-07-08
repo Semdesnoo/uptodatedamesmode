@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "aboutpage_image": "shopify://shop_images/3_e1cc0c0e-46d7-4259-a202-e12fd800195a.png",
     "sections": {
       "announcement-bar": {
         "type": "announcement-bar",
