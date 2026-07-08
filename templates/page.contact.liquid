@@ -1,0 +1,449 @@
+<style>
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) 0;
+    text-align: center;
+  }
+  .page-header__title {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin-top: var(--sp-0_75);
+  }
+  .page-header__intro {
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: var(--sp-1) auto 0;
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: var(--sp-1_5); }
+  .field-optional { color: var(--muted); font-weight: 400; font-size: 0.82em; text-transform: none; letter-spacing: 0; }
+  .contact-form .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-1_5);
+  }
+  .contact-form__thanks {
+    border: var(--border);
+    background: var(--surface);
+    padding: var(--sp-2);
+    text-align: center;
+  }
+  .contact-form__thanks p:first-child {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--accent-deep);
+    margin-bottom: var(--sp-0_5);
+  }
+  .contact-form__thanks p:last-child { color: var(--muted); font-size: 0.9rem; }
+
+  .contact-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-1);
+    align-content: start;
+  }
+  .contact-info__block {
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-alt);
+    padding: clamp(1.25rem, 2.5vw, 1.6rem);
+  }
+  /* Oneven aantal: laatste kaart over de volle breedte -> boxen blijven evenredig */
+  .contact-info__block:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .contact-info__label {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .contact-info__block p { color: var(--ink-soft); }
+  .contact-info__hours { display: flex; justify-content: space-between; gap: var(--sp-1); }
+  .contact-info__hours span:last-child { color: var(--ink); }
+
+  .faq-list {
+    max-width: 760px;
+    margin-inline: auto;
+    border-top: var(--border);
+  }
+  .faq-item { border-bottom: var(--border); }
+  .faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-1);
+    padding-block: var(--sp-1_5);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    transition: color var(--t-fast);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--accent); }
+  .faq-item summary .faq-icon {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    position: relative;
+    transition: transform var(--t-fast);
+  }
+  .faq-item summary .faq-icon::before,
+  .faq-item summary .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+    transition: opacity var(--t-fast);
+  }
+  .faq-item summary .faq-icon::before { top: 8px; left: 0; width: 18px; height: 1px; }
+  .faq-item summary .faq-icon::after { left: 8px; top: 0; width: 1px; height: 18px; }
+  .faq-item[open] summary .faq-icon::after { opacity: 0; }
+  .faq-item__answer { padding-bottom: var(--sp-1_5); color: var(--ink-soft); max-width: 64ch; }
+
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-1_5);
+  }
+  .quick-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: var(--sp-2);
+    background: var(--surface);
+    border: var(--border);
+    transition: border-color var(--t-fast);
+  }
+  .quick-link:hover { border-color: var(--accent); }
+  .quick-link h3 { font-size: 1.1rem; }
+  .quick-link p { color: var(--muted); font-size: 0.9rem; }
+  .quick-link span {
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .contact-map {
+    display: block;
+    width: 100%;
+    height: clamp(300px, 42vw, 460px);
+    border: 1px solid var(--line);
+  }
+  .contact-map__link {
+    text-align: center;
+    margin-top: var(--sp-1);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 900px) {
+    .contact-layout { grid-template-columns: 1fr; gap: var(--sp-3); }
+    .quick-links { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .contact-form .field-row { grid-template-columns: 1fr; }
+    .contact-info { grid-template-columns: 1fr; }
+  }
+
+  /* Custom afgeronde dropdown (Onderwerp) — vervangt de native <select>, zodat ook
+     de openklappende lijst afgerond is (dat lukt niet met een standaard select). */
+  .rd-select { position: relative; }
+  .rd-select__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.85em 1em;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--t-fast);
+  }
+  .rd-select__toggle:hover,
+  .rd-select.is-open .rd-select__toggle,
+  .rd-select__toggle:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .rd-select__value[data-placeholder] { color: var(--muted); }
+  .rd-select__arrow {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    transition: transform var(--t-fast);
+  }
+  .rd-select.is-open .rd-select__arrow { transform: rotate(180deg); }
+  .rd-select--error .rd-select__toggle { border-color: #c0392b; }
+  .rd-select__list {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0.4rem;
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 18px 44px rgba(20, 18, 16, 0.16);
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .rd-select__option {
+    padding: 0.7em 0.85em;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background var(--t-fast), color var(--t-fast);
+  }
+  .rd-select__option:hover,
+  .rd-select__option:focus-visible {
+    outline: none;
+    background: var(--bg-alt);
+    color: var(--ink);
+  }
+  .rd-select__option.is-selected {
+    background: var(--accent);
+    color: #fff;
+  }
+</style>
+
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow reveal">Klantcontact</p>
+    <h1 class="page-header__title reveal" data-delay="1">{{ page.title | default: 'Contact' }}</h1>
+    <p class="page-header__intro reveal" data-delay="2">We helpen je graag — meestal binnen 1 werkdag antwoord.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-layout">
+
+      {%- comment -%} LINKS: Shopify-contactformulier {%- endcomment -%}
+      <div class="reveal">
+        {%- form 'contact', class: 'contact-form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="contact-form__thanks" role="status" tabindex="-1">
+              <p>Bedankt voor je bericht!</p>
+              <p>We hebben je e-mail goed ontvangen en reageren meestal binnen 1 werkdag.</p>
+            </div>
+          {%- else -%}
+            {%- if form.errors -%}
+              <div class="contact-form__thanks" role="alert" tabindex="-1">
+                <p>Er ging iets mis</p>
+                <p>{{ form.errors | default_errors }}</p>
+              </div>
+            {%- endif -%}
+
+            <div class="field-row">
+              <div class="field">
+                <label for="contact-naam">Naam</label>
+                <input id="contact-naam" name="contact[name]" type="text" placeholder="Je naam" autocomplete="name" value="{{ form.name }}" required />
+              </div>
+              <div class="field">
+                <label for="contact-email">E-mailadres</label>
+                <input id="contact-email" name="contact[email]" type="email" placeholder="Je e-mailadres" autocomplete="email" value="{{ form.email }}" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="contact-onderwerp">Onderwerp</label>
+              <div class="rd-select" data-rd-select>
+                <button type="button" class="rd-select__toggle" id="contact-onderwerp" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="rd-select__value" data-rd-value data-placeholder>Kies een onderwerp</span>
+                  <svg class="rd-select__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="rd-select__list" role="listbox" aria-label="Onderwerp" tabindex="-1" hidden>
+                  <li class="rd-select__option" role="option" data-value="Retour aanvragen">Retour aanvragen</li>
+                  <li class="rd-select__option" role="option" data-value="Ruilen">Ruilen</li>
+                  <li class="rd-select__option" role="option" data-value="Vraag over mijn bestelling">Vraag over mijn bestelling</li>
+                  <li class="rd-select__option" role="option" data-value="Maat- &amp; styladvies">Maat- &amp; styladvies</li>
+                  <li class="rd-select__option" role="option" data-value="Overig">Overig</li>
+                </ul>
+                <input type="hidden" name="contact[Onderwerp]" data-rd-input>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="contact-bestelnummer">Bestelnummer <span class="field-optional">(bij een bestelling of retour)</span></label>
+              <input id="contact-bestelnummer" name="contact[Bestelnummer]" type="text" placeholder="bijv. #1234" value="{{ form.Bestelnummer }}" />
+            </div>
+
+            <div class="field">
+              <label for="contact-bericht">Bericht</label>
+              <textarea id="contact-bericht" name="contact[body]" placeholder="Waarmee kunnen we je helpen? Vermeld bij een retour het artikel en de reden." required>{{ form.body }}</textarea>
+            </div>
+
+            <button class="btn" type="submit">Versturen</button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      {%- comment -%} RECHTS: contactgegevens {%- endcomment -%}
+      <aside class="contact-info reveal" data-delay="1">
+        <div class="contact-info__block">
+          <p class="contact-info__label">E-mail</p>
+          <p><a class="link-accent" href="mailto:info@uptodatedamesmode.nl">info@uptodatedamesmode.nl</a></p>
+        </div>
+
+        <div class="contact-info__block">
+          <p class="contact-info__label">Telefoon</p>
+          <p><a class="link-accent" href="tel:0612715583">06 12715583</a></p>
+          <p class="text-muted" style="font-size:0.85rem;">Bereikbaar tijdens openingstijden</p>
+        </div>
+
+        <div class="contact-info__block">
+          <p class="contact-info__label">Openingstijden klantenservice</p>
+          <p class="contact-info__hours"><span>Maandag</span><span>Gesloten</span></p>
+          <p class="contact-info__hours"><span>Dinsdag</span><span>10:00 – 17:30</span></p>
+          <p class="contact-info__hours"><span>Woensdag</span><span>10:00 – 17:30</span></p>
+          <p class="contact-info__hours"><span>Donderdag</span><span>10:00 – 17:30</span></p>
+          <p class="contact-info__hours"><span>Vrijdag</span><span>10:00 – 17:30</span></p>
+          <p class="contact-info__hours"><span>Zaterdag</span><span>10:00 – 17:00</span></p>
+          <p class="contact-info__hours"><span>Zondag</span><span>Gesloten</span></p>
+        </div>
+
+        <div class="contact-info__block">
+          <p class="contact-info__label">Bezoek- &amp; postadres</p>
+          <p>Up to Date Damesmode<br />
+Van Beethovensingel 58<br />
+3055 JK Rotterdam<br />
+Nederland</p>
+          <p class="text-muted" style="font-size:0.85rem; margin-top:0.5rem;">Kom gerust langs als we geopend zijn.</p>
+        </div>
+
+        <div class="contact-info__block">
+          <p class="contact-info__label">Bedrijfsgegevens</p>
+          <p>Up to Date Damesmode<br />
+Detailhandel in kleding en aanverwante artikelen alsmede styliste<br />
+Eenmanszaak · Hoofdvestiging<br />
+KVK-nummer 51041715<br />
+Vestigingsnummer 000021135061</p>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container container--wide">
+    <iframe class="contact-map reveal" src="https://www.google.com/maps?q=Van%20Beethovensingel%2058%2C%203055%20JK%20Rotterdam&output=embed" title="Locatie {{ shop.name }}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</section>
+
+{%- comment -%} FAQ-dropdowns verwijderd op verzoek — contact = formulier + gegevens + kaart {%- endcomment -%}
+
+<section class="section">
+  <div class="container container--wide">
+    <div class="quick-links">
+      <a class="quick-link reveal" href="{{ routes.all_products_collection_url }}">
+        <h3>Maattabel & pasvorm</h3>
+        <p>Bekijk afmetingen en pasvorm bij elk artikel in de collectie.</p>
+        <span>Naar de collectie</span>
+      </a>
+      <a class="quick-link reveal" data-delay="1" href="/pages/levering">
+        <h3>Verzending & retour</h3>
+        <p>Alles over levertijden, kosten en het terugsturen van een bestelling.</p>
+        <span>Lees meer</span>
+      </a>
+      <a class="quick-link reveal" data-delay="2" href="/pages/over-ons">
+        <h3>Ons verhaal</h3>
+        <p>Ontdek waar Up to Date Damesmode voor staat en hoe onze collecties ontstaan.</p>
+        <span>Over Up to Date Damesmode</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Na verzenden: scroll de bevestiging (of foutmelding) in beeld zodat de
+     bezoeker meteen ziet dat het bericht is verstuurd. */
+  (function () {
+    var box = document.querySelector(".contact-form__thanks");
+    if (!box) return;
+    try { box.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) {}
+    if (box.focus) box.focus();
+  })();
+</script>
+
+<script>
+  (function () {
+    var wrap = document.querySelector("[data-rd-select]");
+    if (!wrap) return;
+    var toggle = wrap.querySelector(".rd-select__toggle");
+    var list = wrap.querySelector(".rd-select__list");
+    var valueEl = wrap.querySelector("[data-rd-value]");
+    var input = wrap.querySelector("[data-rd-input]");
+    var options = Array.prototype.slice.call(wrap.querySelectorAll(".rd-select__option"));
+
+    function open() {
+      list.hidden = false;
+      wrap.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+      var sel = wrap.querySelector(".rd-select__option.is-selected") || options[0];
+      if (sel) sel.focus();
+    }
+    function close() {
+      list.hidden = true;
+      wrap.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+    function choose(opt) {
+      options.forEach(function (o) { o.classList.remove("is-selected"); o.setAttribute("aria-selected", "false"); });
+      opt.classList.add("is-selected");
+      opt.setAttribute("aria-selected", "true");
+      valueEl.textContent = opt.textContent;
+      valueEl.removeAttribute("data-placeholder");
+      input.value = opt.getAttribute("data-value");
+      wrap.classList.remove("rd-select--error");
+      close();
+      toggle.focus();
+    }
+
+    toggle.addEventListener("click", function () { list.hidden ? open() : close(); });
+    toggle.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+    options.forEach(function (opt, i) {
+      opt.setAttribute("tabindex", "-1");
+      opt.setAttribute("aria-selected", "false");
+      opt.addEventListener("click", function () { choose(opt); });
+      opt.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(opt); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); (options[i + 1] || options[0]).focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); (options[i - 1] || options[options.length - 1]).focus(); }
+        else if (e.key === "Escape") { e.preventDefault(); close(); toggle.focus(); }
+        else if (e.key === "Tab") { close(); }
+      });
+    });
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) close(); });
+
+    var form = toggle.closest("form");
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        if (!input.value) {
+          e.preventDefault();
+          wrap.classList.add("rd-select--error");
+          try { toggle.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (err) {}
+          toggle.focus();
+        }
+      });
+    }
+  })();
+</script>
