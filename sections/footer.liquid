@@ -5,7 +5,9 @@
       <!-- Brand-kolom -->
       <div class="footer-brand">
         {%- if section.settings.footer_logo != blank -%}
-          <img class="footer-brand__logo" src="{{ section.settings.footer_logo | image_url: width: 500 }}" alt="{{ shop.name | escape }}" loading="lazy" style="max-height: {{ section.settings.footer_logo_height | default: 48 }}px;">
+          <div class="footer-brand__logo-wrap" style="--footer-logo-h: {{ section.settings.footer_logo_height | default: 48 }}px;">
+            <img class="footer-brand__logo" src="{{ section.settings.footer_logo | image_url: width: 700 }}" alt="{{ shop.name | escape }}" loading="lazy">
+          </div>
         {%- else -%}
           <span class="brand">Up to Date Damesmode</span>
         {%- endif -%}
@@ -118,7 +120,7 @@
       "id": "footer_logo_height",
       "label": "Logo-hoogte",
       "min": 24,
-      "max": 90,
+      "max": 130,
       "step": 2,
       "unit": "px",
       "default": 48
