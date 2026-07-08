@@ -7,7 +7,9 @@
         "heading": "Bij Up To Date Damesmode",
         "subheading": "de nieuwste collectie",
         "button_1_label": "Shop de collectie",
-        "button_1_link": "/collections/all"
+        "button_1_link": "/collections/all",
+        "placeholder_label": "Sfeerbeeld - nieuwe collectie",
+        "image_alt": "Vrouw in de nieuwe collectie"
       }
     },
     "featured": {
