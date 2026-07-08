@@ -1,8 +1,8 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Up to Date Damesmode v6.6",
-    "theme_version": "6.6.0",
+    "theme_name": "Up to Date Damesmode v6.7",
+    "theme_version": "6.7.0",
     "theme_author": "Up to Date Damesmode",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://help.shopify.com/"
@@ -86,7 +86,7 @@
     ]
   },
   {
-    "name": "Homepage — Hero",
+    "name": "Homepage - Hero",
     "settings": [
       { "type": "image_picker", "id": "hero_image", "label": "Hero-afbeelding", "info": "Leeg = donkere placeholder." },
       { "type": "text", "id": "hero_eyebrow", "label": "Bovenkop", "default": "Nieuw seizoen" },
@@ -96,22 +96,22 @@
     ]
   },
   {
-    "name": "Homepage — Over ons",
+    "name": "Homepage - Over ons",
     "settings": [
       { "type": "image_picker", "id": "about_image", "label": "Foto" },
       { "type": "text", "id": "about_eyebrow", "label": "Bovenkop", "default": "Over ons" },
       { "type": "text", "id": "about_heading", "label": "Kop", "default": "Mode die up to date is, met persoonlijk advies." },
-      { "type": "richtext", "id": "about_text", "label": "Tekst", "default": "<p>Bij Up to Date Damesmode vind je elke week de nieuwste damesmode — met oog voor kwaliteit, pasvorm en een goed gevoel. Onze stylisten helpen je graag de perfecte outfit te vinden.</p>" }
+      { "type": "richtext", "id": "about_text", "label": "Tekst", "default": "<p>Bij Up to Date Damesmode vind je elke week de nieuwste damesmode - met oog voor kwaliteit, pasvorm en een goed gevoel. Onze stylisten helpen je graag de perfecte outfit te vinden.</p>" }
     ]
   },
   {
-    "name": "Pagina — Over ons",
+    "name": "Pagina - Over ons",
     "settings": [
       { "type": "image_picker", "id": "aboutpage_image", "label": "Foto bovenaan" },
       { "type": "text", "id": "aboutpage_heading", "label": "Titel", "default": "Ons verhaal" },
-      { "type": "richtext", "id": "aboutpage_intro", "label": "Introtekst", "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met veel plezier fashion en damesmode. Welkom bij Up to Date Damesmode — jouw vertrouwde adres in Hillegersberg.</p>" },
+      { "type": "richtext", "id": "aboutpage_intro", "label": "Introtekst", "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met veel plezier fashion en damesmode. Welkom bij Up to Date Damesmode - jouw vertrouwde adres in Hillegersberg.</p>" },
       { "type": "text", "id": "aboutpage_story_heading", "label": "Kop verhaal", "default": "Een vertrouwd adres in Hillegersberg" },
-      { "type": "richtext", "id": "aboutpage_story", "label": "Verhaaltekst", "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met hart en ziel fashion en damesmode. In al die jaren heb ik ontelbaar veel vrouwen mogen helpen aan een outfit waarin ze zich écht mooi en zelfverzekerd voelen.</p><p>Al een lange tijd zijn wij een vertrouwd gezicht in Hillegersberg. Sinds kort zijn we verhuisd naar een nieuwe locatie in Hillegersberg: een gloednieuwe winkel met meer ruimte, dezelfde persoonlijke aandacht en natuurlijk onze nieuwste collectie.</p><p>Kom gerust gezellig langs om alles op je gemak te bekijken en te passen. Liever vanuit huis shoppen? Bestel dan het product uit onze winkel; wij versturen het direct met de post naar je toe.</p>" }
+      { "type": "richtext", "id": "aboutpage_story", "label": "Verhaaltekst", "default": "<p>Ik ben Mirjam Verbeek en verkoop al jaren met hart en ziel fashion en damesmode. In al die jaren heb ik ontelbaar veel vrouwen mogen helpen aan een outfit waarin ze zich echt mooi en zelfverzekerd voelen.</p><p>Al een lange tijd zijn wij een vertrouwd gezicht in Hillegersberg. Sinds kort zijn we verhuisd naar een nieuwe locatie in Hillegersberg: een gloednieuwe winkel met meer ruimte, dezelfde persoonlijke aandacht en natuurlijk onze nieuwste collectie.</p><p>Kom gerust gezellig langs om alles op je gemak te bekijken en te passen. Liever vanuit huis shoppen? Bestel dan het product uit onze winkel; wij versturen het direct met de post naar je toe.</p>" }
     ]
   }
 ]
