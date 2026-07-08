@@ -37,6 +37,59 @@
         "button_2_link": ""
       }
     },
+    "collection_tiles_BFj3aP": {
+      "type": "collection-tiles",
+      "blocks": {
+        "tile_F7ntEH": {
+          "type": "tile",
+          "settings": {
+            "collection": "gilets",
+            "image": "shopify://shop_images/3_dd50ffc3-af94-487a-8d23-fbdc8c1ed09b.png",
+            "label": "Gilets",
+            "link": ""
+          }
+        },
+        "tile_RqkzBL": {
+          "type": "tile",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/5_50e62ddd-44a4-4c27-8b09-5c3725002237.png",
+            "label": "Sweaters",
+            "link": ""
+          }
+        },
+        "tile_rpGTew": {
+          "type": "tile",
+          "settings": {
+            "collection": "broeken",
+            "image": "shopify://shop_images/1_0a711726-ca36-4e09-ad7b-fb1b59c015a0.png",
+            "label": "Broeken",
+            "link": ""
+          }
+        },
+        "tile_xdAebK": {
+          "type": "tile",
+          "settings": {
+            "collection": "blazers",
+            "image": "shopify://shop_images/2_0b71e7ba-0a4b-4201-9d50-de1fad9a5eb8.png",
+            "label": "Blazers",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_F7ntEH",
+        "tile_RqkzBL",
+        "tile_rpGTew",
+        "tile_xdAebK"
+      ],
+      "name": "Categorie-tegels",
+      "settings": {
+        "eyebrow": "Ontdek per categorie",
+        "heading": "Vind jouw stijl",
+        "beige_bg": false
+      }
+    },
     "featured_products_wQFdL7": {
       "type": "featured-products",
       "name": "Uitgelichte producten",
@@ -111,66 +164,25 @@
         "beige_bg": true
       }
     },
-    "collection_tiles_BFj3aP": {
-      "type": "collection-tiles",
-      "blocks": {
-        "tile_F7ntEH": {
-          "type": "tile",
-          "settings": {
-            "collection": "gilets",
-            "image": "shopify://shop_images/3_dd50ffc3-af94-487a-8d23-fbdc8c1ed09b.png",
-            "label": "Gilets",
-            "link": ""
-          }
-        },
-        "tile_RqkzBL": {
-          "type": "tile",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/5_50e62ddd-44a4-4c27-8b09-5c3725002237.png",
-            "label": "Sweaters",
-            "link": ""
-          }
-        },
-        "tile_rpGTew": {
-          "type": "tile",
-          "settings": {
-            "collection": "broeken",
-            "image": "shopify://shop_images/1_0a711726-ca36-4e09-ad7b-fb1b59c015a0.png",
-            "label": "Broeken",
-            "link": ""
-          }
-        },
-        "tile_xdAebK": {
-          "type": "tile",
-          "settings": {
-            "collection": "blazers",
-            "image": "shopify://shop_images/2_0b71e7ba-0a4b-4201-9d50-de1fad9a5eb8.png",
-            "label": "Blazers",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_F7ntEH",
-        "tile_RqkzBL",
-        "tile_rpGTew",
-        "tile_xdAebK"
-      ],
-      "name": "Categorie-tegels",
+    "newsletter_TrT6WP": {
+      "type": "newsletter",
+      "name": "Nieuwsbrief",
       "settings": {
-        "eyebrow": "Ontdek per categorie",
-        "heading": "Vind jouw stijl",
-        "beige_bg": false
+        "eyebrow": "Blijf op de hoogte",
+        "heading": "Word lid van de Up to Date Damesmode-club",
+        "text": "Ontvang als eerste nieuwe collecties, stijltips en exclusieve aanbiedingen. En €10 korting op je eerste bestelling.",
+        "disclaimer": "Je kunt je op elk moment uitschrijven.",
+        "success_text": "Welkom bij de club! Check je inbox voor je kortingscode."
       }
     }
   },
   "order": [
     "main",
     "hero_split_K9NJcY",
+    "collection_tiles_BFj3aP",
     "featured_products_wQFdL7",
     "usp_bar_LQfqMG",
     "editorial_fX3P9H",
-    "collection_tiles_BFj3aP"
+    "newsletter_TrT6WP"
   ]
 }
