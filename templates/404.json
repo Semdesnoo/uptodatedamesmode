@@ -112,7 +112,7 @@
         "tile_RqkzBL": {
           "type": "tile",
           "settings": {
-            "collection": "sweaters",
+            "collection": "",
             "image": "shopify://shop_images/5_50e62ddd-44a4-4c27-8b09-5c3725002237.png",
             "label": "Sweaters",
             "link": ""
@@ -121,8 +121,9 @@
         "tile_rpGTew": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Broeken & rokken",
+            "collection": "broeken",
+            "image": "shopify://shop_images/1_0a711726-ca36-4e09-ad7b-fb1b59c015a0.png",
+            "label": "Broeken",
             "link": ""
           }
         },
