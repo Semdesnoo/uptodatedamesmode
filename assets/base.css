@@ -808,10 +808,12 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
 .mobile-nav__head {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-bottom: var(--sp-1_5);
   border-bottom: var(--border);
 }
+.mobile-nav__logo-img { display: block; height: 30px; width: auto; }
+.mobile-nav__logo-fallback { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; letter-spacing: 0.04em; }
 .mobile-nav__links {
   display: flex;
   flex-direction: column;
@@ -2286,10 +2288,9 @@ img[width][height] {
     transform: none !important;
   }
 
-  /* Quick-add knop direct tonen i.p.v. omhoog schuiven */
+  /* Quick-add knop ("Voeg toe aan winkelmandje"/"Uitverkocht") verbergen op mobiel (op verzoek) */
   .product-card__quick {
-    transform: none !important;
-    transition: opacity 0.001ms !important;
+    display: none !important;
   }
 
   /* Vloeiend snap-scrollen van sliders uitzetten */
