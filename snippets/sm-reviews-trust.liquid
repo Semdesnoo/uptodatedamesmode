@@ -88,10 +88,9 @@
   .tp-stars--lg { gap: 5px; }
   .tp-stars--lg .tp-star { width: 34px; height: 34px; }
   .tp-stars--lg .tp-star svg { width: 22px; height: 22px; }
-  .reviews-tp__track { overflow: hidden; margin: 0; padding: 0.25rem 0 0.75rem; }
+  .reviews-tp__track { overflow: hidden; margin: 0; padding: 0.25rem 0 0.75rem; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%); }
   .reviews-tp__marquee { display: flex; width: max-content; padding-inline: var(--container-pad); animation: reviews-marquee 55s linear infinite; will-change: transform; }
-  .reviews-tp:hover .reviews-tp__marquee { animation-play-state: paused; }
-  .reviews-tp__marquee > .tp-card { flex: 0 0 clamp(258px, 26vw, 330px); margin-right: 1.25rem; }
+  .reviews-tp__marquee > .tp-card { flex: 0 0 clamp(290px, 28vw, 380px); margin-right: 1.25rem; }
   @keyframes reviews-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @media (prefers-reduced-motion: reduce) { .reviews-tp__marquee { animation: none; } }
   .tp-card { background: var(--surface); border: 1px solid var(--ink); border-radius: var(--radius-lg); padding: clamp(1.25rem, 2.5vw, 1.75rem); display: flex; flex-direction: column; gap: 0.7rem; }

@@ -284,6 +284,50 @@
   }
   .sort-select select:focus { outline: none; border-color: var(--accent); }
 
+  /* Custom afgeronde sorteer-dropdown (open lijst ook afgerond) */
+  .sort-rd { position: relative; }
+  .sort-rd__native { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .sort-rd__toggle {
+    display: flex; align-items: center; gap: 0.6em;
+    padding: 0.6em 0.9em;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color var(--t-fast);
+  }
+  .sort-rd__toggle:hover,
+  .sort-rd.is-open .sort-rd__toggle,
+  .sort-rd__toggle:focus-visible { outline: none; border-color: var(--accent); }
+  .sort-rd__arrow { width: 12px; height: 8px; flex: none; transition: transform var(--t-fast); }
+  .sort-rd.is-open .sort-rd__arrow { transform: rotate(180deg); }
+  .sort-rd__list {
+    position: absolute; z-index: 40; top: calc(100% + 6px); right: 0;
+    min-width: 100%;
+    margin: 0; padding: 0.35rem; list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 16px 40px rgba(20, 18, 16, 0.16);
+    max-height: 320px; overflow-y: auto;
+  }
+  .sort-rd__option {
+    padding: 0.55em 0.8em;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--t-fast), color var(--t-fast);
+  }
+  .sort-rd__option:hover,
+  .sort-rd__option:focus-visible { outline: none; background: var(--bg-alt); color: var(--ink); }
+  .sort-rd__option.is-selected { background: var(--accent); color: #fff; }
+
   .filter-toggle { display: none; }
 
   .pagination {
@@ -654,15 +698,23 @@
               {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
               <div class="sort-select">
                 <label for="SortBy">Sorteer op</label>
-                {%- comment -%} Sortering behoudt actieve filters: JS zet alleen sort_by in de huidige URL {%- endcomment -%}
-                <select id="SortBy" name="sort_by" data-sort-select>
-                  {%- for option in collection.sort_options -%}
-                    <option
-                      value="{{ option.value }}"
-                      {% if option.value == sort_by %}selected{% endif %}
-                    >{{ option.name }}</option>
-                  {%- endfor -%}
-                </select>
+                {%- comment -%} Custom afgeronde dropdown; verborgen native select behoudt sortering + filters via de bestaande JS {%- endcomment -%}
+                <div class="sort-rd" data-sort-rd>
+                  <select id="SortBy" name="sort_by" data-sort-select class="sort-rd__native" tabindex="-1" aria-hidden="true">
+                    {%- for option in collection.sort_options -%}
+                      <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+                    {%- endfor -%}
+                  </select>
+                  <button type="button" class="sort-rd__toggle" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="sort-rd__value" data-sort-value>{%- for option in collection.sort_options -%}{%- if option.value == sort_by -%}{{ option.name }}{%- endif -%}{%- endfor -%}</span>
+                    <svg class="sort-rd__arrow" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+                  </button>
+                  <ul class="sort-rd__list" role="listbox" tabindex="-1" hidden>
+                    {%- for option in collection.sort_options -%}
+                      <li class="sort-rd__option{% if option.value == sort_by %} is-selected{% endif %}" role="option" data-value="{{ option.value }}"{% if option.value == sort_by %} aria-selected="true"{% endif %}>{{ option.name }}</li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
               </div>
             {%- endif -%}
           </div>
@@ -806,6 +858,41 @@
         url.searchParams.set('sort_by', sortSelect.value);
         window.location.href = url.toString();
       });
+    }
+
+    /* ---------- Custom afgeronde sorteer-dropdown (stuurt de verborgen select) ---------- */
+    var sortRd = document.querySelector('[data-sort-rd]');
+    if (sortRd && sortSelect) {
+      var sToggle = sortRd.querySelector('.sort-rd__toggle');
+      var sList = sortRd.querySelector('.sort-rd__list');
+      var sValue = sortRd.querySelector('[data-sort-value]');
+      var sOptions = Array.prototype.slice.call(sortRd.querySelectorAll('.sort-rd__option'));
+      var sOpen = function () {
+        sList.hidden = false; sortRd.classList.add('is-open'); sToggle.setAttribute('aria-expanded', 'true');
+        var sel = sortRd.querySelector('.sort-rd__option.is-selected') || sOptions[0];
+        if (sel) sel.focus();
+      };
+      var sClose = function () { sList.hidden = true; sortRd.classList.remove('is-open'); sToggle.setAttribute('aria-expanded', 'false'); };
+      sToggle.addEventListener('click', function () { sList.hidden ? sOpen() : sClose(); });
+      sToggle.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sOpen(); } });
+      sOptions.forEach(function (opt, i) {
+        opt.setAttribute('tabindex', '-1');
+        var choose = function () {
+          sortSelect.value = opt.getAttribute('data-value');
+          if (sValue) sValue.textContent = opt.textContent.trim();
+          sClose();
+          sortSelect.dispatchEvent(new Event('change'));
+        };
+        opt.addEventListener('click', choose);
+        opt.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); }
+          else if (e.key === 'ArrowDown') { e.preventDefault(); (sOptions[i + 1] || sOptions[0]).focus(); }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); (sOptions[i - 1] || sOptions[sOptions.length - 1]).focus(); }
+          else if (e.key === 'Escape') { e.preventDefault(); sClose(); sToggle.focus(); }
+          else if (e.key === 'Tab') { sClose(); }
+        });
+      });
+      document.addEventListener('click', function (e) { if (!sortRd.contains(e.target)) sClose(); });
     }
 
     /* ---------- Mobiel: filterpaneel openen/sluiten ---------- */

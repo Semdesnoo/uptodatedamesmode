@@ -782,26 +782,26 @@
       </div>
       <div class="grid grid--4 is-mobile-slider" data-autoslide="2000">
         {%- if section.settings.related_products != blank and section.settings.related_products.size > 0 -%}
-          {%- for rec in section.settings.related_products limit: 6 -%}
+          {%- for rec in section.settings.related_products limit: 4 -%}
             {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
           {%- endfor -%}
         {%- elsif section.settings.related_collection != blank -%}
-          {%- for rec in section.settings.related_collection.products limit: 6 -%}
+          {%- for rec in section.settings.related_collection.products limit: 4 -%}
             {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
           {%- endfor -%}
         {%- elsif recommendations.performed and recommendations.products_count > 0 -%}
-          {%- for rec in recommendations.products limit: 6 -%}
+          {%- for rec in recommendations.products limit: 4 -%}
             {%- render 'product-card', product: rec -%}
           {%- endfor -%}
         {%- else -%}
           {%- assign reco_col = product.collections.first -%}
           {%- if reco_col != blank and reco_col.products.size > 0 -%}
-            {%- for rec in reco_col.products limit: 6 -%}
+            {%- for rec in reco_col.products limit: 4 -%}
               {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
             {%- endfor -%}
           {%- else -%}
             {%- comment -%} Laatste terugval: NOOIT leeg — toon willekeurige winkelproducten {%- endcomment -%}
-            {%- for rec in collections.all.products limit: 6 -%}
+            {%- for rec in collections.all.products limit: 4 -%}
               {%- unless rec.id == product.id -%}{%- render 'product-card', product: rec -%}{%- endunless -%}
             {%- endfor -%}
           {%- endif -%}
