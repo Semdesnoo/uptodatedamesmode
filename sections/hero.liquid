@@ -1,8 +1,8 @@
 <section class="hero">
   {%- if section.settings.image != blank -%}
-    <figure class="media media--wide">
-      {%- render 'sm-picture', image: section.settings.image, image_mobile: section.settings.image_mobile, alt: section.settings.heading, class: 'hero__img', loading: 'eager', fetchpriority: 'high', widths: '600, 800, 1200, 1600, 2000, 2400', sizes: '100vw' -%}
-    </figure>
+    {%- assign hero_img = section.settings.image | image_url: width: 2400 -%}
+    {%- if section.settings.image_mobile != blank -%}{%- assign hero_img_m = section.settings.image_mobile | image_url: width: 1200 -%}{%- else -%}{%- assign hero_img_m = hero_img -%}{%- endif -%}
+    <div class="media media--wide hero__bg" role="img" aria-label="{{ section.settings.heading | default: shop.name | escape }}" style="--hero-bg: url('{{ hero_img }}'); --hero-bg-mobile: url('{{ hero_img_m }}');"></div>
   {%- else -%}
     <div class="media media--wide" data-label="{{ section.settings.placeholder_label | escape }}" role="img" aria-label="{{ section.settings.image_alt | escape }}"></div>
   {%- endif -%}

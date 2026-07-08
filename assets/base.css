@@ -1207,6 +1207,15 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
   height: 100%;
   object-fit: cover;
 }
+/* Hero-foto als achtergrond (kogelvrij: vult altijd het vlak, geen grijze leegte) */
+.hero__bg {
+  background-image: var(--hero-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.hero__bg::before,
+.hero__bg::after { content: none; }
 .hero .media::before {
   --m1: #DED2C0;
   --m2: #6E5337;
@@ -2107,6 +2116,7 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
     height: 100%;
     object-fit: cover;
   }
+  .hero__bg { background-image: var(--hero-bg-mobile); }
   .hero__content {
     position: absolute;
     inset: 0;
