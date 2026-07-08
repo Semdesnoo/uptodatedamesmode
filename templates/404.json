@@ -1,8 +1,157 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
-      "type": "main-404"
+      "type": "main-404",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Fout 404",
+        "heading": "Pagina niet gevonden",
+        "text": "De pagina die je zoekt bestaat niet (meer) of is verplaatst. Geen zorgen — je vindt je weg snel terug."
+      }
+    },
+    "hero_split_K9NJcY": {
+      "type": "hero-split",
+      "name": "Split-hero",
+      "settings": {
+        "label_left": "Festival-look links",
+        "link_left": "shopify://collections",
+        "label_right": "Festival-look rechts",
+        "link_right": "",
+        "eyebrow": "Nieuw seizoen",
+        "heading": "Bij Up To Date Damesmode",
+        "text": "de nieuwste collectie",
+        "text_position": "bottom",
+        "height": "large",
+        "button_1_label": "Shop de collectie",
+        "button_1_link": "shopify://collections",
+        "button_2_label": "",
+        "button_2_link": ""
+      }
+    },
+    "featured_products_wQFdL7": {
+      "type": "featured-products",
+      "name": "Uitgelichte producten",
+      "settings": {
+        "collection": "",
+        "products_limit": 8,
+        "alt_background": true,
+        "head_layout": "between",
+        "eyebrow": "Vers uit het atelier",
+        "heading": "Nieuw binnen",
+        "subtext": "",
+        "link_label": "Bekijk alles",
+        "link_url": ""
+      }
+    },
+    "usp_bar_LQfqMG": {
+      "type": "usp-bar",
+      "blocks": {
+        "usp_k9zMLg": {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M3 7h11v8H3z\"></path><path d=\"M14 10h4l3 3v2h-7z\"></path><circle cx=\"7\" cy=\"17\" r=\"2\"></circle><circle cx=\"17\" cy=\"17\" r=\"2\"></circle></svg>",
+            "title": "Gratis verzending",
+            "subtitle": "Vanaf €75 in NL & BE"
+          }
+        },
+        "usp_Ly8xRx": {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 1 3 6.7\"></path><path d=\"M3 19v-4h4\"></path></svg>",
+            "title": "30 dagen retour",
+            "subtitle": "Gratis en eenvoudig"
+          }
+        },
+        "usp_NW9dCH": {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z\"></path><path d=\"M9 12l2 2 4-4\"></path></svg>",
+            "title": "Veilig betalen",
+            "subtitle": "iDEAL, Klarna & meer"
+          }
+        },
+        "usp_WR3GgX": {
+          "type": "usp",
+          "settings": {
+            "icon_svg": "<svg viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z\"></path></svg>",
+            "title": "Persoonlijk advies",
+            "subtitle": "Stylisten staan klaar"
+          }
+        }
+      },
+      "block_order": [
+        "usp_k9zMLg",
+        "usp_Ly8xRx",
+        "usp_NW9dCH",
+        "usp_WR3GgX"
+      ],
+      "name": "USP-balk",
+      "settings": {}
+    },
+    "collection_tiles_BFj3aP": {
+      "type": "collection-tiles",
+      "blocks": {
+        "tile_F7ntEH": {
+          "type": "tile",
+          "settings": {
+            "collection": "",
+            "label": "Jurken",
+            "link": ""
+          }
+        },
+        "tile_RqkzBL": {
+          "type": "tile",
+          "settings": {
+            "collection": "",
+            "label": "Tops & blouses",
+            "link": ""
+          }
+        },
+        "tile_rpGTew": {
+          "type": "tile",
+          "settings": {
+            "collection": "",
+            "label": "Broeken & rokken",
+            "link": ""
+          }
+        },
+        "tile_xdAebK": {
+          "type": "tile",
+          "settings": {
+            "collection": "",
+            "label": "Accessoires",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_F7ntEH",
+        "tile_RqkzBL",
+        "tile_rpGTew",
+        "tile_xdAebK"
+      ],
+      "name": "Categorie-tegels",
+      "settings": {
+        "eyebrow": "Ontdek per categorie",
+        "heading": "Vind jouw stijl",
+        "beige_bg": false
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "hero_split_K9NJcY",
+    "featured_products_wQFdL7",
+    "usp_bar_LQfqMG",
+    "collection_tiles_BFj3aP"
+  ]
 }

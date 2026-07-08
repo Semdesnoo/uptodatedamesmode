@@ -1,14 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "newsletter_A3pRm9": {
+      "type": "newsletter",
+      "name": "Nieuwsbrief",
+      "settings": {
+        "eyebrow": "Blijf op de hoogte",
+        "heading": "Word lid van de Up to Date Damesmode-club",
+        "text": "Ontvang als eerste nieuwe collecties, stijltips en exclusieve aanbiedingen. En €10 korting op je eerste bestelling.",
+        "disclaimer": "Je kunt je op elk moment uitschrijven.",
+        "success_text": "Welkom bij de club! Check je inbox voor je kortingscode."
+      }
+    },
     "main": {
       "type": "main-collection",
       "settings": {
         "eyebrow": "Lente/Zomer 2026",
+        "subnav_menu": "",
         "products_per_page": 12,
         "columns_desktop": "4",
         "show_sorting": true
       }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "newsletter_A3pRm9"
+  ]
 }
