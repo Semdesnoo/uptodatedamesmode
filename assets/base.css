@@ -2099,7 +2099,7 @@ body.is-scrolled .header--overlay .main-nav a.is-active { color: var(--accent); 
   /* Hero: de FOTO vult gegarandeerd het hele vlak; tekst + knop liggen eroverheen.
      Hoogte op .hero zelf vastzetten en .media + foto absoluut laten vullen,
      zodat er nooit een grijs/beige achtergrondblok onder de foto verschijnt. */
-  .hero { position: relative; min-height: clamp(240px, 42vh, 340px); overflow: hidden; }
+  .hero { position: relative; min-height: clamp(200px, 30vh, 250px); overflow: hidden; }
   .hero .media {
     position: absolute;
     inset: 0;
