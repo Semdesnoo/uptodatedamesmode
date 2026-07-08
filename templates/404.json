@@ -112,8 +112,9 @@
         "tile_RqkzBL": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Tops & blouses",
+            "collection": "sweaters",
+            "image": "shopify://shop_images/5_50e62ddd-44a4-4c27-8b09-5c3725002237.png",
+            "label": "Sweaters",
             "link": ""
           }
         },
