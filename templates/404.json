@@ -1,8 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
-      "type": "main-404"
+      "type": "main-404",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Fout 404",
+        "heading": "Pagina niet gevonden",
+        "text": "De pagina die je zoekt bestaat niet (meer) of is verplaatst. Geen zorgen — je vindt je weg snel terug."
+      }
+    },
+    "hero_split_K9NJcY": {
+      "type": "hero-split",
+      "name": "Split-hero",
+      "settings": {
+        "label_left": "Festival-look links",
+        "link_left": "shopify://collections",
+        "label_right": "Festival-look rechts",
+        "link_right": "",
+        "eyebrow": "",
+        "heading": "Festival",
+        "text": "",
+        "text_position": "bottom",
+        "height": "large",
+        "button_1_label": "",
+        "button_1_link": "",
+        "button_2_label": "",
+        "button_2_link": ""
+      }
+    },
+    "featured_products_wQFdL7": {
+      "type": "featured-products",
+      "name": "Uitgelichte producten",
+      "settings": {
+        "collection": "",
+        "products_limit": 8,
+        "alt_background": true,
+        "head_layout": "between",
+        "eyebrow": "Vers uit het atelier",
+        "heading": "Nieuw binnen",
+        "subtext": "",
+        "link_label": "Bekijk alles",
+        "link_url": ""
+      }
     }
   },
-  "order": ["main"]
+  "order": [
+    "main",
+    "hero_split_K9NJcY",
+    "featured_products_wQFdL7"
+  ]
 }
