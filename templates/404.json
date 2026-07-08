@@ -22,15 +22,15 @@
       "type": "hero-split",
       "name": "Split-hero",
       "settings": {
-        "label_left": "Festival-look links",
-        "link_left": "shopify://collections",
-        "label_right": "Festival-look rechts",
-        "link_right": "",
+        "image": "shopify://shop_images/Hero_laptop_8d91d70a-1861-4903-a322-d19232806715.png",
+        "image_mobile": "shopify://shop_images/Hero_Mobiel_4b801970-e951-4750-b6b8-b40823167eb5.png",
+        "image_alt": "Sfeerbeeld",
+        "link": "",
         "eyebrow": "Nieuw seizoen",
         "heading": "Bij Up To Date Damesmode",
         "text": "de nieuwste collectie",
         "text_position": "bottom",
-        "height": "large",
+        "height": "full",
         "button_1_label": "Shop de collectie",
         "button_1_link": "shopify://collections",
         "button_2_label": "",
@@ -103,8 +103,9 @@
         "tile_F7ntEH": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Jurken",
+            "collection": "gilets",
+            "image": "shopify://shop_images/3_dd50ffc3-af94-487a-8d23-fbdc8c1ed09b.png",
+            "label": "Gilets",
             "link": ""
           }
         },
@@ -112,23 +113,26 @@
           "type": "tile",
           "settings": {
             "collection": "",
-            "label": "Tops & blouses",
+            "image": "shopify://shop_images/5_50e62ddd-44a4-4c27-8b09-5c3725002237.png",
+            "label": "Sweaters",
             "link": ""
           }
         },
         "tile_rpGTew": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Broeken & rokken",
+            "collection": "broeken",
+            "image": "shopify://shop_images/1_0a711726-ca36-4e09-ad7b-fb1b59c015a0.png",
+            "label": "Broeken",
             "link": ""
           }
         },
         "tile_xdAebK": {
           "type": "tile",
           "settings": {
-            "collection": "",
-            "label": "Accessoires",
+            "collection": "blazers",
+            "image": "shopify://shop_images/2_0b71e7ba-0a4b-4201-9d50-de1fad9a5eb8.png",
+            "label": "Blazers",
             "link": ""
           }
         }
