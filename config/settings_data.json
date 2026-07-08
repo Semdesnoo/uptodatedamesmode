@@ -30,7 +30,8 @@
       "footer": {
         "type": "footer",
         "settings": {
-          "footer_logo_height": 48,
+          "footer_logo": "shopify://shop_images/UPTODATE_LOGO_Transparant_1_86820719-327d-4c3a-88d2-e37030ca93b3.png",
+          "footer_logo_height": 90,
           "brand_text": "Tijdloze mode voor de vrouw van nu — met liefde samengesteld in Nederland.",
           "social_instagram": "",
           "social_tiktok": "",
