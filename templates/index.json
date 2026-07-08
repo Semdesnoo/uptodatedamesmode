@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "eyebrow": "Nieuw seizoen",
+        "heading": "Bij Up To Date Damesmode",
+        "subheading": "de nieuwste collectie",
+        "button_1_label": "Shop de collectie",
+        "button_1_link": "/collections/all"
+      }
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "products_limit": 8,
+        "alt_background": false,
+        "head_layout": "between",
+        "eyebrow": "Net binnen",
+        "heading": "Nieuwste producten",
+        "link_label": "Bekijk alles",
+        "link_url": "/collections/all"
+      }
+    },
+    "collection_tiles": {
+      "type": "collection-tiles",
+      "settings": {
+        "beige_bg": true,
+        "eyebrow": "Ontdek per categorie",
+        "heading": "Onze collectie"
+      },
+      "blocks": {
+        "tile_1": { "type": "tile", "settings": { "label": "Jurken" } },
+        "tile_2": { "type": "tile", "settings": { "label": "Tops" } },
+        "tile_3": { "type": "tile", "settings": { "label": "Blazers" } },
+        "tile_4": { "type": "tile", "settings": { "label": "Broeken" } }
+      },
+      "block_order": ["tile_1", "tile_2", "tile_3", "tile_4"]
+    },
+    "tiktok": {
+      "type": "instagram",
+      "settings": {
+        "eyebrow": "Volg ons",
+        "heading": "@uptodatedamesmode op TikTok",
+        "button_label": "Volg @uptodatedamesmode"
+      },
+      "blocks": {
+        "clip_1": { "type": "clip", "settings": { "label": "Nieuw binnen" } },
+        "clip_2": { "type": "clip", "settings": { "label": "Styling" } },
+        "clip_3": { "type": "clip", "settings": { "label": "In de winkel" } },
+        "clip_4": { "type": "clip", "settings": { "label": "Behind the scenes" } },
+        "clip_5": { "type": "clip", "settings": { "label": "Jouw look" } }
+      },
+      "block_order": ["clip_1", "clip_2", "clip_3", "clip_4", "clip_5"]
+    },
+    "editorial": {
+      "type": "editorial",
+      "settings": {
+        "beige_bg": true,
+        "eyebrow": "Over ons",
+        "heading": "Mode die up to date is, met persoonlijk advies.",
+        "text": "<p>Bij Up to Date Damesmode vind je elke week de nieuwste damesmode - met oog voor kwaliteit, pasvorm en een goed gevoel. Onze stylisten helpen je graag de perfecte outfit te vinden.</p>",
+        "button_label": "Lees ons verhaal",
+        "button_link": "/pages/over-ons"
+      }
+    },
+    "reviews": {
+      "type": "reviews-trust",
+      "settings": {
+        "eyebrow": "Beoordeeld door onze klanten",
+        "heading": "Wat onze klanten zeggen",
+        "score_label": "Uitstekend",
+        "score": "4,8",
+        "review_count": "12"
+      },
+      "blocks": {
+        "review_1": { "type": "review", "settings": { "title": "Snelle levering en top kwaliteit!", "text": "Binnen een dag geleverd en de kwaliteit is echt heerlijk. Zeker voor herhaling vatbaar.", "name": "Sandra V.", "date": "2 dagen geleden" } },
+        "review_2": { "type": "review", "settings": { "title": "Persoonlijk advies via de chat", "text": "Ik twijfelde over mijn maat en werd super vriendelijk geholpen. De jurk zit perfect.", "name": "Miranda K.", "date": "1 week geleden" } },
+        "review_3": { "type": "review", "settings": { "title": "Mooie collectie en fijne pasvorm", "text": "Elke week wat nieuws en het staat allemaal even mooi. Mijn favoriete webshop geworden.", "name": "Els D.", "date": "3 weken geleden" } },
+        "review_4": { "type": "review", "settings": { "title": "Altijd iets moois te vinden", "text": "Wekelijks nieuwe items en de kwaliteit blijft top. Ik bestel hier met een gerust hart.", "name": "Chantal B.", "date": "4 dagen geleden" } },
+        "review_5": { "type": "review", "settings": { "title": "Snel en netjes verpakt", "text": "Bestelling kwam supersnel en prachtig verpakt binnen. Echt een aanrader!", "name": "Priscilla M.", "date": "6 dagen geleden" } },
+        "review_6": { "type": "review", "settings": { "title": "Top klantenservice", "text": "Vraag gesteld en binnen no-time antwoord. Zo fijn dat je echt geholpen wordt.", "name": "Bianca T.", "date": "2 weken geleden" } },
+        "review_7": { "type": "review", "settings": { "title": "Kwaliteit voor een eerlijke prijs", "text": "De stoffen voelen luxe en de pasvorm is heerlijk. Ik krijg steeds complimenten.", "name": "Nadia H.", "date": "1 maand geleden" } },
+        "review_8": { "type": "review", "settings": { "rating": 4, "title": "Mijn nieuwe favoriete winkel", "text": "Alles klopt: collectie, service en levering. Ik kom zeker terug.", "name": "Wendy R.", "date": "5 dagen geleden" } }
+      },
+      "block_order": ["review_1", "review_2", "review_3", "review_4", "review_5", "review_6", "review_7", "review_8"]
+    }
+  },
+  "order": ["hero", "featured", "collection_tiles", "tiktok", "editorial", "reviews"]
+}

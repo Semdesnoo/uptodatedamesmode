@@ -1,4 +1,4 @@
-<section class="section">
+<section class="section{% if section.settings.beige_bg %} section--alt{% endif %}">
   <div class="container container--wide">
     {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
       <div class="section-head section-head--center reveal">
@@ -61,6 +61,12 @@
       "id": "heading",
       "label": "Kop",
       "default": "Vind jouw stijl"
+    },
+    {
+      "type": "checkbox",
+      "id": "beige_bg",
+      "label": "Beige achtergrond",
+      "default": false
     }
   ],
   "blocks": [
