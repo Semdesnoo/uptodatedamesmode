@@ -2288,9 +2288,10 @@ img[width][height] {
     transform: none !important;
   }
 
-  /* Quick-add knop ("Voeg toe aan winkelmandje"/"Uitverkocht") verbergen op mobiel (op verzoek) */
+  /* Quick-add knop direct tonen i.p.v. omhoog schuiven */
   .product-card__quick {
-    display: none !important;
+    transform: none !important;
+    transition: opacity 0.001ms !important;
   }
 
   /* Vloeiend snap-scrollen van sliders uitzetten */
@@ -2533,13 +2534,15 @@ img[width][height] {
   border-color: var(--ink);
 }
 
-/* Aanraakschermen kennen geen hover: knop altijd tonen en aantikbaar maken */
+/* Aanraakschermen (mobiel/tablet): quick-add knop VERBERGEN (op verzoek) */
 @media (hover: none) {
   .product-card__quick {
-    opacity: 1 !important;
-    transform: none !important;
-    pointer-events: auto;
+    display: none !important;
   }
+}
+/* Ook op smalle schermen (mobiel/preview): quick-add knop verbergen */
+@media (max-width: 749px) {
+  .product-card__quick { display: none !important; }
 }
 
 /* ==========================================================================
