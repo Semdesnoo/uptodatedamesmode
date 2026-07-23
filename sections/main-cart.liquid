@@ -87,21 +87,10 @@
           <aside class="cart-summary">
             <div class="cart-summary__inner">
 
-              {%- assign threshold = section.settings.free_shipping_threshold | default: 75 -%}
-              {%- assign threshold_cents = threshold | times: 100 -%}
-              {%- if section.settings.show_free_shipping and threshold_cents > 0 -%}
-                {%- if cart.total_price >= threshold_cents -%}
-                  <div class="cart-ship cart-ship--ok">
-                    <p><span class="cart-ship__check" aria-hidden="true">✓</span> Top! Je bestelling wordt <strong>gratis verzonden</strong>.</p>
-                  </div>
-                {%- else -%}
-                  {%- assign remaining = threshold_cents | minus: cart.total_price -%}
-                  {%- assign pct = cart.total_price | times: 100.0 | divided_by: threshold_cents | round -%}
-                  <div class="cart-ship">
-                    <p>Nog <strong>{{ remaining | money }}</strong> en je verzending is <strong>gratis</strong>.</p>
-                    <div class="cart-ship__track"><span class="cart-ship__fill" style="width: {{ pct }}%;"></span></div>
-                  </div>
-                {%- endif -%}
+              {%- if section.settings.show_shipping_info -%}
+                <div class="cart-ship">
+                  <p><span class="cart-ship__check" aria-hidden="true">✓</span> Verzekerde verzending met Track &amp; Trace: <strong>Nederland €6,95</strong> · <strong>België €9,95</strong>.</p>
+                </div>
               {%- endif -%}
 
               <div class="summary-rows">
@@ -121,7 +110,7 @@
               <ul class="cart-trust">
                 <li><span aria-hidden="true">✓</span> Veilig betalen</li>
                 <li><span aria-hidden="true">✓</span> 30 dagen bedenktijd</li>
-                <li><span aria-hidden="true">✓</span> Gratis verzending vanaf €{{ threshold }}</li>
+                <li><span aria-hidden="true">✓</span> Verzekerde verzending met Track &amp; Trace</li>
               </ul>
 
             </div>
@@ -280,25 +269,10 @@
     gap: var(--sp-1_5);
   }
 
-  /* Gratis-verzending voortgang */
+  /* Verzendinformatie */
   .cart-ship { font-size: 0.9rem; color: var(--ink-soft); }
   .cart-ship p { margin: 0; }
-  .cart-ship--ok p { color: var(--accent-deep); }
   .cart-ship__check { color: var(--accent-deep); font-weight: 600; }
-  .cart-ship__track {
-    margin-top: 0.6rem;
-    height: 4px;
-    background: color-mix(in srgb, var(--ink) 12%, transparent);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .cart-ship__fill {
-    display: block;
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width var(--t-slow);
-  }
 
   .summary-rows { display: flex; flex-direction: column; gap: 0.5rem; padding-top: var(--sp-1); border-top: var(--border); }
   .summary-row {
@@ -414,19 +388,19 @@
     },
     {
       "type": "header",
-      "content": "Gratis verzending"
+      "content": "Verzending"
     },
     {
       "type": "checkbox",
       "id": "show_free_shipping",
-      "label": "Toon gratis-verzending-balk",
-      "default": true
+      "label": "Oude verzendvoortgangsbalk (vervallen — laat uit)",
+      "default": false
     },
     {
-      "type": "number",
-      "id": "free_shipping_threshold",
-      "label": "Drempel gratis verzending (€)",
-      "default": 75
+      "type": "checkbox",
+      "id": "show_shipping_info",
+      "label": "Toon verzendkosten in de samenvatting (NL €6,95 · BE €9,95)",
+      "default": true
     },
     {
       "type": "header",
@@ -454,7 +428,7 @@
       "type": "text",
       "id": "tax_note",
       "label": "Notitie onder subtotaal",
-      "default": "Verzendkosten en eventuele kortingen worden bij het afrekenen berekend."
+      "default": "Verzendkosten (Nederland €6,95 · België €9,95) en eventuele kortingen worden bij het afrekenen berekend."
     }
   ],
   "presets": [

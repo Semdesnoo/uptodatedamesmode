@@ -112,8 +112,8 @@
           "type": "usp",
           "settings": {
             "icon_svg": "<svg viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.3\" aria-hidden=\"true\"><path d=\"M3 7h11v8H3z\"></path><path d=\"M14 10h4l3 3v2h-7z\"></path><circle cx=\"7\" cy=\"17\" r=\"2\"></circle><circle cx=\"17\" cy=\"17\" r=\"2\"></circle></svg>",
-            "title": "Gratis verzending",
-            "subtitle": "Vanaf €75 in NL & BE"
+            "title": "Verzekerde verzending",
+            "subtitle": "Met Track & Trace"
           }
         },
         "usp_Ly8xRx": {
