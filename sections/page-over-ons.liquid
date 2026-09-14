@@ -225,7 +225,7 @@
       </div>
       <div class="about-hero__media reveal" data-delay="1">
         {%- if section.settings.hero_image != blank -%}
-          {%- render 'sm-picture', image: section.settings.hero_image, image_mobile: section.settings.hero_image_mobile, alt: section.settings.hero_alt | default: 'Onze winkel in Hillegersberg · Up to Date Damesmode', loading: 'eager', fetchpriority: 'high', widths: '400,800,1200,1600', sizes: '(max-width: 900px) 100vw, 50vw' -%}
+          {%- render 'sm-picture', image: section.settings.hero_image, image_mobile: section.settings.hero_image_mobile, alt: section.settings.hero_alt, default: 'Onze winkel in Hillegersberg · Up to Date Damesmode', loading: 'eager', fetchpriority: 'high', widths: '400,800,1200,1600', sizes: '(max-width: 900px) 100vw, 50vw' -%}
         {%- else -%}
           <div class="media media--landscape" data-label="{{ section.settings.hero_alt | default: 'Onze winkel in Hillegersberg · Up to Date Damesmode' }}" role="img" aria-label="Het atelier van Up to Date Damesmode, met stoffen in natuurlijke tinten"></div>
         {%- endif -%}
@@ -631,3 +631,19 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- render 'sm-picture', image: section.settings.hero_image, image_mobile:
+    section.settings.hero_image_mobile, alt: section.settings.hero_alt | default:
+    'Onze winkel in Hillegersberg · Up to Date Damesmode', loading: 'eager', fetchpriority:
+    'high', widths: '400,800,1200,1600', sizes: '(max-width: 900px) 100vw, 50vw' -%}"
+  to: "{%- render 'sm-picture', image: section.settings.hero_image, image_mobile:
+    section.settings.hero_image_mobile, alt: section.settings.hero_alt, default: 'Onze
+    winkel in Hillegersberg · Up to Date Damesmode', loading: 'eager', fetchpriority:
+    'high', widths: '400,800,1200,1600', sizes: '(max-width: 900px) 100vw, 50vw' -%}"
+  position: 7018..7338
+{% endcomment %}
